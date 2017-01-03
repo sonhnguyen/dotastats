@@ -1,0 +1,7 @@
+{
+	"isDevelopment": "true",
+	"port": "3000",
+	"uri": "mongodb://heroku_fvcm77v2:d6b7oa12u6l2f9nb80d7bp2b03@ds111748.mlab.com:11748/heroku_fvcm77v2",
+	"dbname": "heroku_fvcm77v2",
+	"collection": "dev"
+}
