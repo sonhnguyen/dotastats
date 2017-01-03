@@ -1,1 +1,1 @@
-web: dotastats
+web: dotastatsWeb
