@@ -6,22 +6,20 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type Comment struct {
-	ID          bson.ObjectId `json:"id" bson:"_id"`
-	Content     string        `json:"content" bson:"content"`
-	Time        int           `json:"time" bson:"time"`
-	TimeCreated time.Time     `json:"timecreated" bson:"timecreated"`
-}
-
-type URL struct {
-	Site string `json:"site" bson:"site"`
-	ID   string `json:"id" bson:"id"`
-}
-
-type Video struct {
-	Id           bson.ObjectId `json:"id" bson:"_id"`
-	Title        string        `json:"title" bson:"title"`
-	Url          URL           `json:"url" bson:"url"`
-	Comment      []Comment     `json:"comment" bson:"comment"`
-	ThumbnailURL string        `json:"thumbnail" bson:"thumbnail"`
+type Match struct {
+	Id         bson.ObjectId `json:"id" bson:"_id"`
+	TeamA      string        `json:"teama" bson:"teama"`
+	TeamB      string        `json:"teamb" bson:"teamb"`
+	URL        string        `json:"url" bson:"url"`
+	Time       time.Time     `json:"time" bson:"time"`
+	Tournament string        `json:"tournament" bson:"tournament"`
+	MatchType  []string      `json:"type" bson:"type"`
+	RatioA     string        `json:"ratioa" bson:"ratioa"`
+	RatioB     string        `json:"ratiob" bson:"ratiob"`
+	Note       string        `json:"note" bson:"note"`
+	MatchID    int           `json:"matchid" bson:"matchid"`
+	BestOf     string        `json:"bestof" bson:"bestof"`
+	ScoreA     int           `json:"scorea" bson:"scorea"`
+	ScoreB     int           `json:"scoreb" bson:"scoreb"`
+	Winner     string        `json:"winner" bson:"winner"`
 }

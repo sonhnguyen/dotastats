@@ -91,6 +91,10 @@ func main() {
 	r := NewRouter()
 	logr := newLogger()
 	a := SetupApp(r, logr, "")
+	err = a.RunCrawlerAndSave()
+	if err != nil {
+		fmt.Errorf("error running crawler %s", err)
+	}
 
 	// common := alice.New(context.ClearHandler, a.loggingHandler, a.recoverHandler)
 	// r.Get("/video/link", common.Then(a.Wrap(a.GetVideoByLinkHandler())))
