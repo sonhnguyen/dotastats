@@ -3,9 +3,18 @@
 	"GoVersion": "go1.7",
 	"GodepVersion": "v75",
 	"Packages": [
-		"./..."
+		"./cmd/..."
 	],
 	"Deps": [
+		{
+			"ImportPath": "github.com/PuerkitoBio/goquery",
+			"Comment": "v1.0.2",
+			"Rev": "3cb3b8656883c2cc3deb9c643d93ea6e5157e425"
+		},
+		{
+			"ImportPath": "github.com/andybalholm/cascadia",
+			"Rev": "349dd0209470eabd9514242c688c403c0926d266"
+		},
 		{
 			"ImportPath": "github.com/fsnotify/fsnotify",
 			"Comment": "v1.4.2-2-gfd9ec7d",
@@ -115,6 +124,14 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/context",
+			"Rev": "69d4b8aa71caaaa75c3dfc11211d1be495abec7c"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html",
+			"Rev": "69d4b8aa71caaaa75c3dfc11211d1be495abec7c"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html/atom",
 			"Rev": "69d4b8aa71caaaa75c3dfc11211d1be495abec7c"
 		},
 		{
