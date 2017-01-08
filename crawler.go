@@ -34,8 +34,32 @@ func matchIDProcess(matchID string) int {
 		return 0
 	}
 	return result
-
 }
+
+func trimLine(line string) string {
+	s := strings.TrimSpace(line)
+	return s
+}
+
+func ratioProcess(ratio string) float64 {
+	re := regexp.MustCompile("\\d+\\.\\d+")
+	number := re.FindAllString(ratio, -1)
+	if number != nil {
+		result, err := strconv.ParseFloat(number[0], 64)
+		if err != nil {
+			return 0
+		}
+		return result
+	}
+	return 0
+}
+func winnerProcess(winner string) string {
+	if len(winner) < 10 {
+		return "TBD"
+	}
+	return winner[9:]
+}
+
 func RunCrawlerDota2BestYolo() ([]Match, error) {
 	var result []Match
 	var listMatches []string
@@ -59,9 +83,10 @@ func RunCrawlerDota2BestYolo() ([]Match, error) {
 		}
 		teamA := doc.Find("div.main-vs > div.op1 > div.title-opt > h3 > a:nth-child(2) > span").Text()
 		teamB := doc.Find("div.main-vs > div.op2 > div.title-opt > h3 > a:nth-child(2) > span").Text()
-		timeString := doc.Find("time-right").Text()
+		timeString := doc.Find("div.time-right").Text()
 
 		layOut := "02 Jan 2006 at 15:04 MST"
+		fmt.Println("%v", timeString)
 		timeStamp, err := time.Parse(layOut, timeString)
 		if err != nil {
 			fmt.Errorf("error parsing date %s", err)
@@ -70,7 +95,7 @@ func RunCrawlerDota2BestYolo() ([]Match, error) {
 		tournament := doc.Find("div.title2 > span.tt-right").Text()
 		matchID := doc.Find("div.title2 > span.tt-left").Text()
 		matchIDInt := matchIDProcess(matchID)
-		bestOf := doc.Find("div.kind-match").Text()
+		bestOf := trimLine(doc.Find("div.kind-match").Text())
 		score := doc.Find("div.main-vs div.vs span").Text()
 
 		scoreArray := scoreProcess(score)
@@ -87,16 +112,16 @@ func RunCrawlerDota2BestYolo() ([]Match, error) {
 		})
 
 		doc.Find("div.match-bk1 > div").Each(func(i int, s *goquery.Selection) {
-			ratioA := s.Find("div.reward > div.left-reward > div.appid_570").Text()
-			ratioB := s.Find("div.reward > div.right-reward > div.appid_570").Text()
+			ratioA := ratioProcess(s.Find("div.reward > div.left-reward > div.appid_570").Text())
+			ratioB := ratioProcess(s.Find("div.reward > div.right-reward > div.appid_570").Text())
 			matchType := []string{}
-			matchType = append(matchType, matchTypeList[i])
+			matchType = append(matchType, trimLine(matchTypeList[i]))
 			if matchType[0] == "Handicap" {
-				matchType = append(matchType, s.Find("div.full > div").Text())
+				matchType = append(matchType, trimLine(s.Find("div.full > div").Text()))
 			}
-			matchType = append(matchType, doc.Find("div.txt-notice").Text())
+			matchType = append(matchType, trimLine(doc.Find("div.txt-notice").Text()))
 
-			winner := s.Find("div.winner").Text()
+			winner := winnerProcess(s.Find("div.winner").Text())
 
 			match := Match{TeamA: teamA, TeamB: teamB, URL: link, Time: timeStamp, Tournament: tournament, MatchType: matchType, RatioA: ratioA, RatioB: ratioB, MatchID: matchIDInt, BestOf: bestOf, ScoreA: scoreA, ScoreB: scoreB, Winner: winner}
 			result = append(result, match)

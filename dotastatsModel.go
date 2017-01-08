@@ -14,8 +14,8 @@ type Match struct {
 	Time       time.Time     `json:"time" bson:"time"`
 	Tournament string        `json:"tournament" bson:"tournament"`
 	MatchType  []string      `json:"type" bson:"type"`
-	RatioA     string        `json:"ratioa" bson:"ratioa"`
-	RatioB     string        `json:"ratiob" bson:"ratiob"`
+	RatioA     float64       `json:"ratioa" bson:"ratioa"`
+	RatioB     float64       `json:"ratiob" bson:"ratiob"`
 	Note       string        `json:"note" bson:"note"`
 	MatchID    int           `json:"matchid" bson:"matchid"`
 	BestOf     string        `json:"bestof" bson:"bestof"`
