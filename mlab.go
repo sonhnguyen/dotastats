@@ -25,17 +25,13 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	fmt.Println("saving matches")
 
 	for _, match := range matchList {
-		var matchWithId Match
-		matchWithId = match
-		matchWithId.Id = bson.NewObjectId()
-		fmt.Println("processing", match.MatchID)
-		upsertdata := bson.M{"$set": match, "$setOnInsert": matchWithId}
+		upsertdata := bson.M{"$set": match}
 		condition := bson.M{"url": match.URL, "type": match.MatchType}
 		info, err := collection.Upsert(condition, upsertdata)
 		if err != nil {
 			fmt.Errorf("error upserting %s", info, err)
 		}
 	}
-	fmt.Println("done saving matches")
+	fmt.Println("done saving %v matches", len(matchList))
 	return nil
 }
