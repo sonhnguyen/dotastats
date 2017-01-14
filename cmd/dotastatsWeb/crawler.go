@@ -16,7 +16,7 @@ func (a *App) doEvery(d time.Duration) error {
 		if err != nil {
 			return err
 		}
-		fmt.Print(x)
+		fmt.Print("done run at %s", x)
 	}
 	return nil
 }
