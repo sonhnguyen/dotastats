@@ -22,7 +22,7 @@ func (a *App) doEvery(d time.Duration) error {
 }
 
 func (a *App) RunCrawlerAndSave() error {
-	err := a.doEvery(20 * time.Second)
+	err := a.doEvery(90 * time.Second)
 	if err != nil {
 		return err
 	}
