@@ -7,19 +7,19 @@ import (
 )
 
 type Match struct {
-	Id         bson.ObjectId `json:"id" bson:"_id"`
-	TeamA      string        `json:"teama" bson:"teama"`
-	TeamB      string        `json:"teamb" bson:"teamb"`
-	URL        string        `json:"url" bson:"url"`
-	Time       time.Time     `json:"time" bson:"time"`
-	Tournament string        `json:"tournament" bson:"tournament"`
-	MatchType  []string      `json:"type" bson:"type"`
-	RatioA     float64       `json:"ratioa" bson:"ratioa"`
-	RatioB     float64       `json:"ratiob" bson:"ratiob"`
-	Note       string        `json:"note" bson:"note"`
-	MatchID    int           `json:"matchid" bson:"matchid"`
-	BestOf     string        `json:"bestof" bson:"bestof"`
-	ScoreA     int           `json:"scorea" bson:"scorea"`
-	ScoreB     int           `json:"scoreb" bson:"scoreb"`
-	Winner     string        `json:"winner" bson:"winner"`
+	Id         bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	TeamA      string        `json:"teama,omitempty" bson:"teama,omitempty"`
+	TeamB      string        `json:"teamb,omitempty" bson:"teamb,omitempty"`
+	URL        string        `json:"url,omitempty" bson:"url,omitempty"`
+	Time       time.Time     `json:"time,omitempty" bson:"time,omitempty"`
+	Tournament string        `json:"tournament,omitempty" bson:"tournament,omitempty"`
+	MatchType  []string      `json:"type,omitempty" bson:"type,omitempty"`
+	RatioA     float64       `json:"ratioa,omitempty" bson:"ratioa,omitempty"`
+	RatioB     float64       `json:"ratiob,omitempty" bson:"ratiob,omitempty"`
+	Note       string        `json:"note,omitempty" bson:"note,omitempty"`
+	MatchID    int           `json:"matchid,omitempty" bson:"matchid,omitempty"`
+	BestOf     string        `json:"bestof,omitempty" bson:"bestof,omitempty"`
+	ScoreA     int           `json:"scorea,omitempty" bson:"scorea,omitempty"`
+	ScoreB     int           `json:"scoreb,omitempty" bson:"scoreb,omitempty"`
+	Winner     string        `json:"winner,omitempty" bson:"winner,omitempty"`
 }

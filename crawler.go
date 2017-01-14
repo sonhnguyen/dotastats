@@ -1,7 +1,6 @@
 package dotastats
 
 import (
-	"encoding/json"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -60,22 +59,8 @@ func winnerProcess(winner string) string {
 	return winner[9:]
 }
 
-func RunCrawlerDota2BestYolo() ([]Match, error) {
+func processMatchesDota2BY(listMatches []string) ([]Match, error) {
 	var result []Match
-	var listMatches []string
-	ROOT_URL := "http://dota2bestyolo.com"
-	doc, err := goquery.NewDocument(ROOT_URL)
-	if err != nil {
-		return []Match{}, err
-	}
-
-	doc.Find("div.blk2 div.view-btn > a").Each(func(i int, s *goquery.Selection) {
-		matchLink, _ := s.Attr("href")
-		if matchLink != "" {
-			listMatches = append(listMatches, ROOT_URL+matchLink)
-		}
-	})
-
 	for _, link := range listMatches {
 		doc, err := goquery.NewDocument(link)
 		if err != nil {
@@ -86,7 +71,6 @@ func RunCrawlerDota2BestYolo() ([]Match, error) {
 		timeString := doc.Find("div.time-right").Text()
 
 		layOut := "02 Jan 2006 at 15:04 MST"
-		fmt.Println("%v", timeString)
 		timeStamp, err := time.Parse(layOut, timeString)
 		if err != nil {
 			fmt.Errorf("error parsing date %s", err)
@@ -127,7 +111,37 @@ func RunCrawlerDota2BestYolo() ([]Match, error) {
 			result = append(result, match)
 		})
 	}
-	b, _ := json.Marshal(result)
-	fmt.Println("%v", string(b[:]))
 	return result, nil
+}
+
+func RunCrawlerDota2BestYolo() ([]Match, error) {
+	var result []Match
+	var listMatches []string
+	ROOT_URL := "http://dota2bestyolo.com"
+	doc, err := goquery.NewDocument(ROOT_URL)
+	if err != nil {
+		return []Match{}, err
+	}
+
+	doc.Find("div.blk2 div.view-btn > a").Each(func(i int, s *goquery.Selection) {
+		matchLink, _ := s.Attr("href")
+		if matchLink != "" {
+			listMatches = append(listMatches, ROOT_URL+matchLink)
+		}
+	})
+	result, err = processMatchesDota2BY(listMatches)
+	fmt.Println("done crawled %v", len(result))
+	return result, err
+}
+
+func RunOldMatchesDota2BestYolo(startId int, endId int) ([]Match, error) {
+	var result []Match
+	var listMatches []string
+	ROOT_URL := "http://dota2bestyolo.com/"
+	for i := startId; i <= endId; i++ {
+		listMatches = append(listMatches, ROOT_URL+"match/"+strconv.Itoa(i))
+	}
+
+	result, err := processMatchesDota2BY(listMatches)
+	return result, err
 }

@@ -1,1 +1,1 @@
-web: dotastatsWeb
+worker: dotastatsWeb
