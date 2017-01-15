@@ -19,7 +19,7 @@ type Match struct {
 	Note       string        `json:"note,omitempty" bson:"note,omitempty"`
 	MatchID    int           `json:"matchid,omitempty" bson:"matchid,omitempty"`
 	BestOf     string        `json:"bestof,omitempty" bson:"bestof,omitempty"`
-	ScoreA     int           `json:"scorea,omitempty" bson:"scorea,omitempty"`
-	ScoreB     int           `json:"scoreb,omitempty" bson:"scoreb,omitempty"`
+	ScoreA     int           `json:"scorea" bson:"scorea"`
+	ScoreB     int           `json:"scoreb" bson:"scoreb"`
 	Winner     string        `json:"winner,omitempty" bson:"winner,omitempty"`
 }
