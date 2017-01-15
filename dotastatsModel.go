@@ -10,6 +10,7 @@ type Match struct {
 	Id         bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	TeamA      string        `json:"teama,omitempty" bson:"teama,omitempty"`
 	TeamB      string        `json:"teamb,omitempty" bson:"teamb,omitempty"`
+	MatchName  string        `json:"matchname,omitempty" bson:"matchname,omitempty"`
 	URL        string        `json:"url,omitempty" bson:"url,omitempty"`
 	Time       time.Time     `json:"time,omitempty" bson:"time,omitempty"`
 	Tournament string        `json:"tournament,omitempty" bson:"tournament,omitempty"`

@@ -68,6 +68,7 @@ func processMatchesDota2BY(listMatches []string) ([]Match, error) {
 		}
 		teamA := doc.Find("div.main-vs > div.op1 > div.title-opt > h3 > a:nth-child(2) > span").Text()
 		teamB := doc.Find("div.main-vs > div.op2 > div.title-opt > h3 > a:nth-child(2) > span").Text()
+		matchName := teamA + " vs " + teamB
 		timeString := doc.Find("div.time-right").Text()
 
 		layOut := "02 Jan 2006 at 15:04 MST"
@@ -107,7 +108,7 @@ func processMatchesDota2BY(listMatches []string) ([]Match, error) {
 
 			winner := winnerProcess(s.Find("div.winner").Text())
 
-			match := Match{TeamA: teamA, TeamB: teamB, URL: link, Time: timeStamp, Tournament: tournament, MatchType: matchType, RatioA: ratioA, RatioB: ratioB, MatchID: matchIDInt, BestOf: bestOf, ScoreA: scoreA, ScoreB: scoreB, Winner: winner}
+			match := Match{MatchName: matchName, TeamA: teamA, TeamB: teamB, URL: link, Time: timeStamp, Tournament: tournament, MatchType: matchType, RatioA: ratioA, RatioB: ratioB, MatchID: matchIDInt, BestOf: bestOf, ScoreA: scoreA, ScoreB: scoreB, Winner: winner}
 			result = append(result, match)
 		})
 	}
