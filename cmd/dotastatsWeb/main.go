@@ -9,6 +9,8 @@ import (
 	"path"
 	"runtime"
 
+	"github.com/gorilla/context"
+	"github.com/justinas/alice"
 	"github.com/kardianos/osext"
 	"github.com/rs/cors"
 	"github.com/spf13/viper"
@@ -63,8 +65,8 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 
 	gp := globalPresenter{
 		SiteName:    "dotastats",
-		Description: "Api for native app",
-		SiteURL:     "api.floatingcube.com",
+		Description: "Api",
+		SiteURL:     "wtf",
 	}
 
 	return &App{
@@ -98,6 +100,11 @@ func main() {
 
 	// Add CORS support (Cross Origin Resource Sharing)
 	handler := cors.Default().Handler(r)
+	common := alice.New(context.ClearHandler, a.loggingHandler, a.recoverHandler)
+	r.Get("/f10k/:name", common.Then(a.Wrap(a.GetF10kResultHandler())))
+	r.Get("/team/:name", common.Then(a.Wrap(a.GetTeamInfoHandler())))
+	r.Get("/team/:name/f10k", common.Then(a.Wrap(a.GetTeamInfoHandler())))
+
 	err = http.ListenAndServe(":"+a.config.Port, handler)
 	if err != nil {
 		fmt.Errorf("error on serve server %s", err)

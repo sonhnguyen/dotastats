@@ -24,3 +24,15 @@ type Match struct {
 	ScoreB     int           `json:"scoreb" bson:"scoreb"`
 	Winner     string        `json:"winner,omitempty" bson:"winner,omitempty"`
 }
+
+type F10kResult struct {
+	Name         string   `json:"name"`
+	AverageKill  float64  `json:"avgkill"`
+	AverageDeath float64  `json:"avgdeath"`
+	RatioKill    float64  `json:"name"`
+	TotalKill    int      `json:"totalkill"`
+	TotalDeath   int      `json:"totaldeath"`
+	Winrate      float64  `json:"winrate"`
+	AverageOdds  float64  `json:"avgodds"`
+	Enemy        []string `json:"enemy"`
+}
