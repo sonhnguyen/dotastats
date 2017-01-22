@@ -3,6 +3,7 @@ package main
 import (
 	"dotastats"
 	"fmt"
+	"net/http"
 	"time"
 )
 
@@ -13,10 +14,11 @@ func (a *App) doEvery(d time.Duration) error {
 			return err
 		}
 		err = a.mongodb.SaveMatches(result)
+		fmt.Print("done run at %s", x)
+		_, err = http.Get("http://dotabetstats.herokuapp.com")
 		if err != nil {
 			return err
 		}
-		fmt.Print("done run at %s", x)
 	}
 	return nil
 }

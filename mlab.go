@@ -44,7 +44,6 @@ func (mongo *Mongodb) GetTeamMatches(teamName, limit string) ([]Match, error) {
 		return []Match{}, err
 	}
 	var limitInt int
-	var skipInt int
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	if limit != "" {
@@ -55,11 +54,14 @@ func (mongo *Mongodb) GetTeamMatches(teamName, limit string) ([]Match, error) {
 	}
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
+	regex := bson.M{"$regex": bson.RegEx{Pattern: "^" + teamName, Options: "i"}}
+
+	fmt.Println(teamName, limitInt)
 	err = collection.Find(bson.M{
 		"$or": []bson.M{
-			bson.M{"teama": teamName},
-			bson.M{"teamb": teamName},
-		}}).Limit(limitInt).All(&result)
+			bson.M{"teama": regex},
+			bson.M{"teamb": regex},
+		}}).Limit(limitInt).Sort("-time").All(&result)
 
 	if err != nil {
 		return []Match{}, err
@@ -75,7 +77,6 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName, limit string) ([]Match, error
 		return []Match{}, err
 	}
 	var limitInt int
-	var skipInt int
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	if limit != "" {
@@ -86,16 +87,19 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName, limit string) ([]Match, error
 	}
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
+	regex := bson.M{"$regex": bson.RegEx{Pattern: "^" + teamName, Options: "i"}}
+
 	err = collection.Find(bson.M{
-		"$or": []bson.M{
-			bson.M{"teama": teamName},
-			bson.M{"teamb": teamName},
-		},
-		"$or": []bson.M{
-			bson.M{"scorea": 10},
-			bson.M{"scoreb": 10},
-		},
-	}).Limit(limitInt).All(&result)
+		"$and": []bson.M{
+			bson.M{"$or": []bson.M{
+				bson.M{"teama": regex},
+				bson.M{"teamb": regex},
+			}},
+			bson.M{"$or": []bson.M{
+				bson.M{"scorea": 10},
+				bson.M{"scoreb": 10},
+			}}}},
+	).Limit(limitInt).Sort("-time").All(&result)
 
 	if err != nil {
 		return []Match{}, err

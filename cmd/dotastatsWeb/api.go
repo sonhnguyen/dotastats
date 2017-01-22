@@ -21,7 +21,7 @@ func (a *App) GetTeamMatchesHandler() HandlerWithError {
 			return newAPIError(404, "error when return json %s", err)
 		}
 
-		err = json.NewEncoder(w).Encode(video)
+		err = json.NewEncoder(w).Encode(result)
 		if err != nil {
 			a.logr.Log("error when return json %s", err)
 			return newAPIError(404, "error when return json %s", err)
@@ -44,7 +44,7 @@ func (a *App) GetTeamF10kMatchesHandler() HandlerWithError {
 			return newAPIError(404, "error when return json %s", err)
 		}
 
-		err = json.NewEncoder(w).Encode(video)
+		err = json.NewEncoder(w).Encode(result)
 		if err != nil {
 			a.logr.Log("error when return json %s", err)
 			return newAPIError(404, "error when return json %s", err)
@@ -67,7 +67,7 @@ func (a *App) GetF10kResultHandler() HandlerWithError {
 			return newAPIError(404, "error when return json %s", err)
 		}
 
-		err = json.NewEncoder(w).Encode(video)
+		err = json.NewEncoder(w).Encode(result)
 		if err != nil {
 			a.logr.Log("error when return json %s", err)
 			return newAPIError(404, "error when return json %s", err)

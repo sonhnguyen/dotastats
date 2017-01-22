@@ -67,6 +67,11 @@
 			"Rev": "5dd70ee059943e81987a817fa1a755b11dd119c1"
 		},
 		{
+			"ImportPath": "github.com/justinas/alice",
+			"Comment": "1.0.0-16-g1051eaf",
+			"Rev": "1051eaf52fcafdd87ead59d28b065f1fcb8274ec"
+		},
+		{
 			"ImportPath": "github.com/kardianos/osext",
 			"Rev": "c2c54e542fb797ad986b31721e1baedf214ca413"
 		},

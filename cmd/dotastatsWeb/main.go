@@ -93,22 +93,22 @@ func main() {
 	r := NewRouter()
 	logr := newLogger()
 	a := SetupApp(r, logr, "")
+	// Add CORS support (Cross Origin Resource Sharing)
+	common := alice.New(context.ClearHandler, a.loggingHandler, a.recoverHandler)
+	r.Get("/f10k/:name", common.Then(a.Wrap(a.GetF10kResultHandler())))
+	r.Get("/team/:name", common.Then(a.Wrap(a.GetTeamMatchesHandler())))
+	r.Get("/team/:name/f10k", common.Then(a.Wrap(a.GetTeamF10kMatchesHandler())))
+	handler := cors.Default().Handler(r)
+	fmt.Println("listening at", a.config.Port)
+	err = http.ListenAndServe(":"+a.config.Port, handler)
+	if err != nil {
+		fmt.Errorf("error on serve server %s", err)
+	}
 	err = a.RunCrawlerAndSave()
 	if err != nil {
 		fmt.Errorf("error running crawler %s", err)
 	}
 
-	// Add CORS support (Cross Origin Resource Sharing)
-	handler := cors.Default().Handler(r)
-	common := alice.New(context.ClearHandler, a.loggingHandler, a.recoverHandler)
-	r.Get("/f10k/:name", common.Then(a.Wrap(a.GetF10kResultHandler())))
-	r.Get("/team/:name", common.Then(a.Wrap(a.GetTeamInfoHandler())))
-	r.Get("/team/:name/f10k", common.Then(a.Wrap(a.GetTeamInfoHandler())))
-
-	err = http.ListenAndServe(":"+a.config.Port, handler)
-	if err != nil {
-		fmt.Errorf("error on serve server %s", err)
-	}
 }
 
 func LoadConfiguration(pwd string) error {
