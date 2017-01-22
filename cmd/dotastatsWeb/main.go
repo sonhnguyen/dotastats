@@ -12,6 +12,7 @@ import (
 	"github.com/gorilla/context"
 	"github.com/justinas/alice"
 	"github.com/kardianos/osext"
+	"github.com/robfig/cron"
 	"github.com/rs/cors"
 	"github.com/spf13/viper"
 )
@@ -99,16 +100,18 @@ func main() {
 	r.Get("/team/:name", common.Then(a.Wrap(a.GetTeamMatchesHandler())))
 	r.Get("/team/:name/f10k", common.Then(a.Wrap(a.GetTeamF10kMatchesHandler())))
 	handler := cors.Default().Handler(r)
-	fmt.Println("listening at", a.config.Port)
+	c := cron.New()
+	c.AddFunc("@every 2m", func() {
+		err = a.RunCrawlerAndSave()
+		if err != nil {
+			fmt.Errorf("error running crawler %s", err)
+		}
+	})
+	c.Start()
 	err = http.ListenAndServe(":"+a.config.Port, handler)
 	if err != nil {
 		fmt.Errorf("error on serve server %s", err)
 	}
-	err = a.RunCrawlerAndSave()
-	if err != nil {
-		fmt.Errorf("error running crawler %s", err)
-	}
-
 }
 
 func LoadConfiguration(pwd string) error {
