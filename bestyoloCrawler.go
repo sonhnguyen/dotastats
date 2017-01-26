@@ -10,17 +10,17 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
-func scoreProcess(score string) []int {
-	var result []int
+func scoreProcess(score string) []float64 {
+	var result []float64
 	score = strings.TrimSpace(score)
 	scoreArr := strings.Split(score, ":")
 	for _, scoreString := range scoreArr {
 		if scoreString != " " {
 			scoreInt, err := strconv.Atoi(strings.TrimSpace(scoreString))
 			if err != nil {
-				return []int{}
+				return []float64{}
 			}
-			result = append(result, scoreInt)
+			result = append(result, float64(scoreInt))
 		}
 	}
 	return result
@@ -79,13 +79,12 @@ func processMatchesDota2BY(listMatches []string) ([]Match, error) {
 
 		tournament := doc.Find("div.title2 > span.tt-right").Text()
 		matchID := doc.Find("div.title2 > span.tt-left").Text()
-		matchIDInt := matchIDProcess(matchID)
 		bestOf := trimLine(doc.Find("div.kind-match").Text())
 		score := doc.Find("div.main-vs div.vs span").Text()
 
 		scoreArray := scoreProcess(score)
-		var scoreA int
-		var scoreB int
+		var scoreA float64
+		var scoreB float64
 		if len(scoreArray) > 0 {
 			scoreA = scoreArray[0]
 			scoreB = scoreArray[1]
@@ -108,7 +107,7 @@ func processMatchesDota2BY(listMatches []string) ([]Match, error) {
 
 			winner := winnerProcess(s.Find("div.winner").Text())
 
-			match := Match{MatchName: matchName, TeamA: teamA, TeamB: teamB, URL: link, Time: timeStamp, Tournament: tournament, MatchType: matchType, RatioA: ratioA, RatioB: ratioB, MatchID: matchIDInt, BestOf: bestOf, ScoreA: scoreA, ScoreB: scoreB, Winner: winner}
+			match := Match{MatchName: matchName, TeamA: teamA, TeamB: teamB, URL: link, Time: timeStamp, Tournament: tournament, MatchType: matchType, RatioA: ratioA, RatioB: ratioB, MatchID: matchID, BestOf: bestOf, ScoreA: scoreA, ScoreB: scoreB, Winner: winner}
 			result = append(result, match)
 		})
 	}

@@ -27,7 +27,7 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 
 	for _, match := range matchList {
 		upsertdata := bson.M{"$set": match}
-		condition := bson.M{"url": match.URL, "type": match.MatchType}
+		condition := bson.M{"url": match.URL}
 		info, err := collection.Upsert(condition, upsertdata)
 		if err != nil {
 			fmt.Errorf("error upserting %s", info, err)
@@ -56,7 +56,6 @@ func (mongo *Mongodb) GetTeamMatches(teamName, limit string) ([]Match, error) {
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
 	regex := bson.M{"$regex": bson.RegEx{Pattern: "^" + teamName, Options: "i"}}
 
-	fmt.Println(teamName, limitInt)
 	err = collection.Find(bson.M{
 		"$or": []bson.M{
 			bson.M{"teama": regex},
@@ -87,18 +86,18 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName, limit string) ([]Match, error
 	}
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
-	regex := bson.M{"$regex": bson.RegEx{Pattern: "^" + teamName, Options: "i"}}
+	regexName := bson.M{"$regex": bson.RegEx{Pattern: "^" + teamName, Options: "i"}}
+	regex10kills := bson.M{"$regex": bson.RegEx{Pattern: ".*10kills.*", Options: "i"}}
 
 	err = collection.Find(bson.M{
 		"$and": []bson.M{
 			bson.M{"$or": []bson.M{
-				bson.M{"teama": regex},
-				bson.M{"teamb": regex},
+				bson.M{"teama": regexName},
+				bson.M{"teamb": regexName},
 			}},
-			bson.M{"$or": []bson.M{
-				bson.M{"scorea": 10},
-				bson.M{"scoreb": 10},
-			}}}},
+			bson.M{"mode_name": regex10kills},
+			bson.M{"status": "Settled"},
+		}},
 	).Limit(limitInt).Sort("-time").All(&result)
 
 	if err != nil {

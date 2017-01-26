@@ -8,21 +8,30 @@ import (
 
 type Match struct {
 	Id         bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	TeamAID    string        `json:"teama_id,omitempty" bson:"teama_id,omitempty"`
+	TeamBID    string        `json:"teamb_id,omitempty" bson:"teamb_id,omitempty"`
 	TeamA      string        `json:"teama,omitempty" bson:"teama,omitempty"`
 	TeamB      string        `json:"teamb,omitempty" bson:"teamb,omitempty"`
-	MatchName  string        `json:"matchname,omitempty" bson:"matchname,omitempty"`
-	URL        string        `json:"url,omitempty" bson:"url,omitempty"`
-	Time       time.Time     `json:"time,omitempty" bson:"time,omitempty"`
 	Tournament string        `json:"tournament,omitempty" bson:"tournament,omitempty"`
-	MatchType  []string      `json:"type,omitempty" bson:"type,omitempty"`
-	RatioA     float64       `json:"ratioa,omitempty" bson:"ratioa,omitempty"`
-	RatioB     float64       `json:"ratiob,omitempty" bson:"ratiob,omitempty"`
-	Note       string        `json:"note,omitempty" bson:"note,omitempty"`
-	MatchID    int           `json:"matchid,omitempty" bson:"matchid,omitempty"`
+	Game       string        `json:"game,omitempty" bson:"game,omitempty"`
 	BestOf     string        `json:"bestof,omitempty" bson:"bestof,omitempty"`
-	ScoreA     int           `json:"scorea" bson:"scorea"`
-	ScoreB     int           `json:"scoreb" bson:"scoreb"`
-	Winner     string        `json:"winner,omitempty" bson:"winner,omitempty"`
+	// sub match specific
+	MatchID        string    `json:"matchid,omitempty" bson:"matchid,omitempty"`
+	URL            string    `json:"url,omitempty" bson:"url,omitempty"`
+	Time           time.Time `json:"time,omitempty" bson:"time,omitempty"`
+	MatchName      string    `json:"matchname,omitempty" bson:"matchname,omitempty"`
+	MatchType      []string  `json:"type,omitempty" bson:"type,omitempty"`
+	ModeName       string    `json:"mode_name,omitempty" bson:"mode_name,omitempty"`
+	ModeDesc       string    `json:"mode_desc,omitempty" bson:"mode_desc,omitempty"`
+	HandicapAmount string    `json:"handicap,omitempty" bson:"handicap,omitempty"`
+	HandicapTeam   string    `json:"handicap_team,omitempty" bson:"handicap_team,omitempty"`
+	RatioA         float64   `json:"ratioa" bson:"ratioa"`
+	RatioB         float64   `json:"ratiob" bson:"ratiob"`
+	Winner         string    `json:"winner,omitempty" bson:"winner,omitempty"`
+	Status         string    `json:"status,omitempty" bson:"status,omitempty"`
+	ScoreA         float64   `json:"scorea" bson:"scorea"`
+	ScoreB         float64   `json:"scoreb" bson:"scoreb"`
+	Note           string    `json:"note,omitempty" bson:"note,omitempty"`
 }
 
 type F10kResult struct {
