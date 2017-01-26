@@ -102,12 +102,12 @@ func main() {
 	handler := cors.Default().Handler(r)
 	c := cron.New()
 	c.AddFunc("@every 2m", func() {
+		err = a.RunCrawlerAndSave()
+		if err != nil {
+			fmt.Errorf("error running crawler %s", err)
+		}
 	})
 	c.Start()
-	err = a.RunCrawlerAndSave()
-	if err != nil {
-		fmt.Errorf("error running crawler %s", err)
-	}
 	err = http.ListenAndServe(":"+a.config.Port, handler)
 	if err != nil {
 		fmt.Errorf("error on serve server %s", err)
