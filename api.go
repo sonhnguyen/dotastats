@@ -38,6 +38,7 @@ func GetF10kResult(teamName, limit string, mongodb Mongodb) (F10kResult, error) 
 	var kill, death, ratio, totalKill, totalDeath, win, avgKill, avgDeath, winrate, avgOdds, ratioKill float64
 	for _, match := range data {
 		var enemy string
+		var winnerShort string
 		if match.ScoreA == 0 {
 			match.ScoreA = 1
 		}
@@ -59,7 +60,10 @@ func GetF10kResult(teamName, limit string, mongodb Mongodb) (F10kResult, error) 
 		}
 		totalKill += kill
 		totalDeath += death
-		if rp.MatchString(match.Winner) {
+		if match.Winner == match.TeamA {
+			winnerShort = match.TeamAShort
+		}
+		if rp.MatchString(match.Winner) || rp.MatchString(winnerShort) {
 			win++
 		}
 		avgOdds += ratio
