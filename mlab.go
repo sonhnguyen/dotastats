@@ -54,12 +54,14 @@ func (mongo *Mongodb) GetTeamMatches(teamName, limit string) ([]Match, error) {
 	}
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
-	regex := bson.M{"$regex": bson.RegEx{Pattern: "^" + teamName, Options: "i"}}
+	regexName := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamName + "\\b", Options: "i"}}
 
 	err = collection.Find(bson.M{
 		"$or": []bson.M{
-			bson.M{"teama": regex},
-			bson.M{"teamb": regex},
+			bson.M{"teama": regexName},
+			bson.M{"teamb": regexName},
+			bson.M{"teama_short": regexName},
+			bson.M{"teamb_short": regexName},
 		}}).Limit(limitInt).Sort("-time").All(&result)
 
 	if err != nil {
@@ -86,14 +88,16 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName, limit string) ([]Match, error
 	}
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
-	regexName := bson.M{"$regex": bson.RegEx{Pattern: "^" + teamName, Options: "i"}}
-	regex10kills := bson.M{"$regex": bson.RegEx{Pattern: ".*10kills.*", Options: "i"}}
+	regexName := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamName + "\\b", Options: "i"}}
+	regex10kills := bson.M{"$regex": bson.RegEx{Pattern: "10kills", Options: "i"}}
 
 	err = collection.Find(bson.M{
 		"$and": []bson.M{
 			bson.M{"$or": []bson.M{
 				bson.M{"teama": regexName},
 				bson.M{"teamb": regexName},
+				bson.M{"teama_short": regexName},
+				bson.M{"teamb_short": regexName},
 			}},
 			bson.M{"mode_name": regex10kills},
 			bson.M{"status": "Settled"},

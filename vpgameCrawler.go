@@ -28,8 +28,9 @@ type VPGameTournament struct {
 	Category string `json:"category"`
 }
 type VPGameTeamDetail struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	NameShort string `json:"short_name"`
 }
 type VPGameOddDetail struct {
 	ID      string `json:"id"`
@@ -164,6 +165,8 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 				subMatch.BestOf = "BO1"
 
 			}
+			subMatch.TeamAShort = match.Team.Left.NameShort
+			subMatch.TeamBShort = match.Team.Right.NameShort
 			result = append(result, subMatch)
 
 		}

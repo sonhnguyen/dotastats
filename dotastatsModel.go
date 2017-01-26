@@ -12,6 +12,8 @@ type Match struct {
 	TeamBID    string        `json:"teamb_id,omitempty" bson:"teamb_id,omitempty"`
 	TeamA      string        `json:"teama,omitempty" bson:"teama,omitempty"`
 	TeamB      string        `json:"teamb,omitempty" bson:"teamb,omitempty"`
+	TeamAShort string        `json:"teama_short,omitempty" bson:"teama_short,omitempty"`
+	TeamBShort string        `json:"teamb_short,omitempty" bson:"teamb_short,omitempty"`
 	Tournament string        `json:"tournament,omitempty" bson:"tournament,omitempty"`
 	Game       string        `json:"game,omitempty" bson:"game,omitempty"`
 	BestOf     string        `json:"bestof,omitempty" bson:"bestof,omitempty"`

@@ -1,6 +1,10 @@
 package dotastats
 
-import "strings"
+import (
+	"fmt"
+	"regexp"
+	"strings"
+)
 
 func GetTeamMatches(teamName, limit string, mongodb Mongodb) ([]Match, error) {
 	result, err := mongodb.GetTeamMatches(teamName, limit)
@@ -40,12 +44,14 @@ func GetF10kResult(teamName, limit string, mongodb Mongodb) (F10kResult, error) 
 		if match.ScoreB == 0 {
 			match.ScoreB = 1
 		}
-		if teamName == strings.ToLower(match.TeamA) {
+		rp := regexp.MustCompile("(?i)" + "\\b" + teamName + "\\b")
+		fmt.Println("teamname", teamName, strings.ToLower(match.TeamA), strings.ToLower(match.TeamB))
+		if rp.MatchString(match.TeamA) || rp.MatchString(match.TeamAShort) {
 			kill = float64(match.ScoreA)
 			death = float64(match.ScoreB)
 			ratio = float64(match.RatioA)
 			enemy = strings.ToLower(match.TeamB)
-		} else {
+		} else if rp.MatchString(match.TeamB) || rp.MatchString(match.TeamBShort) {
 			kill = float64(match.ScoreB)
 			death = float64(match.ScoreA)
 			ratio = float64(match.RatioB)
@@ -53,7 +59,7 @@ func GetF10kResult(teamName, limit string, mongodb Mongodb) (F10kResult, error) 
 		}
 		totalKill += kill
 		totalDeath += death
-		if teamName == strings.ToLower(match.Winner) {
+		if rp.MatchString(match.Winner) {
 			win++
 		}
 		avgOdds += ratio
