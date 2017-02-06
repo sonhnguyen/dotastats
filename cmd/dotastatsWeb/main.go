@@ -102,7 +102,7 @@ func main() {
 	r.Get("/crawl", common.Then(a.Wrap(a.GetCustomCrawlHandler())))
 	handler := cors.Default().Handler(r)
 	c := cron.New()
-	c.AddFunc("@every 1s", func() {
+	c.AddFunc("@every 5m", func() {
 		err = a.RunCrawlerAndSave()
 		if err != nil {
 			fmt.Println("error running crawler %s", err)
