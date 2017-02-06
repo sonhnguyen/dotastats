@@ -2,7 +2,6 @@ package main
 
 import (
 	"dotastats"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -87,8 +86,7 @@ func main() {
 
 	err = LoadConfiguration(pwd)
 	if err != nil && os.Getenv("PORT") == "" {
-		fmt.Println("panicking")
-		panic(fmt.Println("Fatal error config file: %s \n", err))
+		log.Panicln("panicking, Fatal error config file: %s", err)
 	}
 
 	r := NewRouter()
@@ -105,13 +103,13 @@ func main() {
 	c.AddFunc("@every 5m", func() {
 		err = a.RunCrawlerAndSave()
 		if err != nil {
-			fmt.Println("error running crawler %s", err)
+			log.Println("error running crawler %s", err)
 		}
 	})
 	c.Start()
 	err = http.ListenAndServe(":"+a.config.Port, handler)
 	if err != nil {
-		fmt.Println("error on serve server %s", err)
+		log.Println("error on serve server %s", err)
 	}
 }
 
