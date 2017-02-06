@@ -88,7 +88,7 @@ func main() {
 	err = LoadConfiguration(pwd)
 	if err != nil && os.Getenv("PORT") == "" {
 		fmt.Println("panicking")
-		panic(fmt.Errorf("Fatal error config file: %s \n", err))
+		panic(fmt.Println("Fatal error config file: %s \n", err))
 	}
 
 	r := NewRouter()
@@ -105,13 +105,13 @@ func main() {
 	c.AddFunc("@every 1s", func() {
 		err = a.RunCrawlerAndSave()
 		if err != nil {
-			fmt.Errorf("error running crawler %s", err)
+			fmt.Println("error running crawler %s", err)
 		}
 	})
 	c.Start()
 	err = http.ListenAndServe(":"+a.config.Port, handler)
 	if err != nil {
-		fmt.Errorf("error on serve server %s", err)
+		fmt.Println("error on serve server %s", err)
 	}
 }
 
