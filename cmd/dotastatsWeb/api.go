@@ -79,7 +79,6 @@ func (a *App) GetF10kResultHandler() HandlerWithError {
 
 func (a *App) GetCustomCrawlHandler() HandlerWithError {
 	return func(w http.ResponseWriter, req *http.Request) error {
-		params := GetParamsObj(req)
 		queryValues := req.URL.Query()
 		pageFrom, err := strconv.Atoi(queryValues.Get("page_from"))
 		if err != nil {
@@ -87,7 +86,7 @@ func (a *App) GetCustomCrawlHandler() HandlerWithError {
 			return newAPIError(500, "error when converting params %s", err)
 		}
 		var pageTo int
-		if params.ByName("page_to") != "" {
+		if queryValues.Get("page_to") != "" {
 			pageTo, err = strconv.Atoi(queryValues.Get("page_to"))
 			if err != nil {
 				a.logr.Log("error when converting params %s", err)
@@ -99,7 +98,6 @@ func (a *App) GetCustomCrawlHandler() HandlerWithError {
 
 		status := queryValues.Get("status")
 		var matchesResults []dotastats.Match
-
 		for i := pageFrom; i <= pageTo; i++ {
 			pageNum := strconv.Itoa(i)
 			var vpParams = dotastats.VPGameAPIParams{Page: pageNum, Status: status}
