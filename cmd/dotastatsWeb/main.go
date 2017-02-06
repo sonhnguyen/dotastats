@@ -101,7 +101,7 @@ func main() {
 	r.Get("/team/:name/f10k", common.Then(a.Wrap(a.GetTeamF10kMatchesHandler())))
 	handler := cors.Default().Handler(r)
 	c := cron.New()
-	c.AddFunc("@every 2m", func() {
+	c.AddFunc("@every 5m", func() {
 		err = a.RunCrawlerAndSave()
 		if err != nil {
 			fmt.Errorf("error running crawler %s", err)
