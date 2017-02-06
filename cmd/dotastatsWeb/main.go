@@ -105,7 +105,7 @@ func main() {
 	c.AddFunc("@every 1s", func() {
 		err = a.RunCrawlerAndSave()
 		if err != nil {
-			fmt.Println("error running crawler %s", err)
+			fmt.Errorf("error running crawler %s", err)
 		}
 	})
 	c.Start()
