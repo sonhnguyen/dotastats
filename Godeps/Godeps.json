@@ -3,7 +3,7 @@
 	"GoVersion": "go1.7",
 	"GodepVersion": "v75",
 	"Packages": [
-		"./cmd/..."
+		"./..."
 	],
 	"Deps": [
 		{
@@ -94,11 +94,6 @@
 			"Rev": "439fbba1f887c286024370cb4f281ba815c4c7d7"
 		},
 		{
-			"ImportPath": "github.com/robfig/cron",
-			"Comment": "v1-47-g9585fd5",
-			"Rev": "9585fd555638e77bba25f25db5c44b41f264aeb7"
-		},
-		{
 			"ImportPath": "github.com/rs/cors",
 			"Comment": "v1.0",
 			"Rev": "a62a804a8a009876ca59105f7899938a1349f4b3"
@@ -180,6 +175,11 @@
 			"ImportPath": "gopkg.in/mgo.v2/internal/scram",
 			"Comment": "r2016.08.01-5-g3f83fa5",
 			"Rev": "3f83fa5005286a7fe593b055f0d7771a7dce4655"
+		},
+		{
+			"ImportPath": "gopkg.in/robfig/cron.v2",
+			"Comment": "v1-11-gbe2e0b0",
+			"Rev": "be2e0b0deed5a68ffee390b4583a13aff8321535"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
