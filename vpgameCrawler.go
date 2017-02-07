@@ -124,14 +124,14 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 		matchFinal.BestOf = match.Round
 
 		seriesParam := VPGameAPIParams{TID: match.SeriesID}
-		resp, err = VPGameGet(SeriesAPI, seriesParam)
+		respSeries, err := VPGameGet(SeriesAPI, seriesParam)
 		if err != nil {
-			return []Match{}, fmt.Errorf("error in getting vpgame api: %s", err)
+			return []Match{}, fmt.Errorf("error in getting vpgame api respSeries: %s", err)
 		}
-		defer resp.Body.Close()
-		err = json.NewDecoder(resp.Body).Decode(&seriesResult)
+		defer respSeries.Body.Close()
+		err = json.NewDecoder(respSeries.Body).Decode(&seriesResult)
 		if err != nil {
-			return []Match{}, fmt.Errorf("error in parsing result from vpgame: %s", err)
+			return []Match{}, fmt.Errorf("error in parsing result from vpgame respSeries: %s", err)
 		}
 		for _, match := range seriesResult.Body {
 			subMatch := matchFinal
