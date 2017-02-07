@@ -100,12 +100,15 @@ func main() {
 	r.Get("/crawl", common.Then(a.Wrap(a.GetCustomCrawlHandler())))
 	handler := cors.Default().Handler(r)
 	c := cron.New()
-	c.AddFunc("@every 5m", func() {
+	err = c.AddFunc("@every 5m", func() {
 		err = a.RunCrawlerAndSave()
 		if err != nil {
 			log.Println("error running crawler %s", err)
 		}
 	})
+	if err != nil {
+		log.Println("error on cron job %s", err)
+	}
 	c.Start()
 	err = http.ListenAndServe(":"+a.config.Port, handler)
 	if err != nil {
