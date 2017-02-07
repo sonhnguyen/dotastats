@@ -104,6 +104,10 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 	var vpgameResult VPgameAPIResult
 	//result, err = processMatchesDota2BY(listMatches)
 	resp, err := VPGameGet(MatchAPI, vpParams)
+	if err != nil {
+		return []Match{}, fmt.Errorf("error in getting vpgame api: %s", err)
+	}
+	defer resp.Body.Close()
 	err = json.NewDecoder(resp.Body).Decode(&vpgameResult)
 	if err != nil {
 		return []Match{}, fmt.Errorf("error in parsing result from vpgame: %s", err)
@@ -121,6 +125,10 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 
 		seriesParam := VPGameAPIParams{TID: match.SeriesID}
 		resp, err = VPGameGet(SeriesAPI, seriesParam)
+		if err != nil {
+			return []Match{}, fmt.Errorf("error in getting vpgame api: %s", err)
+		}
+		defer resp.Body.Close()
 		err = json.NewDecoder(resp.Body).Decode(&seriesResult)
 		if err != nil {
 			return []Match{}, fmt.Errorf("error in parsing result from vpgame: %s", err)
