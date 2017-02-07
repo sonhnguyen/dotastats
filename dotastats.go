@@ -46,7 +46,8 @@ func VPGameGet(url string, params VPGameAPIParams) (http.Response, error) {
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return *resp, err
+		return nil, err
 	}
+	defer resp.Body.Close()
 	return *resp, nil
 }
