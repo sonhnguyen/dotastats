@@ -3,6 +3,7 @@ package dotastats
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -158,11 +159,26 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 				subMatch.Winner = match.RightTeam
 			}
 			subMatch.Status = processStatus(match.Status)
-			doc, err := goquery.NewDocument(subMatch.URL)
+			clientVPGame := &http.Client{
+				Timeout: time.Second * 5,
+			}
+
+			reqVPGame, err := http.NewRequest("GET", subMatch.URL, nil)
+			if err != nil {
+				fmt.Errorf("error createrq crawl match vpgame: %s", err)
+			}
+			respVPGame, err := clientVPGame.Do(reqVPGame)
+			if err != nil {
+				fmt.Errorf("error crawl match vpgame: %s", err)
+				continue
+			}
+			defer respVPGame.Body.Close()
+
+			doc, err := goquery.NewDocumentFromResponse(respVPGame)
 			if err != nil {
 				fmt.Errorf("error in crawling from vpgame: %s", err)
 			}
-			score := doc.Find("div.pic-mid > div > p:nth-child(1)").Text()
+			score := doc.Find("div.pic-mid p:nth-child(1)").Text()
 
 			scoreArray := scoreProcess(score)
 			if len(scoreArray) > 0 {
