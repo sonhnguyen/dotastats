@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"reflect"
 	"strings"
 	"time"
@@ -21,11 +20,12 @@ func TimeNow() time.Time {
 
 // VPGameGet is a communicate with vpgame GET apis
 func VPGameGet(url string, params VPGameAPIParams) (http.Response, error) {
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: time.Second * 10,
+	}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		log.Print(err)
-		os.Exit(1)
 	}
 
 	q := req.URL.Query()
@@ -44,9 +44,8 @@ func VPGameGet(url string, params VPGameAPIParams) (http.Response, error) {
 	req.URL.RawQuery = q.Encode()
 	fmt.Println(req.URL.String())
 	resp, err := client.Do(req)
-
 	if err != nil {
-		return nil, err
+		return *resp, err
 	}
 	defer resp.Body.Close()
 	return *resp, nil
