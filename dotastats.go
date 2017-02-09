@@ -19,7 +19,7 @@ func TimeNow() time.Time {
 }
 
 // VPGameGet is a communicate with vpgame GET apis
-func VPGameGet(url string, params VPGameAPIParams) (http.Response, error) {
+func VPGameGet(url string, params VPGameAPIParams) (*http.Response, error) {
 	client := &http.Client{
 		Timeout: time.Second * 10,
 	}
@@ -45,7 +45,7 @@ func VPGameGet(url string, params VPGameAPIParams) (http.Response, error) {
 	fmt.Println(req.URL.String())
 	resp, err := client.Do(req)
 	if err != nil {
-		return *resp, err
+		return resp, err
 	}
-	return *resp, nil
+	return resp, nil
 }
