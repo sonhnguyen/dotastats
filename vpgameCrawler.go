@@ -181,10 +181,10 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 				score := doc.Find("div.pic-mid p:nth-child(1)").Text()
 				fmt.Println("score:", score)
 				scoreArray := scoreProcess(score)
-			}
-			if len(scoreArray) > 0 {
-				subMatch.ScoreA = scoreArray[0]
-				subMatch.ScoreB = scoreArray[1]
+				if len(scoreArray) > 0 {
+					subMatch.ScoreA = scoreArray[0]
+					subMatch.ScoreB = scoreArray[1]
+				}
 			}
 			if match.Round == "" {
 				subMatch.BestOf = "BO1"

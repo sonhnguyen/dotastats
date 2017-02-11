@@ -78,6 +78,7 @@ func (mongo *Mongodb) GetMatches(limit, skip, status string, fields []string) ([
 		return []Match{}, err
 	}
 	var limitInt int
+	var skipInt int
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	if limit != "" {

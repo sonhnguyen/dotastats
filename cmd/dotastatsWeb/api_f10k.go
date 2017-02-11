@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+
+	"dotastats"
 )
 
 func (a *App) GetTeamMatchesHandler() HandlerWithError {
