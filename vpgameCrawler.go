@@ -162,32 +162,31 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 			clientVPGame := &http.Client{
 				Timeout: time.Second * 5,
 			}
+			if subMatch.Status == "Settled" {
+				reqVPGame, err := http.NewRequest("GET", subMatch.URL, nil)
+				if err != nil {
+					fmt.Errorf("error createrq crawl match vpgame: %s", err)
+				}
+				respVPGame, err := clientVPGame.Do(reqVPGame)
+				if err != nil {
+					fmt.Errorf("error crawl match vpgame: %s", err)
+					continue
+				}
+				defer respVPGame.Body.Close()
 
-			reqVPGame, err := http.NewRequest("GET", subMatch.URL, nil)
-			if err != nil {
-				fmt.Errorf("error createrq crawl match vpgame: %s", err)
+				doc, err := goquery.NewDocumentFromResponse(respVPGame)
+				if err != nil {
+					fmt.Errorf("error in crawling from vpgame: %s", err)
+				}
+				score := doc.Find("div.pic-mid p:nth-child(1)").Text()
+				scoreArray := scoreProcess(score)
 			}
-			respVPGame, err := clientVPGame.Do(reqVPGame)
-			if err != nil {
-				fmt.Errorf("error crawl match vpgame: %s", err)
-				continue
-			}
-			defer respVPGame.Body.Close()
-
-			doc, err := goquery.NewDocumentFromResponse(respVPGame)
-			if err != nil {
-				fmt.Errorf("error in crawling from vpgame: %s", err)
-			}
-			score := doc.Find("div.pic-mid p:nth-child(1)").Text()
-			fmt.Println("SCORE DOC", score)
-			scoreArray := scoreProcess(score)
 			if len(scoreArray) > 0 {
 				subMatch.ScoreA = scoreArray[0]
 				subMatch.ScoreB = scoreArray[1]
 			}
 			if match.Round == "" {
 				subMatch.BestOf = "BO1"
-
 			}
 			subMatch.TeamAShort = match.Team.Left.NameShort
 			subMatch.TeamBShort = match.Team.Right.NameShort
