@@ -107,7 +107,7 @@ func processMatchesDota2BY(listMatches []string) ([]Match, error) {
 
 			winner := winnerProcess(s.Find("div.winner").Text())
 
-			match := Match{MatchName: matchName, TeamA: teamA, TeamB: teamB, URL: link, Time: timeStamp, Tournament: tournament, MatchType: matchType, RatioA: ratioA, RatioB: ratioB, MatchID: matchID, BestOf: bestOf, ScoreA: scoreA, ScoreB: scoreB, Winner: winner}
+			match := Match{MatchName: matchName, TeamA: teamA, TeamB: teamB, URL: link, Time: &timeStamp, Tournament: tournament, MatchType: matchType, RatioA: ratioA, RatioB: ratioB, MatchID: matchID, BestOf: bestOf, ScoreA: scoreA, ScoreB: scoreB, Winner: winner}
 			result = append(result, match)
 		})
 	}

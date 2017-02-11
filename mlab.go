@@ -14,6 +14,14 @@ type Mongodb struct {
 	Collection string
 }
 
+func selectFields(q ...string) (r bson.M) {
+	r = make(bson.M, len(q))
+	for _, s := range q {
+		r[s] = 1
+	}
+	return
+}
+
 func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
@@ -79,6 +87,9 @@ func (mongo *Mongodb) GetMatches(limit, skip, status string, fields []string) ([
 	}
 	var limitInt int
 	var skipInt int
+	//default limit is 100
+	limitInt = 100
+	skipInt = 0
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	if limit != "" {
@@ -107,27 +118,31 @@ func (mongo *Mongodb) GetMatches(limit, skip, status string, fields []string) ([
 		status = "all"
 	}
 
+	if len(fields) > 0 {
+
+	}
+
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
 	if status != "all" {
-		err = collection.Find(bson.M{"status": status}).Skip(skipInt).Limit(limitInt).Sort("-time").All(&result)
+		err = collection.Find(bson.M{"status": status}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&result)
 		if err != nil {
 			return []Match{}, err
 		}
 	} else {
 		var openMatches []Match
-		err = collection.Find(bson.M{"status": "Upcoming"}).Skip(skipInt).Limit(limitInt).Sort("-time").All(&openMatches)
+		err = collection.Find(bson.M{"status": "Upcoming"}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&openMatches)
 		if err != nil {
 			return []Match{}, err
 		}
 
 		var liveMatches []Match
-		err = collection.Find(bson.M{"status": "Live"}).Skip(skipInt).Limit(limitInt).Sort("-time").All(&liveMatches)
+		err = collection.Find(bson.M{"status": "Live"}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&liveMatches)
 		if err != nil {
 			return []Match{}, err
 		}
 
 		var closedMatches []Match
-		err = collection.Find(bson.M{"status": "Settled"}).Skip(skipInt).Limit(limitInt).Sort("-time").All(&closedMatches)
+		err = collection.Find(bson.M{"status": "Settled"}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&closedMatches)
 		if err != nil {
 			return []Match{}, err
 		}

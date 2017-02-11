@@ -82,13 +82,13 @@ type VPgameAPIResult struct {
 	Body    []VPgameMatch `json:"body"`
 }
 
-func parseUnixTime(unixString string) (time.Time, error) {
+func parseUnixTime(unixString string) (*time.Time, error) {
 	i, err := strconv.ParseInt(unixString, 10, 64)
 	if err != nil {
-		return time.Time{}, err
+		return &time.Time{}, err
 	}
 	timeParsed := time.Unix(i, 0)
-	return timeParsed, nil
+	return &timeParsed, nil
 }
 
 func processStatus(status string) string {
