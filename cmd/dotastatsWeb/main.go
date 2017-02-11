@@ -13,7 +13,6 @@ import (
 	"github.com/kardianos/osext"
 	"github.com/rs/cors"
 	"github.com/spf13/viper"
-	"gopkg.in/robfig/cron.v2"
 )
 
 type dotastatsConfig struct {
@@ -97,6 +96,7 @@ func main() {
 	r.Get("/f10k/:name", common.Then(a.Wrap(a.GetF10kResultHandler())))
 	r.Get("/team/:name", common.Then(a.Wrap(a.GetTeamMatchesHandler())))
 	r.Get("/team/:name/f10k", common.Then(a.Wrap(a.GetTeamF10kMatchesHandler())))
+	r.Get("/match", common.Then(a.Wrap(a.GetMatchesHandler())))
 	r.Get("/crawl", common.Then(a.Wrap(a.GetCustomCrawlHandler())))
 	handler := cors.Default().Handler(r)
 	c := cron.New()
