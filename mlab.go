@@ -81,7 +81,7 @@ func (mongo *Mongodb) GetTeamMatches(teamName, limit, skip string, fields []stri
 			bson.M{"teamb": regexName},
 			bson.M{"teama_short": regexName},
 			bson.M{"teamb_short": regexName},
-		}}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).All(&result)
+		}}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&result)
 
 	if err != nil {
 		return []Match{}, err
