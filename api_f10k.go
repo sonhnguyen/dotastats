@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-func GetTeamMatches(teamName, limit string, mongodb Mongodb) ([]Match, error) {
-	result, err := mongodb.GetTeamMatches(teamName, limit)
+func GetTeamMatches(teamName, limit, skip string, fields []string, mongodb Mongodb) ([]Match, error) {
+	result, err := mongodb.GetTeamMatches(teamName, limit, skip, fields)
 	if err != nil {
 		return []Match{}, err
 	}
@@ -15,8 +15,8 @@ func GetTeamMatches(teamName, limit string, mongodb Mongodb) ([]Match, error) {
 	return result, nil
 }
 
-func GetTeamF10kMatches(teamName, limit string, mongodb Mongodb) ([]Match, error) {
-	result, err := mongodb.GetTeamF10kMatches(teamName, limit)
+func GetTeamF10kMatches(teamName, limit, skip string, fields []string, mongodb Mongodb) ([]Match, error) {
+	result, err := mongodb.GetTeamF10kMatches(teamName, limit, skip, fields)
 	if err != nil {
 		return []Match{}, err
 	}
@@ -24,8 +24,8 @@ func GetTeamF10kMatches(teamName, limit string, mongodb Mongodb) ([]Match, error
 	return result, nil
 }
 
-func GetF10kResult(teamName, limit string, mongodb Mongodb) (F10kResult, error) {
-	data, err := mongodb.GetTeamF10kMatches(teamName, limit)
+func GetF10kResult(teamName, limit, skip string, mongodb Mongodb) (F10kResult, error) {
+	data, err := mongodb.GetTeamF10kMatches(teamName, limit, skip, []string{})
 	if err != nil {
 		return F10kResult{}, err
 	}

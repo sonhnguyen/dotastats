@@ -45,17 +45,28 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	return nil
 }
 
-func (mongo *Mongodb) GetTeamMatches(teamName, limit string) ([]Match, error) {
+func (mongo *Mongodb) GetTeamMatches(teamName, limit, skip string, fields []string) ([]Match, error) {
 	var result []Match
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
 		return []Match{}, err
 	}
 	var limitInt int
+	var skipInt int
+	//default limit is 100
+	limitInt = 100
+	skipInt = 0
+
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	if limit != "" {
 		limitInt, err = strconv.Atoi(limit)
+		if err != nil {
+			return []Match{}, err
+		}
+	}
+	if skip != "" {
+		skipInt, err = strconv.Atoi(skip)
 		if err != nil {
 			return []Match{}, err
 		}
@@ -70,7 +81,7 @@ func (mongo *Mongodb) GetTeamMatches(teamName, limit string) ([]Match, error) {
 			bson.M{"teamb": regexName},
 			bson.M{"teama_short": regexName},
 			bson.M{"teamb_short": regexName},
-		}}).Limit(limitInt).Sort("-time").All(&result)
+		}}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).All(&result)
 
 	if err != nil {
 		return []Match{}, err
@@ -152,17 +163,28 @@ func (mongo *Mongodb) GetMatches(limit, skip, status string, fields []string) ([
 	return result, nil
 }
 
-func (mongo *Mongodb) GetTeamF10kMatches(teamName, limit string) ([]Match, error) {
+func (mongo *Mongodb) GetTeamF10kMatches(teamName, limit, skip string, fields []string) ([]Match, error) {
 	var result []Match
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
 		return []Match{}, err
 	}
 	var limitInt int
+	var skipInt int
+	//default limit is 100
+	limitInt = 100
+	skipInt = 0
+
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	if limit != "" {
 		limitInt, err = strconv.Atoi(limit)
+		if err != nil {
+			return []Match{}, err
+		}
+	}
+	if skip != "" {
+		skipInt, err = strconv.Atoi(skip)
 		if err != nil {
 			return []Match{}, err
 		}
@@ -183,7 +205,7 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName, limit string) ([]Match, error
 			bson.M{"mode_name": regex10kills},
 			bson.M{"status": "Settled"},
 		}},
-	).Limit(limitInt).Sort("-time").All(&result)
+	).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).All(&result)
 
 	if err != nil {
 		return []Match{}, err

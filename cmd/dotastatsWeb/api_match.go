@@ -12,10 +12,10 @@ func (a *App) GetMatchesHandler() HandlerWithError {
 	return func(w http.ResponseWriter, req *http.Request) error {
 
 		queryValues := req.URL.Query()
+		status := queryValues.Get("status")
 		limit := queryValues.Get("limit")
 		skip := queryValues.Get("skip")
 		var fields []string
-		status := queryValues.Get("status")
 		if value := queryValues.Get("fields"); value != "" {
 			fields = strings.Split(value, ",")
 		}
