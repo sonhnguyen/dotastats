@@ -205,7 +205,7 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName, limit, skip string, fields []
 			bson.M{"mode_name": regex10kills},
 			bson.M{"status": "Settled"},
 		}},
-	).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).All(&result)
+	).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&result)
 
 	if err != nil {
 		return []Match{}, err
