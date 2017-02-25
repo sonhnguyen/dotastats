@@ -36,14 +36,22 @@ type Match struct {
 	Note           string     `json:"note,omitempty" bson:"note,omitempty"`
 }
 
+type F10kHistory struct {
+	Name   string     `json:"name"`
+	Kill   float64    `json:"kill,omitempty"`
+	Death  float64    `json:"death,omitempty"`
+	Winner string     `json:"winner,omitempty"`
+	Time   *time.Time `json:"time,omitempty"`
+}
+
 type F10kResult struct {
-	Name         string   `json:"name"`
-	AverageKill  float64  `json:"avgkill"`
-	AverageDeath float64  `json:"avgdeath"`
-	RatioKill    float64  `json:"name"`
-	TotalKill    float64  `json:"totalkill"`
-	TotalDeath   float64  `json:"totaldeath"`
-	Winrate      float64  `json:"winrate"`
-	AverageOdds  float64  `json:"avgodds"`
-	Enemy        []string `json:"enemy"`
+	Name         string        `json:"name"`
+	AverageKill  float64       `json:"avgkill"`
+	AverageDeath float64       `json:"avgdeath"`
+	RatioKill    float64       `json:"name"`
+	TotalKill    float64       `json:"totalkill"`
+	TotalDeath   float64       `json:"totaldeath"`
+	Winrate      float64       `json:"winrate"`
+	AverageOdds  float64       `json:"avgodds"`
+	F10kHistory  []F10kHistory `json:"f10kHistory"`
 }

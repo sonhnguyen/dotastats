@@ -34,10 +34,10 @@ func GetF10kResult(teamName, limit, skip string, mongodb Mongodb) (F10kResult, e
 	}
 
 	var result F10kResult
-	var enemyList []string
+	var f10kHistory []F10kHistory
 	var kill, death, ratio, totalKill, totalDeath, win, avgKill, avgDeath, winrate, avgOdds, ratioKill float64
 	for _, match := range data {
-		var enemy string
+		var summary F10kHistory
 		var winnerShort string
 		if match.ScoreA == 0 {
 			match.ScoreA = 1
@@ -51,15 +51,19 @@ func GetF10kResult(teamName, limit, skip string, mongodb Mongodb) (F10kResult, e
 			kill = float64(match.ScoreA)
 			death = float64(match.ScoreB)
 			ratio = float64(match.RatioA)
-			enemy = strings.ToLower(match.TeamB)
+			summary.Name = strings.ToLower(match.TeamB)
 		} else if rp.MatchString(match.TeamB) || rp.MatchString(match.TeamBShort) {
 			kill = float64(match.ScoreB)
 			death = float64(match.ScoreA)
 			ratio = float64(match.RatioB)
-			enemy = strings.ToLower(match.TeamA)
+			summary.Name = strings.ToLower(match.TeamA)
 		}
 		totalKill += kill
 		totalDeath += death
+		summary.Kill = kill
+		summary.Death = death
+		summary.Winner = match.Winner
+		summary.Time = match.Time
 		if match.Winner == match.TeamA {
 			winnerShort = match.TeamAShort
 		}
@@ -68,13 +72,14 @@ func GetF10kResult(teamName, limit, skip string, mongodb Mongodb) (F10kResult, e
 		}
 		avgOdds += ratio
 		ratioKill += kill / death
-		enemyList = append(enemyList, enemy)
+		f10kHistory = append(f10kHistory, summary)
 	}
 	avgKill = totalKill / float64(len(data))
 	avgDeath = totalDeath / float64(len(data))
 	winrate = win / float64(len(data))
 	avgOdds = avgOdds / float64(len(data))
 	ratioKill = ratioKill / float64(len(data))
-	result = F10kResult{AverageDeath: avgDeath, AverageKill: avgKill, Name: teamName, RatioKill: ratioKill, TotalKill: totalKill, TotalDeath: totalDeath, Winrate: winrate, AverageOdds: avgOdds, Enemy: enemyList}
+
+	result = F10kResult{F10kHistory: f10kHistory, AverageDeath: avgDeath, AverageKill: avgKill, Name: teamName, RatioKill: ratioKill, TotalKill: totalKill, TotalDeath: totalDeath, Winrate: winrate, AverageOdds: avgOdds}
 	return result, nil
 }
