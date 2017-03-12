@@ -17,7 +17,7 @@ type Match struct {
 	TeamAShort     string        `json:"teama_short,omitempty" bson:"teama_short,omitempty"`
 	TeamBShort     string        `json:"teamb_short,omitempty" bson:"teamb_short,omitempty"`
 	Tournament     string        `json:"tournament,omitempty" bson:"tournament,omitempty"`
-	TournamentLogo string        `json:"tournament_logo,omitempty" bson:"tournament,omitempty"`
+	TournamentLogo string        `json:"tournament_logo,omitempty" bson:"tournament_logo,omitempty"`
 	Game           string        `json:"game,omitempty" bson:"game,omitempty"`
 	BestOf         string        `json:"bestof,omitempty" bson:"bestof,omitempty"`
 	// sub match specific
