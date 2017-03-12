@@ -172,6 +172,7 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 				reqVPGame, err := http.NewRequest("GET", subMatch.URL, nil)
 				if err != nil {
 					fmt.Errorf("error createrq crawl match vpgame: %s", err)
+					continue
 				}
 				respVPGame, err := clientVPGame.Do(reqVPGame)
 				if err != nil {
@@ -183,9 +184,9 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 				doc, err := goquery.NewDocumentFromResponse(respVPGame)
 				if err != nil {
 					fmt.Errorf("error in crawling from vpgame: %s", err)
+					continue
 				}
 				score := doc.Find("div.pic-mid p:nth-child(1)").Text()
-				fmt.Println("score:", score)
 				scoreArray := scoreProcess(score)
 				if len(scoreArray) > 0 {
 					subMatch.ScoreA = scoreArray[0]
@@ -202,5 +203,5 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 		}
 	}
 	fmt.Println("%v", len(result))
-	return result, err
+	return result, nil
 }
