@@ -14,6 +14,7 @@ import (
 const (
 	MatchAPI  = "http://www.vpgame.com/gateway/v1/match/"
 	SeriesAPI = "http://www.vpgame.com/gateway/v1/match/schedule"
+	LogoURL   = "http://thumb.vpgcdn.com/"
 )
 
 type VPGameAPIParams struct {
@@ -27,11 +28,13 @@ type VPGameAPIParams struct {
 type VPGameTournament struct {
 	Name     string `json:"name"`
 	Category string `json:"category"`
+	Logo     string `json:"logo"`
 }
 type VPGameTeamDetail struct {
 	ID        string `json:"id"`
 	Name      string `json:"name"`
 	NameShort string `json:"short_name"`
+	Logo      string `json:"logo"`
 }
 type VPGameOddDetail struct {
 	ID      string `json:"id"`
@@ -123,6 +126,9 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 		matchFinal.Tournament = match.Tournament.Name
 		matchFinal.Game = match.Category
 		matchFinal.BestOf = match.Round
+		matchFinal.TournamentLogo = LogoURL + match.Tournament.Logo
+		matchFinal.LogoA = LogoURL + match.Team.Left.Logo
+		matchFinal.LogoB = LogoURL + match.Team.Right.Logo
 
 		seriesParam := VPGameAPIParams{TID: match.SeriesID}
 		respSeries, err := VPGameGet(SeriesAPI, seriesParam)

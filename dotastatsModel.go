@@ -7,16 +7,19 @@ import (
 )
 
 type Match struct {
-	Id         bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
-	TeamAID    string        `json:"teama_id,omitempty" bson:"teama_id,omitempty"`
-	TeamBID    string        `json:"teamb_id,omitempty" bson:"teamb_id,omitempty"`
-	TeamA      string        `json:"teama,omitempty" bson:"teama,omitempty"`
-	TeamB      string        `json:"teamb,omitempty" bson:"teamb,omitempty"`
-	TeamAShort string        `json:"teama_short,omitempty" bson:"teama_short,omitempty"`
-	TeamBShort string        `json:"teamb_short,omitempty" bson:"teamb_short,omitempty"`
-	Tournament string        `json:"tournament,omitempty" bson:"tournament,omitempty"`
-	Game       string        `json:"game,omitempty" bson:"game,omitempty"`
-	BestOf     string        `json:"bestof,omitempty" bson:"bestof,omitempty"`
+	Id             bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	TeamAID        string        `json:"teama_id,omitempty" bson:"teama_id,omitempty"`
+	TeamBID        string        `json:"teamb_id,omitempty" bson:"teamb_id,omitempty"`
+	TeamA          string        `json:"teama,omitempty" bson:"teama,omitempty"`
+	TeamB          string        `json:"teamb,omitempty" bson:"teamb,omitempty"`
+	LogoA          string        `json:"logo_a,omitempty" bson:"logo_a,omitempty"`
+	LogoB          string        `json:"logo_b,omitempty" bson:"logo_b,omitempty"`
+	TeamAShort     string        `json:"teama_short,omitempty" bson:"teama_short,omitempty"`
+	TeamBShort     string        `json:"teamb_short,omitempty" bson:"teamb_short,omitempty"`
+	Tournament     string        `json:"tournament,omitempty" bson:"tournament,omitempty"`
+	TournamentLogo string        `json:"tournament_logo,omitempty" bson:"tournament,omitempty"`
+	Game           string        `json:"game,omitempty" bson:"game,omitempty"`
+	BestOf         string        `json:"bestof,omitempty" bson:"bestof,omitempty"`
 	// sub match specific
 	MatchID        string     `json:"matchid,omitempty" bson:"matchid,omitempty"`
 	URL            string     `json:"url,omitempty" bson:"url,omitempty"`
