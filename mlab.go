@@ -2,6 +2,7 @@ package dotastats
 
 import (
 	"fmt"
+	"time"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -34,6 +35,17 @@ func filterGame(matches []Match, game string) []Match {
 			if v.Game == gameSelected {
 				result = append(result, v)
 			}
+		}
+		return result
+	}
+	return matches
+}
+
+func filterTime(matches []Match, timeFrom, timeTo time.Time) []Match {
+	var result []Match
+	for _, v := range matches {
+		if v.Time.After(timeFrom) && v.Time.Before(timeTo) {
+			result = append(result, v)
 		}
 	}
 	return result
@@ -85,6 +97,7 @@ func (mongo *Mongodb) GetTeamMatches(teamName string, apiParams APIParams) ([]Ma
 		return []Match{}, err
 	}
 	result = filterGame(result, apiParams.Game)
+	result = filterTime(result, apiParams.TimeFrom, apiParams.TimeTo)
 	return result, nil
 }
 
@@ -137,6 +150,7 @@ func (mongo *Mongodb) GetMatches(status string, apiParams APIParams) ([]Match, e
 		result = append(result, liveMatches...)
 	}
 	result = filterGame(result, apiParams.Game)
+	result = filterTime(result, apiParams.TimeFrom, apiParams.TimeTo)
 	return result, nil
 }
 
@@ -170,5 +184,6 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName string, apiParams APIParams) (
 		return []Match{}, err
 	}
 	result = filterGame(result, apiParams.Game)
+	result = filterTime(result, apiParams.TimeFrom, apiParams.TimeTo)
 	return result, nil
 }
