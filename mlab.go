@@ -2,7 +2,6 @@ package dotastats
 
 import (
 	"fmt"
-	"strconv"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -21,7 +20,24 @@ func selectFields(q ...string) (r bson.M) {
 	}
 	return
 }
-
+func filterGame(matches []Match, game string) []Match {
+	var gameSelected string
+	var result []Match
+	gameList := []string{"dota", "csgo", "snooker", "football", "basketball"}
+	for _, v := range gameList {
+		if game == v {
+			gameSelected = game
+		}
+	}
+	if gameSelected != "" {
+		for _, v := range matches {
+			if v.Game == gameSelected {
+				result = append(result, v)
+			}
+		}
+	}
+	return result
+}
 func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
@@ -45,32 +61,14 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	return nil
 }
 
-func (mongo *Mongodb) GetTeamMatches(teamName, limit, skip string, fields []string) ([]Match, error) {
+func (mongo *Mongodb) GetTeamMatches(teamName string, apiParams APIParams) ([]Match, error) {
 	var result []Match
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
 		return []Match{}, err
 	}
-	var limitInt int
-	var skipInt int
-	//default limit is 100
-	limitInt = 100
-	skipInt = 0
-
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
-	if limit != "" {
-		limitInt, err = strconv.Atoi(limit)
-		if err != nil {
-			return []Match{}, err
-		}
-	}
-	if skip != "" {
-		skipInt, err = strconv.Atoi(skip)
-		if err != nil {
-			return []Match{}, err
-		}
-	}
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
 	regexName := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamName + "\\b", Options: "i"}}
@@ -81,41 +79,23 @@ func (mongo *Mongodb) GetTeamMatches(teamName, limit, skip string, fields []stri
 			bson.M{"teamb": regexName},
 			bson.M{"teama_short": regexName},
 			bson.M{"teamb_short": regexName},
-		}}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&result)
+		}}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
 
 	if err != nil {
 		return []Match{}, err
 	}
-
+	result = filterGame(result, apiParams.Game)
 	return result, nil
 }
 
-func (mongo *Mongodb) GetMatches(limit, skip, status string, fields []string) ([]Match, error) {
+func (mongo *Mongodb) GetMatches(status string, apiParams APIParams) ([]Match, error) {
 	var result []Match
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
 		return []Match{}, err
 	}
-	var limitInt int
-	var skipInt int
-	//default limit is 100
-	limitInt = 100
-	skipInt = 0
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
-	if limit != "" {
-		limitInt, err = strconv.Atoi(limit)
-		if err != nil {
-			return []Match{}, err
-		}
-	}
-
-	if skip != "" {
-		skipInt, err = strconv.Atoi(skip)
-		if err != nil {
-			return []Match{}, err
-		}
-	}
 
 	// Mapping to db format
 	switch status {
@@ -129,66 +109,45 @@ func (mongo *Mongodb) GetMatches(limit, skip, status string, fields []string) ([
 		status = "all"
 	}
 
-	if len(fields) > 0 {
-
-	}
-
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
 	if status != "all" {
-		err = collection.Find(bson.M{"status": status}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&result)
+		err = collection.Find(bson.M{"status": status}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
 		if err != nil {
 			return []Match{}, err
 		}
 	} else {
 		var openMatches []Match
-		err = collection.Find(bson.M{"status": "Upcoming"}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&openMatches)
+		err = collection.Find(bson.M{"status": "Upcoming"}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&openMatches)
 		if err != nil {
 			return []Match{}, err
 		}
 
 		var liveMatches []Match
-		err = collection.Find(bson.M{"status": "Live"}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&liveMatches)
+		err = collection.Find(bson.M{"status": "Live"}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&liveMatches)
 		if err != nil {
 			return []Match{}, err
 		}
 
 		var closedMatches []Match
-		err = collection.Find(bson.M{"status": "Settled"}).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&closedMatches)
+		err = collection.Find(bson.M{"status": "Settled"}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&closedMatches)
 		if err != nil {
 			return []Match{}, err
 		}
 		result = append(closedMatches, openMatches...)
 		result = append(result, liveMatches...)
 	}
+	result = filterGame(result, apiParams.Game)
 	return result, nil
 }
 
-func (mongo *Mongodb) GetTeamF10kMatches(teamName, limit, skip string, fields []string) ([]Match, error) {
+func (mongo *Mongodb) GetTeamF10kMatches(teamName string, apiParams APIParams) ([]Match, error) {
 	var result []Match
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
 		return []Match{}, err
 	}
-	var limitInt int
-	var skipInt int
-	//default limit is 100
-	limitInt = 100
-	skipInt = 0
-
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
-	if limit != "" {
-		limitInt, err = strconv.Atoi(limit)
-		if err != nil {
-			return []Match{}, err
-		}
-	}
-	if skip != "" {
-		skipInt, err = strconv.Atoi(skip)
-		if err != nil {
-			return []Match{}, err
-		}
-	}
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
 	regexName := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamName + "\\b", Options: "i"}}
@@ -205,11 +164,11 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName, limit, skip string, fields []
 			bson.M{"mode_name": regex10kills},
 			bson.M{"status": "Settled"},
 		}},
-	).Select(selectFields(fields...)).Skip(skipInt).Limit(limitInt).Sort("-time").All(&result)
+	).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
 
 	if err != nil {
 		return []Match{}, err
 	}
-
+	result = filterGame(result, apiParams.Game)
 	return result, nil
 }

@@ -6,6 +6,15 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+type APIParams struct {
+	Limit    int
+	Skip     int
+	Fields   []string
+	TimeFrom *time.Time
+	TimeTo   *time.Time
+	Game     string
+}
+
 type Match struct {
 	Id             bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	TeamAID        string        `json:"teama_id,omitempty" bson:"teama_id,omitempty"`
