@@ -34,6 +34,10 @@ func (a *App) RunPingHeroku() error {
 	if err != nil {
 		return err
 	}
+	_, err := http.Get("http://f10k.herokuapp.com")
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
