@@ -7,7 +7,7 @@ import (
 	"dotastats"
 )
 
-func (a *App) RunSeleniumHandler() HandlerWithError {
+func (a *App) GetTeamMatchesHandler() HandlerWithError {
 	return func(w http.ResponseWriter, req *http.Request) error {
 
 		params := GetParamsObj(req)
@@ -36,7 +36,6 @@ func (a *App) GetTeamF10kMatchesHandler() HandlerWithError {
 	return func(w http.ResponseWriter, req *http.Request) error {
 
 		params := GetParamsObj(req)
-		queryValues := req.URL.Query()
 		teamName := params.ByName("name")
 		apiParams, err := BuildAPIParams(req)
 		if err != nil {
@@ -63,7 +62,6 @@ func (a *App) GetF10kResultHandler() HandlerWithError {
 	return func(w http.ResponseWriter, req *http.Request) error {
 
 		params := GetParamsObj(req)
-		queryValues := req.URL.Query()
 		teamName := params.ByName("name")
 		apiParams, err := BuildAPIParams(req)
 		if err != nil {

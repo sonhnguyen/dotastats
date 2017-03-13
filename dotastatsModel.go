@@ -10,8 +10,8 @@ type APIParams struct {
 	Limit    int
 	Skip     int
 	Fields   []string
-	TimeFrom *time.Time
-	TimeTo   *time.Time
+	TimeFrom time.Time
+	TimeTo   time.Time
 	Game     string
 }
 

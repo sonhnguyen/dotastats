@@ -29,7 +29,7 @@ func BuildAPIParams(req *http.Request) (dotastats.APIParams, error) {
 		if err != nil {
 			return dotastats.APIParams{}, newAPIError(300, "error when process skip info %s", err)
 		}
-		apiParams.Skip = limitInt
+		apiParams.Skip = skipInt
 	}
 
 	if value := queryValues.Get("fields"); value != "" {
