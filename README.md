@@ -41,26 +41,22 @@ A F10k report:
 }
 ```
 
-- GET /team/:name?limit=10 (default no limit): Return matches of a team, sorted by most recent
-    - URL params:
-        - Limit (default 100)
-        - Skip (default 0)
-        - Fields (default show all fields), Specify fields to returns, format as array of string (&fields=teama,teama_id,ratioa,...)
+Important: Common API Params for all apis endpoints:
+- limit: default 100
+- skip: default 0
+- fields: Format split by comma (,), return selected fields only
+- time_from: time from, default 24/11/1994, format: ddmmyyyy (24111994)
+- time_to: time to, default current date, format: ddmmyyyy (14032017)
+- game: query on selected game only (current: dota, csgo, basketball, snooker, football)
+The above params is default to be available on all api endpoints. Usage: `?limit=100&skip=5&fields=handicap,ratioa,ratiob&time_from=14032017&time_to=15032017&game=dota`
 
-- GET /team/:name/f10k?limit=10 (default no limit): Return f10k matches of a team, sorted by most recent
-    - URL params:
-        - Limit (default 100)
-        - Skip (default 0)
-        - Fields (default show all fields), Specify fields to returns, format as array of string (&fields=teama,teama_id,ratioa,...)
+- GET /team/:name
+    - Return matches of a team, sorted by most recent
+
+- GET /team/:name/f10k
+    - Return f10k matches of a team, sorted by most recent
         
-- GET /f10k/:name?limit=10 (default no limit): Return F10k report of a team.
-    - URL params:
-        - Limit (default 100)
-        - Skip (default 0)
+- GET /f10k/:name
+    - Return F10k report of a team.
 
 - GET /match
-    - URL params:
-        - Limit (default 100)
-        - Skip (default 0)
-        - Status (default all), could be `open`, `closed` or `live`
-        - Fields (default show all fields), Specify fields to returns, format as array of string (&fields=teama,teama_id,ratioa,...)
