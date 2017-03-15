@@ -129,6 +129,7 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 		matchFinal.TournamentLogo = LogoURL + match.Tournament.Logo
 		matchFinal.LogoA = LogoURL + match.Team.Left.Logo
 		matchFinal.LogoB = LogoURL + match.Team.Right.Logo
+		matchFinal.SeriesID = match.SeriesID
 		seriesParam := VPGameAPIParams{TID: match.SeriesID}
 		respSeries, err := VPGameGet(SeriesAPI, seriesParam)
 		if err != nil {
