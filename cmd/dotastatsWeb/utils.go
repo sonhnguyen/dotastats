@@ -61,7 +61,7 @@ func BuildAPIParams(req *http.Request) (dotastats.APIParams, error) {
 	}
 
 	dateFormat := "02012006"
-	apiParams.TimeTo = time.Now()
+	apiParams.TimeTo = time.Now().AddDate(0, 0, 2)
 	apiParams.TimeFrom = time.Date(1994, 11, 24, 0, 0, 0, 0, time.UTC)
 	if value := queryValues.Get("time_from"); value != "" {
 		t, err := time.Parse(dateFormat, value)
