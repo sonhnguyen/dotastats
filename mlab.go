@@ -154,6 +154,27 @@ func (mongo *Mongodb) GetMatches(status string, apiParams APIParams) ([]Match, e
 	return result, nil
 }
 
+func (mongo *Mongodb) GetMatchByID(matchID string) (Match, error) {
+	var result Match
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return Match{}, err
+	}
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+
+	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
+	if bson.IsObjectIdHex(matchID) {
+		err = collection.FindId(bson.ObjectIdHex(matchID)).One(&result)
+		if err != nil {
+			return Match{}, err
+		}
+	} else {
+		return Match{}, fmt.Errorf("Invalid input in ID %s", matchID)
+	}
+	return result, nil
+}
+
 func (mongo *Mongodb) GetTeamF10kMatches(teamName string, apiParams APIParams) ([]Match, error) {
 	var result []Match
 	sess, err := mgo.Dial(mongo.URI)

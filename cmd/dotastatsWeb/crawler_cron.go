@@ -42,15 +42,15 @@ func (a *App) RunPingHeroku() error {
 }
 
 func (a *App) RunCrawlerAndSave() error {
+	err := a.RunPingHeroku()
+	if err != nil {
+		return err
+	}
 	result, err := a.RunCrawler()
 	if err != nil {
 		return err
 	}
 	err = a.mongodb.SaveMatches(result)
-	if err != nil {
-		return err
-	}
-	err = a.RunPingHeroku()
 	if err != nil {
 		return err
 	}

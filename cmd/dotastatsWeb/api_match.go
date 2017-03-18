@@ -31,3 +31,23 @@ func (a *App) GetMatchesHandler() HandlerWithError {
 		return nil
 	}
 }
+
+func (a *App) GetMatchByIDHandler() HandlerWithError {
+	return func(w http.ResponseWriter, req *http.Request) error {
+
+		params := GetParamsObj(req)
+		matchID := params.ByName("id")
+		result, err := dotastats.GetMatchByID(matchID, a.mongodb)
+		if err != nil {
+			a.logr.Log("error when return json %s", err)
+			return newAPIError(500, "error when return json %s", err)
+		}
+
+		err = json.NewEncoder(w).Encode(result)
+		if err != nil {
+			a.logr.Log("error when return json %s", err)
+			return newAPIError(500, "error when return json %s", err)
+		}
+		return nil
+	}
+}
