@@ -6,7 +6,7 @@ import (
 )
 
 func (a *App) RunCrawler() ([]dotastats.Match, error) {
-	var vpParams = dotastats.VPGameAPIParams{Page: "1", Status: "close", Limit: 300}
+	var vpParams = dotastats.VPGameAPIParams{Page: "1", Status: "close", Limit: "200"}
 	closedMatches, err := dotastats.RunCrawlerVpgame(vpParams)
 	if err != nil {
 		return []dotastats.Match{}, err
