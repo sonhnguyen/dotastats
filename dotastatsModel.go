@@ -15,6 +15,11 @@ type APIParams struct {
 	Game     string
 }
 
+type Series struct {
+	SeriesID string  `json:"series_id,omitempty"`
+	Matches  []Match `json:"matches,omitempty"`
+}
+
 type Match struct {
 	Id             bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	TeamAID        string        `json:"teama_id,omitempty" bson:"teama_id,omitempty"`

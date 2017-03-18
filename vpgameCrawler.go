@@ -100,6 +100,8 @@ func processStatus(status string) string {
 		return "Live"
 	} else if status == "settled" {
 		return "Settled"
+	} else if status == "canceled" {
+		return "Canceled"
 	}
 	return "Upcoming"
 }

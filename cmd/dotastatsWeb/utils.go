@@ -12,6 +12,29 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+func FindSeriesIDExists(seriesID string, series []dotastats.Series) int {
+	for index, value := range series {
+		if seriesID == value.SeriesID {
+			return index
+		}
+	}
+	return -1
+}
+
+func ConvertMatchesToSeries(matches []dotastats.Match) []dotastats.Series {
+	var result []dotastats.Series
+
+	for _, value := range matches {
+		if indexSeries := FindSeriesIDExists(value.SeriesID, result); indexSeries == -1 {
+			newSeries := dotastats.Series{Matches: []dotastats.Match{value}, SeriesID: value.SeriesID}
+			result = append(result, newSeries)
+		} else {
+			result[indexSeries].Matches = append(result[indexSeries].Matches, value)
+		}
+	}
+	return result
+}
+
 // Build all common params of an API endpoint.
 func BuildAPIParams(req *http.Request) (dotastats.APIParams, error) {
 	var apiParams dotastats.APIParams

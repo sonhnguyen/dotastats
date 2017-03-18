@@ -8,6 +8,7 @@ import (
 	"dotastats"
 )
 
+// params is open/ close/ start
 func (a *App) GetCustomCrawlHandler() HandlerWithError {
 	return func(w http.ResponseWriter, req *http.Request) error {
 		queryValues := req.URL.Query()

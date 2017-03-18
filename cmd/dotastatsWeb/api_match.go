@@ -22,8 +22,8 @@ func (a *App) GetMatchesHandler() HandlerWithError {
 			a.logr.Log("error when return json %s", err)
 			return newAPIError(500, "error when return json %s", err)
 		}
-
-		err = json.NewEncoder(w).Encode(result)
+		seriesList := ConvertMatchesToSeries(result)
+		err = json.NewEncoder(w).Encode(seriesList)
 		if err != nil {
 			a.logr.Log("error when return json %s", err)
 			return newAPIError(500, "error when return json %s", err)
