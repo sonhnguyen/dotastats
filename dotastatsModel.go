@@ -46,6 +46,7 @@ type Match struct {
 	ScoreA         float64    `json:"scorea,omitempty" bson:"scorea"`
 	ScoreB         float64    `json:"scoreb,omitempty" bson:"scoreb"`
 	Note           string     `json:"note,omitempty" bson:"note,omitempty"`
+	SeriesID       string     `json:"series_id,omitempty" bson:"series_id,omitempty"`
 }
 
 type F10kHistory struct {
