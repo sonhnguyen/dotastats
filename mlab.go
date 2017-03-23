@@ -146,8 +146,8 @@ func (mongo *Mongodb) GetMatches(status string, apiParams APIParams) ([]Match, e
 		if err != nil {
 			return []Match{}, err
 		}
-		result = append(closedMatches, openMatches...)
-		result = append(result, liveMatches...)
+		result = append(liveMatches, openMatches...)
+		result = append(result, closedMatches...)
 	}
 	result = filterGame(result, apiParams.Game)
 	result = filterTime(result, apiParams.TimeFrom, apiParams.TimeTo)
