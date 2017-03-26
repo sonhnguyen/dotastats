@@ -56,7 +56,41 @@ func (a *App) RunPingHeroku() error {
 }
 
 func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
+	c := dotastats.CreateOAuth()
+	twitterDotastats := viper.GetString("twitter.twitterDotastats")
 
+	for team, _ := range teams {
+		err := dotastats.RemoveListFromTwitttwitterDotastatser(c, dotastats.TwitterRemoveListRequest{
+			ScreenName: twitterDotastats,
+			Slug:       team.Slug,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		err := dotastats.CreateListTwitter(c, dotastats.TwitterCreateListRequest{
+			Name:        team.Slug,
+			Mode:        "public",
+			Description: team.Game + " - " + team.Region + " - " + team.Name,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		for player, _ := range team.Players {
+			err := dotastas.AddMemberToListTwitter(c, dotastats.TwitterAddToListRequest{
+				OwnerScreenName: twitterDotastats,
+				Slug:            team.Slug,
+				ScreenName:      player.FindTwitterID(),
+			})
+
+			if err != nil {
+				return err
+			}
+		}
+	}
 }
 
 func (a *App) RunCrawlerTeamInfoAndSave() error {

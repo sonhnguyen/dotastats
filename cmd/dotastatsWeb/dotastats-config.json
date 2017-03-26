@@ -8,7 +8,8 @@
 		"consumerKey":"2aECd8PRfbysjp6lHPO8nzG19",
 		"consumerSecret":"x0ix2EIlSj15K381vAJ7gGBat3WJZUwFQtjMgflyE8K8p4LR4u",
 		"token":"845974643328532480-KdccExzRuTTipURt3vjtNcZntEPjlq9",
-		"tokenSecret":"awnIOMaPZla4M7Owc1x7BkC4ftfyUB7wDVWiPupSmbhch"
+		"tokenSecret":"awnIOMaPZla4M7Owc1x7BkC4ftfyUB7wDVWiPupSmbhch",
+		"twitterID":"v36372"
 	},
 	"collection-team": "dev-team"
 }

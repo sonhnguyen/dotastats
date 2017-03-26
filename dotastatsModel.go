@@ -1,6 +1,7 @@
 package dotastats
 
 import (
+	"strings"
 	"time"
 
 	"gopkg.in/mgo.v2/bson"
@@ -27,6 +28,16 @@ type PlayerInfo struct {
 	Detail    string   `json:"detail,omitempty" bson:"detail,omitempty"`
 	Links     []string `json:"links,omitempty" bson:"links,omitempty"`
 	URL       string   `json:"url,omitempty" bson:"url,omitempty"`
+}
+
+func (p *PlayerInfo) FindTwitterID() string {
+	for link, _ := range p.Links {
+		if strings.Index(link, "twitter.com/") != -1 {
+			return link[i+12:]
+		}
+	}
+
+	return ""
 }
 
 type TeamInfo struct {
@@ -99,21 +110,7 @@ type TwitterAddToListRequest struct {
 	ScreenName      string `json:"screen_name"`
 }
 
-type TwitterRemoveFromListRequest struct {
-	OwnerScreenName string `json:"owner_screen_name"`
-	Slug            string `json:"slug"`
-	ScreenName      string `json:"screen_name"`
-}
-
-type TwitterGetFromListRequest struct {
-	OwnerScreenName string `json:"owner_screen_name"`
-	Slug            string `json:"slug"`
-}
-
-type TwitterGetFromListResponse struct {
-	Users []TwitterUser `json:"users"`
-}
-
-type TwitterUser struct {
+type TwitterRemoveListRequest struct {
 	ScreenName string `json:"screen_name"`
+	Slug       string `json:"slug"`
 }
