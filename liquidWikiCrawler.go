@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/PuerkitoBio/goquery"
+	slugify "github.com/metal3d/go-slugify"
 )
 
 const (
@@ -31,6 +32,7 @@ func runCrawlerLiquidDota() ([]TeamInfo, error) {
 				if exists {
 					team.URL = LiquidBaseURL + url
 					team.Name = teamSelect.Find("span.team-template-text a").Text()
+					team.NameSlug = slugify.Marshal(team.Name)
 					result = append(result, team)
 				}
 			})
@@ -90,6 +92,7 @@ func runCrawlerLiquidCSGO() ([]TeamInfo, error) {
 				if exists {
 					team.URL = LiquidBaseURL + url
 					team.Name = teamSelect.Find("span.team-template-text a").Text()
+					team.NameSlug = slugify.Marshal(team.Name)
 					team.Game = "csgo"
 					result = append(result, team)
 				}
