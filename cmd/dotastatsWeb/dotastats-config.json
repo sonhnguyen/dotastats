@@ -3,5 +3,11 @@
 	"port": "3000",
 	"uri": "mongodb://heroku_hfrclnz8:nksn833rbi80dns0guvfbraji9@ds019976.mlab.com:19976/heroku_hfrclnz8",
 	"dbname": "heroku_hfrclnz8",
-	"collection": "dev"
+	"collection": "dev",
+	"twitter":{
+		"consumerKey":"2aECd8PRfbysjp6lHPO8nzG19",
+		"consumerSecret":"x0ix2EIlSj15K381vAJ7gGBat3WJZUwFQtjMgflyE8K8p4LR4u",
+		"token":"845974643328532480-KdccExzRuTTipURt3vjtNcZntEPjlq9",
+		"tokenSecret":"awnIOMaPZla4M7Owc1x7BkC4ftfyUB7wDVWiPupSmbhch"
+	}
 }

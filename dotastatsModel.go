@@ -86,3 +86,34 @@ type F10kResult struct {
 	AverageOdds  float64 `json:"avgodds"`
 	Matches      []Match `json:"matches"`
 }
+
+type TwitterCreateListRequest struct {
+	Name        string `json:"name"`
+	Mode        string `json:"mode"`
+	Description string `json:"description"`
+}
+
+type TwitterAddToListRequest struct {
+	OwnerScreenName string `json:"owner_screen_name"`
+	Slug            string `json:"slug"`
+	ScreenName      string `json:"screen_name"`
+}
+
+type TwitterRemoveFromListRequest struct {
+	OwnerScreenName string `json:"owner_screen_name"`
+	Slug            string `json:"slug"`
+	ScreenName      string `json:"screen_name"`
+}
+
+type TwitterGetFromListRequest struct {
+	OwnerScreenName string `json:"owner_screen_name"`
+	Slug            string `json:"slug"`
+}
+
+type TwitterGetFromListResponse struct {
+	Users []TwitterUser `json:"users"`
+}
+
+type TwitterUser struct {
+	ScreenName string `json:"screen_name"`
+}
