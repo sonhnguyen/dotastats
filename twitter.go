@@ -27,15 +27,15 @@ func CreateOAuth() (*http.Client, error) {
 
 	if viper.GetBool("isDevelopment") {
 		twitterCred := viper.GetStringMapString("twitter")
-		consumerKey = twitterCred["ConsumerKey"]
-		consumerSecret = twitterCred["ConsumerSecret"]
-		accessToken = twitterCred["AccessToken"]
-		accessTokenSecret = twitterCred["AccessTokenSecret"]
+		consumerKey = twitterCred["consumerKey"]
+		consumerSecret = twitterCred["consumerSecret"]
+		accessToken = twitterCred["token"]
+		accessTokenSecret = twitterCred["tokenSecret"]
 	} else {
-		consumerKey = os.Getenv("ConsumerKey")
-		consumerSecret = os.Getenv("ConsumerSecret")
-		accessToken = os.Getenv("AccessToken")
-		accessTokenSecret = os.Getenv("AccessTokenSecret")
+		consumerKey = os.Getenv("consumerKey")
+		consumerSecret = os.Getenv("consumerSecret")
+		accessToken = os.Getenv("token")
+		accessTokenSecret = os.Getenv("tokenSecret")
 	}
 
 	c := oauth.NewConsumer(

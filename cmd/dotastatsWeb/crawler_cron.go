@@ -3,6 +3,7 @@ package main
 import (
 	"dotastats"
 	"net/http"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -62,11 +63,16 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 	if err != nil {
 		return err
 	}
-	twitterDotastats := viper.GetString("twitter.twitterDotastats")
+	var twitterID string
+	if viper.GetBool("isDevelopment") {
+		twitterID = viper.GetString("twitter.twitterID")
+	} else {
+		twitterID = os.Getenv("twitterID")
+	}
 
 	for _, team := range teams {
 		err := dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			ScreenName: twitterDotastats,
+			ScreenName: twitterID,
 			Slug:       team.NameSlug,
 		})
 
@@ -86,7 +92,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 
 		for _, player := range team.Players {
 			err := dotastats.AddMemberToListTwitter(c, dotastats.TwitterAddToListRequest{
-				OwnerScreenName: twitterDotastats,
+				OwnerScreenName: twitterID,
 				Slug:            team.NameSlug,
 				ScreenName:      player.FindTwitterID(),
 			})
