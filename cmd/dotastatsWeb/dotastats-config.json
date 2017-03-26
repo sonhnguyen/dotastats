@@ -3,5 +3,6 @@
 	"port": "3000",
 	"uri": "mongodb://heroku_hfrclnz8:nksn833rbi80dns0guvfbraji9@ds019976.mlab.com:19976/heroku_hfrclnz8",
 	"dbname": "heroku_hfrclnz8",
-	"collection": "dev"
+	"collection": "dev",
+	"collection-team": "dev-team"
 }

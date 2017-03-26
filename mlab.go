@@ -9,9 +9,10 @@ import (
 )
 
 type Mongodb struct {
-	URI        string
-	Dbname     string
-	Collection string
+	URI            string
+	Dbname         string
+	Collection     string
+	CollectionTeam string
 }
 
 func selectFields(q ...string) (r bson.M) {
@@ -59,7 +60,7 @@ func (mongo *Mongodb) SaveTeamInfo(teamList []TeamInfo) error {
 
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
-	collection := sess.DB(mongo.Dbname).C("team")
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionTeam)
 	fmt.Println("saving teamInfo")
 
 	for _, team := range teamList {
