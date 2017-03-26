@@ -29,6 +29,20 @@ func (a *App) RunCrawler() ([]dotastats.Match, error) {
 	return result, nil
 }
 
+func (a *App) RunCrawlerTeamInfo() ([]dotastats.TeamInfo, error) {
+	dotaTeams, err := dotastats.RunCrawlerLiquidTeam("dota")
+	if err != nil {
+		return []dotastats.TeamInfo{}, err
+	}
+	csgoTeams, err := dotastats.RunCrawlerLiquidTeam("csgo")
+	if err != nil {
+		return []dotastats.TeamInfo{}, err
+	}
+
+	result := append(csgoTeams, dotaTeams...)
+	return result, nil
+}
+
 func (a *App) RunPingHeroku() error {
 	_, err := http.Get("http://dotabetstats.herokuapp.com")
 	if err != nil {
@@ -38,6 +52,19 @@ func (a *App) RunPingHeroku() error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (a *App) RunCrawlerTeamInfoAndSave() error {
+	result, err := a.RunCrawlerTeamInfo()
+	if err != nil {
+		return err
+	}
+	err = a.mongodb.SaveTeamInfo(result)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

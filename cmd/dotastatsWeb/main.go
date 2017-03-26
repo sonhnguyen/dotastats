@@ -99,10 +99,20 @@ func main() {
 	r.Get("/matches", common.Then(a.Wrap(a.GetMatchesListHandler())))
 	r.Get("/matches/:id", common.Then(a.Wrap(a.GetMatchByIDHandler())))
 	r.Get("/crawl", common.Then(a.Wrap(a.GetCustomCrawlHandler())))
+	r.Get("/crawlTeamInfo", common.Then(a.Wrap(a.GetCrawlTeamInfoHandler())))
 	handler := cors.Default().Handler(r)
 	c := cron.New()
 	_, err = c.AddFunc("@every 5m", func() {
 		err = a.RunCrawlerAndSave()
+		if err != nil {
+			log.Println("error running crawler %s", err)
+		}
+	})
+	if err != nil {
+		log.Println("error on cron job %s", err)
+	}
+	_, err = c.AddFunc("@weekly", func() {
+		a.RunCrawlerTeamInfoAndSave()
 		if err != nil {
 			log.Println("error running crawler %s", err)
 		}

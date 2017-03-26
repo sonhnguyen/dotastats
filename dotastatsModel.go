@@ -20,6 +20,27 @@ type Series struct {
 	Matches  []Match `json:"matches,omitempty"`
 }
 
+type PlayerInfo struct {
+	FullName  string   `json:"fullname,omitempty" bson:"fullname,omitempty"`
+	GameName  string   `json:"ingame_name,omitempty" bson:"ingame_name,omitempty"`
+	Biography string   `json:"biography,omitempty" bson:"biography,omitempty"`
+	Detail    string   `json:"detail,omitempty" bson:"detail,omitempty"`
+	Links     []string `json:"links,omitempty" bson:"links,omitempty"`
+	URL       string   `json:"url,omitempty" bson:"url,omitempty"`
+}
+
+type TeamInfo struct {
+	Id       bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	Name     string        `json:"name,omitempty" bson:"name,omitempty"`
+	Game     string        `json:"game,omitempty" bson:"game,omitempty"`
+	Region   string        `json:"region,omitempty" bson:"region,omitempty"`
+	Players  []PlayerInfo  `json:"players,omitempty" bson:"players,omitempty"`
+	Overview string        `json:"overview,omitempty" bson:"overview,omitempty"`
+	History  string        `json:"history,omitempty" bson:"history,omitempty"`
+	Logo     string        `json:"logo,omitempty" bson:"logo,omitempty"`
+	URL      string        `json:"url,omitempty" bson:"url,omitempty"`
+}
+
 type Match struct {
 	Id             bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	TeamAID        string        `json:"teama_id,omitempty" bson:"teama_id,omitempty"`
@@ -44,12 +65,12 @@ type Match struct {
 	ModeDesc       string     `json:"mode_desc,omitempty" bson:"mode_desc,omitempty"`
 	HandicapAmount string     `json:"handicap,omitempty" bson:"handicap,omitempty"`
 	HandicapTeam   string     `json:"handicap_team,omitempty" bson:"handicap_team,omitempty"`
-	RatioA         float64    `json:"ratioa,omitempty" bson:"ratioa"`
-	RatioB         float64    `json:"ratiob,omitempty" bson:"ratiob"`
+	RatioA         float64    `json:"ratioa" bson:"ratioa"`
+	RatioB         float64    `json:"ratiob" bson:"ratiob"`
 	Winner         string     `json:"winner,omitempty" bson:"winner,omitempty"`
 	Status         string     `json:"status,omitempty" bson:"status,omitempty"`
-	ScoreA         float64    `json:"scorea,omitempty" bson:"scorea"`
-	ScoreB         float64    `json:"scoreb,omitempty" bson:"scoreb"`
+	ScoreA         float64    `json:"scorea" bson:"scorea"`
+	ScoreB         float64    `json:"scoreb" bson:"scoreb"`
 	Note           string     `json:"note,omitempty" bson:"note,omitempty"`
 	SeriesID       string     `json:"series_id,omitempty" bson:"series_id,omitempty"`
 }

@@ -2,11 +2,23 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
 	"dotastats"
 )
+
+func (a *App) GetCrawlTeamInfoHandler() HandlerWithError {
+	return func(w http.ResponseWriter, req *http.Request) error {
+		err := a.RunCrawlerTeamInfoAndSave()
+		if err != nil {
+			log.Println("error running crawler %s", err)
+		}
+
+		return nil
+	}
+}
 
 // params is open/ close/ start
 func (a *App) GetCustomCrawlHandler() HandlerWithError {

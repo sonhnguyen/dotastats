@@ -50,6 +50,31 @@ func filterTime(matches []Match, timeFrom, timeTo time.Time) []Match {
 	}
 	return result
 }
+
+func (mongo *Mongodb) SaveTeamInfo(teamList []TeamInfo) error {
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB(mongo.Dbname).C("team")
+	fmt.Println("saving teamInfo")
+
+	for _, team := range teamList {
+
+		upsertdata := bson.M{"$set": team}
+		condition := bson.M{"url": team.URL}
+		info, err := collection.Upsert(condition, upsertdata)
+		if err != nil {
+			fmt.Errorf("error upserting %s", info, err)
+		}
+	}
+	fmt.Println("done saving %v teams", len(teamList))
+	return nil
+}
+
 func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
