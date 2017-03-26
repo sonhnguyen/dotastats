@@ -112,6 +112,6 @@ type TwitterAddToListRequest struct {
 }
 
 type TwitterRemoveListRequest struct {
-	ScreenName string `json:"screen_name"`
-	Slug       string `json:"slug"`
+	OwnerScreenName string `json:"owner_screen_name"`
+	Slug            string `json:"slug"`
 }

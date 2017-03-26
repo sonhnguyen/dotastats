@@ -99,8 +99,8 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) error {
 	response, err := client.PostForm(RemoveListURL,
 		url.Values{
-			"screen_name": []string{req.ScreenName},
-			"slug":        []string{req.Slug},
+			"owner_screen_name": []string{req.OwnerScreenName},
+			"slug":              []string{req.Slug},
 		})
 
 	if err != nil {
