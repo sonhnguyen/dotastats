@@ -17,11 +17,12 @@ import (
 )
 
 type dotastatsConfig struct {
-	Port          string
-	URI           string
-	Dbname        string
-	Collection    string
-	IsDevelopment string
+	Port           string
+	URI            string
+	Dbname         string
+	Collection     string
+	CollectionTeam string
+	IsDevelopment  string
 }
 
 // App in main app
@@ -45,23 +46,25 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 	var config dotastatsConfig
 	if viper.GetBool("isDevelopment") {
 		config = dotastatsConfig{
-			IsDevelopment: viper.GetString("isDevelopment"),
-			Port:          viper.GetString("port"),
-			URI:           viper.GetString("uri"),
-			Dbname:        viper.GetString("dbname"),
-			Collection:    viper.GetString("collection"),
+			IsDevelopment:  viper.GetString("isDevelopment"),
+			Port:           viper.GetString("port"),
+			URI:            viper.GetString("uri"),
+			Dbname:         viper.GetString("dbname"),
+			Collection:     viper.GetString("collection"),
+			CollectionTeam: viper.GetString("collection-team"),
 		}
 	} else {
 		config = dotastatsConfig{
-			IsDevelopment: os.Getenv("isDevelopment"),
-			Port:          os.Getenv("PORT"),
-			URI:           os.Getenv("uri"),
-			Dbname:        os.Getenv("dbname"),
-			Collection:    os.Getenv("collection"),
+			IsDevelopment:  os.Getenv("isDevelopment"),
+			Port:           os.Getenv("PORT"),
+			URI:            os.Getenv("uri"),
+			Dbname:         os.Getenv("dbname"),
+			Collection:     os.Getenv("collection"),
+			CollectionTeam: os.Getenv("collection-team"),
 		}
 	}
 
-	mongo := dotastats.Mongodb{URI: config.URI, Dbname: config.Dbname, Collection: config.Collection}
+	mongo := dotastats.Mongodb{URI: config.URI, Dbname: config.Dbname, Collection: config.Collection, CollectionTeam: config.CollectionTeam}
 
 	gp := globalPresenter{
 		SiteName:    "dotastats",

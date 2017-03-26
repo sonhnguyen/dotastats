@@ -55,11 +55,21 @@ func (a *App) RunPingHeroku() error {
 	return nil
 }
 
+func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
+
+}
+
 func (a *App) RunCrawlerTeamInfoAndSave() error {
 	result, err := a.RunCrawlerTeamInfo()
 	if err != nil {
 		return err
 	}
+
+	err = a.SaveTeamListToTwitter(result)
+	if err != nil {
+		return err
+	}
+
 	err = a.mongodb.SaveTeamInfo(result)
 	if err != nil {
 		return err
