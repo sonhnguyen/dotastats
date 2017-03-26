@@ -94,7 +94,6 @@ func main() {
 	a := SetupApp(r, logr, "")
 	// Add CORS support (Cross Origin Resource Sharing)
 	common := alice.New(context.ClearHandler, a.loggingHandler, a.recoverHandler)
-	r.Get("/f10k/:name", common.Then(a.Wrap(a.GetF10kResultHandler())))
 	r.Get("/team/:name", common.Then(a.Wrap(a.GetTeamMatchesHandler())))
 	r.Get("/team/:name/f10k", common.Then(a.Wrap(a.GetTeamF10kMatchesHandler())))
 	r.Get("/matches", common.Then(a.Wrap(a.GetMatchesListHandler())))
