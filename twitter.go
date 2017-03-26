@@ -14,7 +14,7 @@ import (
 const (
 	CreateListURL     = "https://api.twitter.com/1.1/lists/create.json"
 	AddMemberURL      = "https://api.twitter.com/1.1/lists/members/create.json"
-	RemoveListURL     = "https://api.twitter.com/1.1/lists/ownerships.json"
+	RemoveListURL     = "https://api.twitter.com/1.1/lists/destroy.json"
 	RequestTokenUrl   = "https://api.twitter.com/oauth/request_token"
 	AuthorizeTokenUrl = "https://api.twitter.com/oauth/authorize"
 	AccessTokenUrl    = "https://api.twitter.com/oauth/access_token"
