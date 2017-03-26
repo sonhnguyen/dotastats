@@ -43,6 +43,7 @@ func (p *PlayerInfo) FindTwitterID() string {
 type TeamInfo struct {
 	Id       bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
 	Name     string        `json:"name,omitempty" bson:"name,omitempty"`
+	NameSlug string        `json:"slug,omitempty" bson:"slug,omitempty"`
 	Game     string        `json:"game,omitempty" bson:"game,omitempty"`
 	Region   string        `json:"region,omitempty" bson:"region,omitempty"`
 	Players  []PlayerInfo  `json:"players,omitempty" bson:"players,omitempty"`
