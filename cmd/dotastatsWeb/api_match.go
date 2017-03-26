@@ -7,7 +7,7 @@ import (
 	"dotastats"
 )
 
-func (a *App) GetMatchesHandler() HandlerWithError {
+func (a *App) GetMatchesListHandler() HandlerWithError {
 	return func(w http.ResponseWriter, req *http.Request) error {
 
 		queryValues := req.URL.Query()
@@ -17,7 +17,7 @@ func (a *App) GetMatchesHandler() HandlerWithError {
 			a.logr.Log("error when  building params %s", err)
 			return newAPIError(300, "error when building params %s", err)
 		}
-		result, err := dotastats.GetMatches(status, apiParams, a.mongodb)
+		result, err := dotastats.GetMatchesList(status, apiParams, a.mongodb)
 		if err != nil {
 			a.logr.Log("error when return json %s", err)
 			return newAPIError(500, "error when return json %s", err)

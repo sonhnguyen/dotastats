@@ -1,19 +1,9 @@
 package dotastats
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 )
-
-func GetTeamMatches(teamName string, apiParams APIParams, mongodb Mongodb) ([]Match, error) {
-	result, err := mongodb.GetTeamMatches(teamName, apiParams)
-	if err != nil {
-		return []Match{}, err
-	}
-
-	return result, nil
-}
 
 func GetTeamF10kMatches(teamName string, apiParams APIParams, mongodb Mongodb) ([]Match, error) {
 	result, err := mongodb.GetTeamF10kMatches(teamName, apiParams)
@@ -46,7 +36,6 @@ func GetF10kResult(teamName string, apiParams APIParams, mongodb Mongodb) (F10kR
 			match.ScoreB = 1
 		}
 		rp := regexp.MustCompile("(?i)" + "\\b" + teamName + "\\b")
-		fmt.Println("teamname", teamName, strings.ToLower(match.TeamA), strings.ToLower(match.TeamB))
 		if rp.MatchString(match.TeamA) || rp.MatchString(match.TeamAShort) {
 			kill = float64(match.ScoreA)
 			death = float64(match.ScoreB)

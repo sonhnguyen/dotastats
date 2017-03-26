@@ -101,7 +101,7 @@ func (mongo *Mongodb) GetTeamMatches(teamName string, apiParams APIParams) ([]Ma
 	return result, nil
 }
 
-func (mongo *Mongodb) GetMatches(status string, apiParams APIParams) ([]Match, error) {
+func (mongo *Mongodb) GetMatchesList(status string, apiParams APIParams) ([]Match, error) {
 	var result []Match
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {

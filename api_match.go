@@ -1,7 +1,7 @@
 package dotastats
 
-func GetMatches(status string, apiParams APIParams, mongodb Mongodb) ([]Match, error) {
-	result, err := mongodb.GetMatches(status, apiParams)
+func GetMatchesList(status string, apiParams APIParams, mongodb Mongodb) ([]Match, error) {
+	result, err := mongodb.GetMatchesList(status, apiParams)
 	if err != nil {
 		return []Match{}, err
 	}
