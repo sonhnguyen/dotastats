@@ -14,9 +14,7 @@ import (
 const (
 	CreateListURL     = "https://api.twitter.com/1.1/lists/create.json"
 	AddMemberURL      = "https://api.twitter.com/1.1/lists/members/create.json"
-	RemoveMemberURL   = "https://api.twitter.com/1.1/lists/members/destroy_all.json"
-	GetMemberURL      = "https://api.twitter.com/1.1/lists/members.json"
-	GetListURL        = "https://api.twitter.com/1.1/lists/ownerships.json"
+	RemoveListURL     = "https://api.twitter.com/1.1/lists/ownerships.json"
 	RequestTokenUrl   = "https://api.twitter.com/oauth/request_token"
 	AuthorizeTokenUrl = "https://api.twitter.com/oauth/authorize"
 	AccessTokenUrl    = "https://api.twitter.com/oauth/access_token"
@@ -99,7 +97,7 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 }
 
 func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) error {
-	response, err := client.PostForm(GetListURL,
+	response, err := client.PostForm(RemoveListURL,
 		url.Values{
 			"screen_name": []string{req.ScreenName},
 			"slug":        []string{req.Slug},
