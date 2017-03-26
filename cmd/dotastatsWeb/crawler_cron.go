@@ -62,7 +62,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 	if err != nil {
 		return err
 	}
-	twitterDotastats := viper.GetString("twitter.twitterDotastats")
+	twitterDotastats := viper.GetString("twitter.twitterID")
 
 	for _, team := range teams {
 		err := dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
