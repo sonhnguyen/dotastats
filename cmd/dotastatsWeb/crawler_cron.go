@@ -3,6 +3,8 @@ package main
 import (
 	"dotastats"
 	"net/http"
+
+	"github.com/spf13/viper"
 )
 
 func (a *App) RunCrawler() ([]dotastats.Match, error) {
@@ -56,21 +58,24 @@ func (a *App) RunPingHeroku() error {
 }
 
 func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
-	c := dotastats.CreateOAuth()
+	c, err := dotastats.CreateOAuth()
+	if err != nil {
+		return err
+	}
 	twitterDotastats := viper.GetString("twitter.twitterDotastats")
 
-	for team, _ := range teams {
-		err := dotastats.RemoveListFromTwitttwitterDotastatser(c, dotastats.TwitterRemoveListRequest{
+	for _, team := range teams {
+		err := dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
 			ScreenName: twitterDotastats,
-			Slug:       team.Slug,
+			Slug:       team.NameSlug,
 		})
 
 		if err != nil {
 			return err
 		}
 
-		err := dotastats.CreateListTwitter(c, dotastats.TwitterCreateListRequest{
-			Name:        team.Slug,
+		err = dotastats.CreateListTwitter(c, dotastats.TwitterCreateListRequest{
+			Name:        team.NameSlug,
 			Mode:        "public",
 			Description: team.Game + " - " + team.Region + " - " + team.Name,
 		})
@@ -79,10 +84,10 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 			return err
 		}
 
-		for player, _ := range team.Players {
-			err := dotastas.AddMemberToListTwitter(c, dotastats.TwitterAddToListRequest{
+		for _, player := range team.Players {
+			err := dotastats.AddMemberToListTwitter(c, dotastats.TwitterAddToListRequest{
 				OwnerScreenName: twitterDotastats,
-				Slug:            team.Slug,
+				Slug:            team.NameSlug,
 				ScreenName:      player.FindTwitterID(),
 			})
 
@@ -91,6 +96,8 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 			}
 		}
 	}
+
+	return nil
 }
 
 func (a *App) RunCrawlerTeamInfoAndSave() error {

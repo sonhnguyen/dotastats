@@ -31,8 +31,8 @@ type PlayerInfo struct {
 }
 
 func (p *PlayerInfo) FindTwitterID() string {
-	for link, _ := range p.Links {
-		if strings.Index(link, "twitter.com/") != -1 {
+	for _, link := range p.Links {
+		if i := strings.Index(link, "twitter.com/"); i != -1 {
 			return link[i+12:]
 		}
 	}

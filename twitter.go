@@ -2,7 +2,10 @@ package dotastats
 
 import (
 	"fmt"
-	"json"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"os"
 
 	"github.com/mrjones/oauth"
 	"github.com/spf13/viper"
@@ -20,26 +23,24 @@ const (
 )
 
 func CreateOAuth() (*http.Client, error) {
+	var consumerKey, consumerSecret, accessToken, accessTokenSecret string
+
 	if viper.GetBool("isDevelopment") {
 		twitterCred := viper.GetStringMapString("twitter")
-		consumerKey := twitterCred["ConsumerKey"]
-		consumerSecret := twitterCred["ConsumerSecret"]
-		accessToken := twitterCred["AccessToken"]
-		accessTokenSecret := twitterCred["AccessTokenSecret"]
+		consumerKey = twitterCred["ConsumerKey"]
+		consumerSecret = twitterCred["ConsumerSecret"]
+		accessToken = twitterCred["AccessToken"]
+		accessTokenSecret = twitterCred["AccessTokenSecret"]
 	} else {
-		consumerKey := os.Getenv("ConsumerKey")
-		consumerSecret := os.Getenv("ConsumerSecret")
-		accessToken := os.Getenv("AccessToken")
-		accessTokenSecret := os.Getenv("AccessTokenSecret")
-	}
-
-	if !consumerKey || !consumerSecret || !accessToken || !accessTokenSecret {
-		return fmt.Errorf("error on getting twitter credentials")
+		consumerKey = os.Getenv("ConsumerKey")
+		consumerSecret = os.Getenv("ConsumerSecret")
+		accessToken = os.Getenv("AccessToken")
+		accessTokenSecret = os.Getenv("AccessTokenSecret")
 	}
 
 	c := oauth.NewConsumer(
-		*consumerKey,
-		*consumerSecret,
+		consumerKey,
+		consumerSecret,
 		oauth.ServiceProvider{
 			RequestTokenUrl:   RequestTokenUrl,
 			AuthorizeTokenUrl: AuthorizeTokenUrl,
@@ -47,14 +48,14 @@ func CreateOAuth() (*http.Client, error) {
 		})
 
 	t := oauth.AccessToken{
-		Token:  *accessToken,
-		Secret: *accessTokenSecret,
+		Token:  accessToken,
+		Secret: accessTokenSecret,
 	}
 	return c.MakeHttpClient(&t)
 }
 
 func AddMemberToListTwitter(client *http.Client, req TwitterAddToListRequest) error {
-	response, err := client.Post(AddMemberURL,
+	response, err := client.PostForm(AddMemberURL,
 		url.Values{
 			"owner_screen_name": []string{req.OwnerScreenName},
 			"slug":              []string{req.Slug},
@@ -76,7 +77,7 @@ func AddMemberToListTwitter(client *http.Client, req TwitterAddToListRequest) er
 }
 
 func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error {
-	response, err := client.Post(CreateListURL,
+	response, err := client.PostForm(CreateListURL,
 		url.Values{
 			"name":        []string{req.Name},
 			"mode":        []string{req.Mode},
@@ -98,7 +99,7 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 }
 
 func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) error {
-	response, err := client.Post(GetListURL,
+	response, err := client.PostForm(GetListURL,
 		url.Values{
 			"screen_name": []string{req.ScreenName},
 			"slug":        []string{req.Slug},
