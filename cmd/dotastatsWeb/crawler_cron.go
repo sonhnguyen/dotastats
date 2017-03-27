@@ -70,6 +70,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		twitterID = os.Getenv("twitterID")
 	}
 
+	fmt.Println(len(teams))
 	for _, team := range teams {
 		nameSlug := "t-" + team.NameSlug
 		if len(nameSlug) > 10 {
