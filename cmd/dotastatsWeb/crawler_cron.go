@@ -71,7 +71,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 	}
 
 	for _, team := range teams {
-		nameSlug := "T-" + team.NameSlug
+		nameSlug := "t-" + team.NameSlug
 		if len(nameSlug) > 10 {
 			nameSlug = nameSlug[:10]
 		}
