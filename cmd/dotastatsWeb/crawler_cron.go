@@ -78,6 +78,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 			nameSlug = nameSlug[:10]
 		}
 
+		nameSlug = nameSlug[1 : len(nameSlug)-1]
 		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
 			OwnerScreenName: twitterID,
 			Slug:            nameSlug + "1",
