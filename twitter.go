@@ -98,7 +98,7 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 }
 
 func RemoveAllListFromTwitter(client *http.Client, twitterID string) error {
-	response, err := client.PostForm("https://api.twitter.com/1.1/lists/ownerships.json",
+	response, err := client.Get("https://api.twitter.com/1.1/lists/ownerships.json",
 		url.Values{
 			"owner_screen_name": []string{"dotastats_"},
 			"count":             []string{"800"},
