@@ -91,7 +91,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		}
 
 		for _, player := range team.Players {
-			sreenName := player.FindTwitterID()
+			screenName := player.FindTwitterID()
 			if len(screenName) == 0 {
 				continue
 			}
