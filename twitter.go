@@ -1,6 +1,8 @@
 package dotastats
 
 import (
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -62,6 +64,13 @@ func AddMemberToListTwitter(client *http.Client, req TwitterAddToListRequest) er
 		return err
 	}
 
+	bits, err := ioutil.ReadAll(response.Body)
+	if response.StatusCode != 200 {
+		fmt.Printf("error on adding member to twitter list, %s", bits)
+	}
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -77,6 +86,13 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 		return err
 	}
 
+	bits, err := ioutil.ReadAll(response.Body)
+	if response.StatusCode != 200 {
+		fmt.Printf("error on creating twitter list, %s", bits)
+	}
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -91,5 +107,12 @@ func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) er
 		return err
 	}
 
+	bits, err := ioutil.ReadAll(response.Body)
+	if response.StatusCode != 200 || response.StatusCode != 404 {
+		fmt.Printf("error on removing twitter list, %s", bits)
+	}
+	if err != nil {
+		return err
+	}
 	return nil
 }
