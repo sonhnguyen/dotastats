@@ -115,3 +115,11 @@ type TwitterRemoveListRequest struct {
 	OwnerScreenName string `json:"owner_screen_name"`
 	Slug            string `json:"slug"`
 }
+
+type TwitterGetListResponse struct {
+	Lists []TwitterList `json:"lists"`
+}
+
+type TwitterList struct {
+	Slug string `json:"slug"`
+}

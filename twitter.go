@@ -1,6 +1,7 @@
 package dotastats
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -96,6 +97,34 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 	return nil
 }
 
+func RemoveAllListFromTwitter(client *http.Client, twitterID string) error {
+	response, err := client.PostForm("https://api.twitter.com/1.1/lists/ownerships.json",
+		url.Values{
+			"owner_screen_name": []string{"dotastats_"},
+			"count":             []string{"800"},
+		})
+
+	if err != nil {
+		return err
+	}
+
+	bits, err := ioutil.ReadAll(response.Body)
+	if response.StatusCode != 200 {
+		fmt.Printf("error on removing twitter list, %s", bits)
+	}
+	twitterGetListResponse := TwitterGetListResponse{}
+
+	_ = json.Unmarshal(bits, &twitterGetListResponse)
+
+	for _, list := range twitterGetListResponse.Lists {
+		_ = RemoveListFromTwitter(client, TwitterRemoveListRequest{
+			OwnerScreenName: "dotastats_",
+			Slug:            list.Slug,
+		})
+	}
+
+	return nil
+}
 func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) error {
 	response, err := client.PostForm(RemoveListURL,
 		url.Values{

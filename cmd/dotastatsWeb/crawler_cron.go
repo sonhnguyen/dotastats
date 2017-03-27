@@ -2,7 +2,6 @@ package main
 
 import (
 	"dotastats"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -71,60 +70,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		twitterID = os.Getenv("twitterID")
 	}
 
-	fmt.Println(len(teams))
-	for _, team := range teams {
-		nameSlug := "t-" + team.NameSlug
-		if len(nameSlug) > 10 {
-			nameSlug = nameSlug[:10]
-		}
-
-		nameSlug = nameSlug[:len(nameSlug)-1]
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug + "1",
-		})
-
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug + "2",
-		})
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug + "3",
-		})
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug + "4",
-		})
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug + "5",
-		})
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug + "6",
-		})
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug + "7",
-		})
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug + "8",
-		})
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug + "9",
-		})
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug + "10",
-		})
-		if err != nil {
-			return err
-		}
-
-	}
+	dotastats.RemoveAllListFromTwitter(c, twitterID)
 
 	return nil
 }
