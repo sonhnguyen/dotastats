@@ -78,11 +78,47 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 			nameSlug = nameSlug[:10]
 		}
 
-		err := dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
 			OwnerScreenName: twitterID,
-			Slug:            nameSlug,
+			Slug:            nameSlug + "1",
 		})
 
+		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug + "2",
+		})
+		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug + "3",
+		})
+		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug + "4",
+		})
+		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug + "5",
+		})
+		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug + "6",
+		})
+		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug + "7",
+		})
+		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug + "8",
+		})
+		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug + "9",
+		})
+		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug + "10",
+		})
 		if err != nil {
 			return err
 		}
