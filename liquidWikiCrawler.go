@@ -33,6 +33,7 @@ func runCrawlerLiquidDota() ([]TeamInfo, error) {
 					team.URL = LiquidBaseURL + url
 					team.Name = teamSelect.Find("span.team-template-text a").Text()
 					team.NameSlug = slugify.Marshal(team.Name)
+					team.Game = "dota"
 					result = append(result, team)
 				}
 			})
