@@ -1,8 +1,6 @@
 package dotastats
 
 import (
-	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
