@@ -108,7 +108,7 @@ func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) er
 	}
 
 	bits, err := ioutil.ReadAll(response.Body)
-	if response.StatusCode != 200 || response.StatusCode != 404 {
+	if response.StatusCode != 200 {
 		fmt.Printf("error on removing twitter list, %s", bits)
 	}
 	if err != nil {

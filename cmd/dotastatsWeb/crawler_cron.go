@@ -73,7 +73,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 	for _, team := range teams {
 		err := dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
 			OwnerScreenName: twitterID,
-			Slug:            team.NameSlug,
+			Slug:            "T-" + team.NameSlug,
 		})
 
 		if err != nil {
@@ -81,7 +81,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		}
 
 		err = dotastats.CreateListTwitter(c, dotastats.TwitterCreateListRequest{
-			Name:        team.NameSlug,
+			Name:        "T-" + team.NameSlug,
 			Mode:        "public",
 			Description: team.Game + " - " + team.Region + " - " + team.Name,
 		})
@@ -91,10 +91,14 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		}
 
 		for _, player := range team.Players {
+			sreenName := player.FindTwitterID()
+			if len(screenName) == 0 {
+				continue
+			}
 			err := dotastats.AddMemberToListTwitter(c, dotastats.TwitterAddToListRequest{
 				OwnerScreenName: twitterID,
-				Slug:            team.NameSlug,
-				ScreenName:      player.FindTwitterID(),
+				Slug:            "T-" + team.NameSlug,
+				ScreenName:      screenName,
 			})
 
 			if err != nil {
