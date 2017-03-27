@@ -64,13 +64,6 @@ func AddMemberToListTwitter(client *http.Client, req TwitterAddToListRequest) er
 		return err
 	}
 
-	bits, err := ioutil.ReadAll(response.Body)
-	if response.StatusCode != 200 {
-		return fmt.Errorf("error on adding member to twitter list, %s", bits)
-	}
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -86,13 +79,6 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 		return err
 	}
 
-	bits, err := ioutil.ReadAll(response.Body)
-	if response.StatusCode != 200 {
-		return fmt.Errorf("error on creating twitter list, %s", bits)
-	}
-	if err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -107,12 +93,5 @@ func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) er
 		return err
 	}
 
-	bits, err := ioutil.ReadAll(response.Body)
-	if response.StatusCode != 200 || response.StatusCode != 404 {
-		return fmt.Errorf("error on removing twitter list, %s", bits)
-	}
-	if err != nil {
-		return err
-	}
 	return nil
 }
