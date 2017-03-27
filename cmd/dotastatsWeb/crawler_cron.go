@@ -2,6 +2,7 @@ package main
 
 import (
 	"dotastats"
+	"fmt"
 	"net/http"
 	"os"
 
