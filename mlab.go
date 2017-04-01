@@ -2,7 +2,6 @@ package dotastats
 
 import (
 	"fmt"
-	"time"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -23,54 +22,45 @@ func selectFields(q ...string) (r bson.M) {
 	return
 }
 
-func filterTeamGame(teamInfos []TeamInfo, game string) []TeamInfo {
-	var gameSelected string
-	var result []TeamInfo
-	gameList := []string{"dota", "csgo", "snooker", "football", "basketball"}
-	for _, v := range gameList {
-		if game == v {
-			gameSelected = game
-		}
-	}
-	if gameSelected != "" {
-		for _, v := range teamInfos {
-			if v.Game == gameSelected {
-				result = append(result, v)
-			}
-		}
-		return result
-	}
-	return teamInfos
-}
+func buildTeamInfoQuery(apiParams APIParams) bson.M {
+	r := make(bson.M, 1)
 
-func filterGame(matches []Match, game string) []Match {
-	var gameSelected string
-	var result []Match
-	gameList := []string{"dota", "csgo", "snooker", "football", "basketball"}
-	for _, v := range gameList {
-		if game == v {
-			gameSelected = game
-		}
+	switch apiParams.Game {
+	case "dota":
+		r["game"] = "dota"
+	case "csgo":
+		r["game"] = "csgo"
+	case "snooker":
+		r["game"] = "snooker"
+	case "football":
+		r["game"] = "football"
+	case "basketball":
+		r["game"] = "basketball"
 	}
-	if gameSelected != "" {
-		for _, v := range matches {
-			if v.Game == gameSelected {
-				result = append(result, v)
-			}
-		}
-		return result
-	}
-	return matches
-}
 
-func filterTime(matches []Match, timeFrom, timeTo time.Time) []Match {
-	var result []Match
-	for _, v := range matches {
-		if v.Time.After(timeFrom) && v.Time.Before(timeTo) {
-			result = append(result, v)
-		}
+	return r
+}
+func buildFindQuery(apiParams APIParams) bson.M {
+	r := make(bson.M, 2)
+
+	switch apiParams.Game {
+	case "dota":
+		r["game"] = "dota"
+	case "csgo":
+		r["game"] = "csgo"
+	case "snooker":
+		r["game"] = "snooker"
+	case "football":
+		r["game"] = "football"
+	case "basketball":
+		r["game"] = "basketball"
 	}
-	return result
+
+	r["time"] = bson.M{"$gt": apiParams.TimeFrom,
+		"$lt": apiParams.TimeTo,
+	}
+
+	return r
 }
 
 func (mongo *Mongodb) SaveTeamInfo(teamList []TeamInfo) error {
@@ -122,6 +112,8 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 
 func (mongo *Mongodb) GetTeamInfo(teamSlug string, apiParams APIParams) ([]TeamInfo, error) {
 	var result []TeamInfo
+	var findQuery bson.M
+	findQuery = buildTeamInfoQuery(apiParams)
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
 		return []TeamInfo{}, err
@@ -132,9 +124,9 @@ func (mongo *Mongodb) GetTeamInfo(teamSlug string, apiParams APIParams) ([]TeamI
 
 	collection := sess.DB(mongo.Dbname).C(mongo.CollectionTeam)
 	regexSlug := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamSlug + "\\b", Options: "i"}}
-	err = collection.Find(bson.M{"slug": regexSlug}).All(&result)
+	findQuery["slug"] = regexSlug
+	err = collection.Find(findQuery).All(&result)
 
-	result = filterTeamGame(result, apiParams.Game)
 	if err != nil {
 		return []TeamInfo{}, err
 	}
@@ -144,6 +136,8 @@ func (mongo *Mongodb) GetTeamInfo(teamSlug string, apiParams APIParams) ([]TeamI
 
 func (mongo *Mongodb) GetTeamMatches(teamName string, apiParams APIParams) ([]Match, error) {
 	var result []Match
+	var findQuery bson.M
+	findQuery = buildFindQuery(apiParams)
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
 		return []Match{}, err
@@ -153,25 +147,24 @@ func (mongo *Mongodb) GetTeamMatches(teamName string, apiParams APIParams) ([]Ma
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
 	regexName := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamName + "\\b", Options: "i"}}
-
-	err = collection.Find(bson.M{
-		"$or": []bson.M{
-			bson.M{"teama": regexName},
-			bson.M{"teamb": regexName},
-			bson.M{"teama_short": regexName},
-			bson.M{"teamb_short": regexName},
-		}}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
+	findQuery["$or"] = []bson.M{
+		bson.M{"teama": regexName},
+		bson.M{"teamb": regexName},
+		bson.M{"teama_short": regexName},
+		bson.M{"teamb_short": regexName},
+	}
+	err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
 
 	if err != nil {
 		return []Match{}, err
 	}
-	result = filterGame(result, apiParams.Game)
-	result = filterTime(result, apiParams.TimeFrom, apiParams.TimeTo)
 	return result, nil
 }
 
 func (mongo *Mongodb) GetMatchesList(status string, apiParams APIParams) ([]Match, error) {
 	var result []Match
+	var findQuery bson.M
+	findQuery = buildFindQuery(apiParams)
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
 		return []Match{}, err
@@ -180,46 +173,48 @@ func (mongo *Mongodb) GetMatchesList(status string, apiParams APIParams) ([]Matc
 	sess.SetSafe(&mgo.Safe{})
 
 	// Mapping to db format
-	switch status {
-	case "open":
-		status = "Upcoming"
-	case "closed":
-		status = "Settled"
-	case "live":
-		status = "Live"
-	default:
-		status = "all"
-	}
-
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
-	if status != "all" {
-		err = collection.Find(bson.M{"status": status}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
-		if err != nil {
-			return []Match{}, err
-		}
-	} else {
+	if status == "all" {
 		var openMatches []Match
-		err = collection.Find(bson.M{"status": "Upcoming"}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&openMatches)
+		findQuery["status"] = "Upcoming"
+		err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("time").All(&openMatches)
 		if err != nil {
 			return []Match{}, err
 		}
 
+		findQuery["status"] = "Live"
 		var liveMatches []Match
-		err = collection.Find(bson.M{"status": "Live"}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&liveMatches)
+		err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&liveMatches)
 		if err != nil {
 			return []Match{}, err
 		}
 
+		findQuery["status"] = "Settled"
 		var closedMatches []Match
-		err = collection.Find(bson.M{"status": "Settled"}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&closedMatches)
+		err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&closedMatches)
 		if err != nil {
 			return []Match{}, err
 		}
 		result = append(liveMatches, openMatches...)
 		result = append(result, closedMatches...)
+	} else {
+		sort := "-time"
+		switch status {
+		case "open":
+			findQuery["status"] = "Upcoming"
+			sort = "time"
+		case "closed":
+			findQuery["status"] = "Settled"
+		case "live":
+			findQuery["status"] = "Live"
+		default:
+			return []Match{}, err
+		}
+		err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort(sort).All(&result)
+		if err != nil {
+			return []Match{}, err
+		}
 	}
-	result = filterGame(result, apiParams.Game)
-	result = filterTime(result, apiParams.TimeFrom, apiParams.TimeTo)
 	return result, nil
 }
 
@@ -246,6 +241,7 @@ func (mongo *Mongodb) GetMatchByID(matchID string) (Match, error) {
 
 func (mongo *Mongodb) GetTeamF10kMatches(teamName string, apiParams APIParams) ([]Match, error) {
 	var result []Match
+	findQuery := buildFindQuery(apiParams)
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
 		return []Match{}, err
@@ -256,24 +252,20 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName string, apiParams APIParams) (
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
 	regexName := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamName + "\\b", Options: "i"}}
 	regex10kills := bson.M{"$regex": bson.RegEx{Pattern: "10kills", Options: "i"}}
-
-	err = collection.Find(bson.M{
-		"$and": []bson.M{
-			bson.M{"$or": []bson.M{
-				bson.M{"teama": regexName},
-				bson.M{"teamb": regexName},
-				bson.M{"teama_short": regexName},
-				bson.M{"teamb_short": regexName},
-			}},
-			bson.M{"mode_name": regex10kills},
-			bson.M{"status": "Settled"},
+	findQuery["$and"] = []bson.M{
+		bson.M{"$or": []bson.M{
+			bson.M{"teama": regexName},
+			bson.M{"teamb": regexName},
+			bson.M{"teama_short": regexName},
+			bson.M{"teamb_short": regexName},
 		}},
-	).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
+		bson.M{"mode_name": regex10kills},
+		bson.M{"status": "Settled"},
+	}
+	err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
 
 	if err != nil {
 		return []Match{}, err
 	}
-	result = filterGame(result, apiParams.Game)
-	result = filterTime(result, apiParams.TimeFrom, apiParams.TimeTo)
 	return result, nil
 }
