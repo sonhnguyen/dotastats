@@ -123,9 +123,9 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 		var seriesResult VPgameAPIResult
 		matchFinal.TeamAID = match.Team.Left.ID
 		matchFinal.TeamBID = match.Team.Right.ID
-		matchFinal.TeamA = match.Team.Left.Name
-		matchFinal.TeamB = match.Team.Right.Name
-		matchFinal.Tournament = match.Tournament.Name
+		matchFinal.TeamA = strings.TrimSpace(match.Team.Left.Name)
+		matchFinal.TeamB = strings.TrimSpace(match.Team.Right.Name)
+		matchFinal.Tournament = strings.TrimSpace(match.Tournament.Name)
 		matchFinal.Game = match.Category
 		matchFinal.BestOf = match.Round
 		matchFinal.TournamentLogo = LogoURL + match.Tournament.Logo
@@ -150,7 +150,7 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 			if err != nil {
 				fmt.Errorf("error in parsing time from vpgame: %s", err)
 			}
-			subMatch.MatchName = match.LeftTeam + " vs " + match.RightTeam + ", " + match.ModeName
+			subMatch.MatchName = strings.TrimSpace(match.LeftTeam) + " vs " + strings.TrimSpace(match.RightTeam) + ", " + match.ModeName
 			subMatch.ModeName = match.ModeName
 			subMatch.ModeDesc = match.ModeDesc
 			subMatch.HandicapAmount = match.HandicapAmount
