@@ -123,7 +123,7 @@ func main() {
 	if err != nil {
 		log.Println("error on cron job %s", err)
 	}
-	//c.Start()
+	c.Start()
 	err = http.ListenAndServe(":"+a.config.Port, handler)
 	if err != nil {
 		log.Println("error on serve server %s", err)

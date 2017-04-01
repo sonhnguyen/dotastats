@@ -156,9 +156,11 @@ func (mongo *Mongodb) GetMatchesList(status string, apiParams APIParams) ([]Matc
 		result = append(liveMatches, openMatches...)
 		result = append(result, closedMatches...)
 	} else {
+		sort := "-time"
 		switch status {
 		case "open":
 			findQuery["status"] = "Upcoming"
+			sort = "time"
 		case "closed":
 			findQuery["status"] = "Settled"
 		case "live":
@@ -166,7 +168,7 @@ func (mongo *Mongodb) GetMatchesList(status string, apiParams APIParams) ([]Matc
 		default:
 			return []Match{}, err
 		}
-		err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
+		err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort(sort).All(&result)
 		if err != nil {
 			return []Match{}, err
 		}
