@@ -39,7 +39,6 @@ func ConvertMatchesToSeries(matches []dotastats.Match) []dotastats.Series {
 func BuildAPIParams(req *http.Request) (dotastats.APIParams, error) {
 	var apiParams dotastats.APIParams
 	queryValues := req.URL.Query()
-	apiParams.Limit = 200
 	if value := queryValues.Get("limit"); value != "" {
 		limitInt, err := strconv.Atoi(value)
 		if err != nil {
