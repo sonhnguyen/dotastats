@@ -156,7 +156,7 @@ func (mongo *Mongodb) GetMatchesList(status string, apiParams APIParams) ([]Matc
 		}
 	} else {
 		var openMatches []Match
-		err = collection.Find(bson.M{"status": "Upcoming"}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&openMatches)
+		err = collection.Find(bson.M{"status": "Upcoming"}).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("time").All(&openMatches)
 		if err != nil {
 			return []Match{}, err
 		}
