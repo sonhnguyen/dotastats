@@ -22,6 +22,27 @@ func selectFields(q ...string) (r bson.M) {
 	}
 	return
 }
+
+func filterTeamGame(teamInfos []TeamInfo, game string) []TeamInfo {
+	var gameSelected string
+	var result []TeamInfo
+	gameList := []string{"dota", "csgo", "snooker", "football", "basketball"}
+	for _, v := range gameList {
+		if game == v {
+			gameSelected = game
+		}
+	}
+	if gameSelected != "" {
+		for _, v := range teamInfos {
+			if v.Game == gameSelected {
+				result = append(result, v)
+			}
+		}
+		return result
+	}
+	return teamInfos
+}
+
 func filterGame(matches []Match, game string) []Match {
 	var gameSelected string
 	var result []Match
@@ -97,6 +118,28 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	}
 	fmt.Println("done saving %v matches", len(matchList))
 	return nil
+}
+
+func (mongo *Mongodb) GetTeamInfo(teamSlug string, apiParams APIParams) ([]TeamInfo, error) {
+	var result []TeamInfo
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return []TeamInfo{}, err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionTeam)
+	regexSlug := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamSlug + "\\b", Options: "i"}}
+	err = collection.Find(bson.M{"slug": regexSlug}).All(&result)
+
+	result = filterTeamGame(result, apiParams.Game)
+	if err != nil {
+		return []TeamInfo{}, err
+	}
+
+	return result, nil
 }
 
 func (mongo *Mongodb) GetTeamMatches(teamName string, apiParams APIParams) ([]Match, error) {
