@@ -147,11 +147,16 @@ func (mongo *Mongodb) GetTeamMatches(teamName string, apiParams APIParams) ([]Ma
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
 	regexName := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamName + "\\b", Options: "i"}}
-	findQuery["$or"] = []bson.M{
-		bson.M{"teama": regexName},
-		bson.M{"teamb": regexName},
-		bson.M{"teama_short": regexName},
-		bson.M{"teamb_short": regexName},
+	regexMode := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + "Match Winner 10kills" + "\\b", Options: "i"}}
+	findQuery["$and"] = []bson.M{
+		bson.M{"$or": []bson.M{
+			bson.M{"teama": regexName},
+			bson.M{"teamb": regexName},
+			bson.M{"teama_short": regexName},
+			bson.M{"teamb_short": regexName},
+		}},
+		bson.M{"status": "Settled"},
+		bson.M{"mode_name": regexMode},
 	}
 	err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
 
