@@ -127,6 +127,10 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 		matchFinal.TeamB = strings.TrimSpace(match.Team.Right.Name)
 		matchFinal.Tournament = strings.TrimSpace(match.Tournament.Name)
 		matchFinal.Game = match.Category
+		if match.Category != "dota" && match.Category != "csgo" {
+			fmt.Println("continue on match.", match.Category)
+			continue
+		}
 		matchFinal.BestOf = match.Round
 		matchFinal.TournamentLogo = LogoURL + match.Tournament.Logo
 		matchFinal.LogoA = LogoURL + match.Team.Left.Logo
