@@ -125,7 +125,7 @@ func (mongo *Mongodb) GetTeamInfo(teamSlug string, apiParams APIParams) (TeamInf
 	collection := sess.DB(mongo.Dbname).C(mongo.CollectionTeam)
 	regexSlug := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamSlug + "\\b", Options: "i"}}
 	findQuery["slug"] = regexSlug
-	err = collection.Find(findQuery).All(&result)
+	err = collection.Find(findQuery).One(&result)
 
 	if err != nil {
 		return TeamInfo{}, err
