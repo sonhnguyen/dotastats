@@ -110,13 +110,13 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	return nil
 }
 
-func (mongo *Mongodb) GetTeamInfo(teamSlug string, apiParams APIParams) ([]TeamInfo, error) {
-	var result []TeamInfo
+func (mongo *Mongodb) GetTeamInfo(teamSlug string, apiParams APIParams) (TeamInfo, error) {
+	var result TeamInfo
 	var findQuery bson.M
 	findQuery = buildTeamInfoQuery(apiParams)
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
-		return []TeamInfo{}, err
+		return TeamInfo{}, err
 	}
 
 	defer sess.Close()
@@ -128,7 +128,7 @@ func (mongo *Mongodb) GetTeamInfo(teamSlug string, apiParams APIParams) ([]TeamI
 	err = collection.Find(findQuery).All(&result)
 
 	if err != nil {
-		return []TeamInfo{}, err
+		return TeamInfo{}, err
 	}
 
 	return result, nil
