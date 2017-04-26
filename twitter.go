@@ -65,9 +65,8 @@ func AddMembersToListTwitter(client *http.Client, req TwitterAddToListRequest) e
 		return err
 	}
 
-	bits, err := ioutil.ReadAll(response.Body)
 	if response.StatusCode != 200 {
-		fmt.Printf("error on adding member to twitter list, %s", bits)
+		fmt.Printf("error on adding member to twitter list, %s, %s\n", req.Slug, req.ScreenName)
 	}
 	if err != nil {
 		return err
