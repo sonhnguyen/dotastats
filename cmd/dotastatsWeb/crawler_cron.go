@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -73,49 +74,54 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 	}
 
 	for _, team := range teams {
-		nameSlug := team.Game + "-" + team.NameSlug
-		if len(nameSlug) > 25 {
-			nameSlug = nameSlug[:25]
-		}
+		select {
+		case <-time.After(1 * time.Second):
+			fmt.Println("timed out")
+			nameSlug := team.Game + "-" + team.NameSlug
+			if len(nameSlug) > 25 {
+				nameSlug = nameSlug[:25]
+			}
 
-		err := dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug,
-		})
+			err := dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
+				OwnerScreenName: twitterID,
+				Slug:            nameSlug,
+			})
 
-		if err != nil {
-			errorList = append(errorList, err)
-		}
+			if err != nil {
+				errorList = append(errorList, err)
+			}
 
-		err = dotastats.CreateListTwitter(c, dotastats.TwitterCreateListRequest{
-			Name:        nameSlug,
-			Mode:        "public",
-			Description: team.Game + " - " + team.Region + " - " + team.Name,
-		})
+			err = dotastats.CreateListTwitter(c, dotastats.TwitterCreateListRequest{
+				Name:        nameSlug,
+				Mode:        "public",
+				Description: team.Game + " - " + team.Region + " - " + team.Name,
+			})
 
-		if err != nil {
-			errorList = append(errorList, err)
-		}
+			if err != nil {
+				errorList = append(errorList, err)
+			}
 
-		memberScreenNames := ""
-		for _, player := range team.Players {
-			screenName := player.FindTwitterID()
-			if len(screenName) == 0 {
+			memberScreenNames := ""
+			for _, player := range team.Players {
+				screenName := player.FindTwitterID()
+				if len(screenName) == 0 {
+					continue
+				}
+				memberScreenNames += screenName + ","
+			}
+			if memberScreenNames == "" {
 				continue
 			}
-			memberScreenNames += screenName + ","
-		}
-		if memberScreenNames == "" {
-			continue
-		}
-		err = dotastats.AddMembersToListTwitter(c, dotastats.TwitterAddToListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug,
-			ScreenName:      memberScreenNames,
-		})
+			err = dotastats.AddMembersToListTwitter(c, dotastats.TwitterAddToListRequest{
+				OwnerScreenName: twitterID,
+				Slug:            nameSlug,
+				ScreenName:      memberScreenNames,
+			})
 
-		if err != nil {
-			errorList = append(errorList, err)
+			if err != nil {
+				errorList = append(errorList, err)
+			}
+
 		}
 	}
 
