@@ -123,6 +123,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		}
 	}
 
+	fmt.Println(len(errorList))
 	return fmt.Errorf("error when save team list to twitter", errorList)
 }
 
