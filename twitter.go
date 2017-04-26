@@ -62,15 +62,12 @@ func AddMembersToListTwitter(client *http.Client, req TwitterAddToListRequest) e
 		})
 
 	if err != nil {
-		return err
+		fmt.Printf("error on post form, %s\n", err)
 	}
 
 	body, err := ioutil.ReadAll(response.Body)
 	if response.StatusCode != 200 {
 		fmt.Printf("error on adding member to twitter list, %s, %s, %s\n", req.Slug, req.ScreenName, body)
-	}
-	if req.Slug == "dota-Team-NP" {
-		fmt.Printf("%s\n", body)
 	}
 	if err != nil {
 		return err
@@ -87,15 +84,12 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 		})
 
 	if err != nil {
-		return err
+		fmt.Printf("error on post form, %s\n", err)
 	}
 
 	body, err := ioutil.ReadAll(response.Body)
 	if response.StatusCode != 200 {
 		fmt.Printf("error on creating twitter list, %s, %s\n", req.Name, body)
-	}
-	if req.Name == "dota-Team-NP" {
-		fmt.Printf("%s\n", body)
 	}
 	if err != nil {
 		return err
@@ -136,7 +130,7 @@ func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) er
 		})
 
 	if err != nil {
-		return err
+		fmt.Printf("error on post form, %s\n", err)
 	}
 
 	body, err := ioutil.ReadAll(response.Body)
