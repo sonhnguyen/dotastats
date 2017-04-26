@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/spf13/viper"
 )
@@ -62,6 +61,10 @@ func (a *App) RunPingHeroku() error {
 
 func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 	var errorList []error
+	c, err := dotastats.CreateOAuth()
+	if err != nil {
+		return err
+	}
 	var twitterID string
 	if viper.GetBool("isDevelopment") {
 		twitterID = viper.GetString("twitter.twitterID")
@@ -69,60 +72,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		twitterID = os.Getenv("twitterID")
 	}
 
-	for _, team := range teams {
-		c, err := dotastats.CreateOAuth()
-		if err != nil {
-			return err
-		}
-		nameSlug := team.Game + "-" + team.NameSlug
-		if len(nameSlug) > 25 {
-			nameSlug = nameSlug[:25]
-		}
-
-		err = dotastats.RemoveListFromTwitter(c, dotastats.TwitterRemoveListRequest{
-			OwnerScreenName: twitterID,
-			Slug:            nameSlug,
-		})
-
-		if err != nil {
-			errorList = append(errorList, err)
-		}
-
-		err = dotastats.CreateListTwitter(c, dotastats.TwitterCreateListRequest{
-			Name:        nameSlug,
-			Mode:        "public",
-			Description: team.Game + " - " + team.Region + " - " + team.Name,
-		})
-
-		if err != nil {
-			errorList = append(errorList, err)
-		}
-
-		select {
-		case <-time.After(1 * time.Second):
-			memberScreenNames := ""
-			for _, player := range team.Players {
-				screenName := player.FindTwitterID()
-				if len(screenName) == 0 {
-					continue
-				}
-				memberScreenNames += screenName + ","
-			}
-			if memberScreenNames == "" {
-				continue
-			}
-			err = dotastats.AddMembersToListTwitter(c, dotastats.TwitterAddToListRequest{
-				OwnerScreenName: twitterID,
-				Slug:            nameSlug,
-				ScreenName:      memberScreenNames,
-			})
-
-			if err != nil {
-				errorList = append(errorList, err)
-			}
-		}
-	}
-
+	dotastats.RemoveAllListFromTwitter(c, twitterID)
 	fmt.Println(len(errorList))
 	return fmt.Errorf("error when save team list to twitter", errorList)
 }
