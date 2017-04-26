@@ -91,7 +91,7 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 	if response.StatusCode != 200 {
 		fmt.Printf("error on creating twitter list, %s, %s\n", req.Name, body)
 	}
-	if req.Name == "dota-team-np" {
+	if req.Name == "dota-Team-NP" {
 		fmt.Printf("%s\n", body)
 	}
 	if err != nil {
