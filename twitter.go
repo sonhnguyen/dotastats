@@ -14,7 +14,7 @@ import (
 
 const (
 	CreateListURL     = "https://api.twitter.com/1.1/lists/create.json"
-	AddMemberURL      = "https://api.twitter.com/1.1/lists/members/create.json"
+	AddMembersURL     = "https://api.twitter.com/1.1/lists/members/create_all.json"
 	RemoveListURL     = "https://api.twitter.com/1.1/lists/destroy.json"
 	RequestTokenUrl   = "https://api.twitter.com/oauth/request_token"
 	AuthorizeTokenUrl = "https://api.twitter.com/oauth/authorize"
@@ -53,8 +53,8 @@ func CreateOAuth() (*http.Client, error) {
 	return c.MakeHttpClient(&t)
 }
 
-func AddMemberToListTwitter(client *http.Client, req TwitterAddToListRequest) error {
-	response, err := client.PostForm(AddMemberURL,
+func AddMembersToListTwitter(client *http.Client, req TwitterAddToListRequest) error {
+	response, err := client.PostForm(AddMembersURL,
 		url.Values{
 			"owner_screen_name": []string{req.OwnerScreenName},
 			"slug":              []string{req.Slug},

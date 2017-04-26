@@ -95,20 +95,22 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 			return err
 		}
 
+		memberScreenNames := ""
 		for _, player := range team.Players {
 			screenName := player.FindTwitterID()
 			if len(screenName) == 0 {
 				continue
 			}
-			err := dotastats.AddMemberToListTwitter(c, dotastats.TwitterAddToListRequest{
-				OwnerScreenName: twitterID,
-				Slug:            nameSlug,
-				ScreenName:      screenName,
-			})
+			memberScreenNames += screenName + ","
+		}
+		err = dotastats.AddMembersToListTwitter(c, dotastats.TwitterAddToListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug,
+			ScreenName:      memberScreenNames,
+		})
 
-			if err != nil {
-				return err
-			}
+		if err != nil {
+			return err
 		}
 	}
 
