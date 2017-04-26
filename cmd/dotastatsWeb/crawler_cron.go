@@ -2,6 +2,7 @@ package main
 
 import (
 	"dotastats"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -59,6 +60,7 @@ func (a *App) RunPingHeroku() error {
 }
 
 func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
+	var errorList []error
 	c, err := dotastats.CreateOAuth()
 	if err != nil {
 		return err
@@ -82,7 +84,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		})
 
 		if err != nil {
-			return err
+			errorList = append(errorList, err)
 		}
 
 		err = dotastats.CreateListTwitter(c, dotastats.TwitterCreateListRequest{
@@ -92,7 +94,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		})
 
 		if err != nil {
-			return err
+			errorList = append(errorList, err)
 		}
 
 		memberScreenNames := ""
@@ -103,6 +105,9 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 			}
 			memberScreenNames += screenName + ","
 		}
+		if memberScreenNames == "" {
+			continue
+		}
 		err = dotastats.AddMembersToListTwitter(c, dotastats.TwitterAddToListRequest{
 			OwnerScreenName: twitterID,
 			Slug:            nameSlug,
@@ -110,11 +115,11 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		})
 
 		if err != nil {
-			return err
+			errorList = append(errorList, err)
 		}
 	}
 
-	return nil
+	return fmt.Errorf("error when save team list to twitter", errorList)
 }
 
 func (a *App) RunCrawlerTeamInfoAndSave() error {
