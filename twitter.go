@@ -65,8 +65,9 @@ func AddMembersToListTwitter(client *http.Client, req TwitterAddToListRequest) e
 		return err
 	}
 
+	body, err := ioutil.ReadAll(response.Body)
 	if response.StatusCode != 200 {
-		fmt.Printf("error on adding member to twitter list, %s, %s\n", req.Slug, req.ScreenName)
+		fmt.Printf("error on adding member to twitter list, %s, %s, %s\n", req.Slug, req.ScreenName, body)
 	}
 	if err != nil {
 		return err
@@ -86,9 +87,9 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 		return err
 	}
 
-	bits, err := ioutil.ReadAll(response.Body)
+	body, err := ioutil.ReadAll(response.Body)
 	if response.StatusCode != 200 {
-		fmt.Printf("error on creating twitter list, %s", bits)
+		fmt.Printf("error on creating twitter list, %s, %s\n", req.Name, body)
 	}
 	if err != nil {
 		return err
@@ -103,13 +104,13 @@ func RemoveAllListFromTwitter(client *http.Client, twitterID string) error {
 		return err
 	}
 
-	bits, err := ioutil.ReadAll(response.Body)
+	body, err := ioutil.ReadAll(response.Body)
 	if response.StatusCode != 200 {
-		fmt.Printf("error on removing twitter list, %s", bits)
+		fmt.Printf("error on getting all twitter list\n")
 	}
 	twitterGetListResponse := TwitterGetListResponse{}
 
-	_ = json.Unmarshal(bits, &twitterGetListResponse)
+	_ = json.Unmarshal(body, &twitterGetListResponse)
 
 	for _, list := range twitterGetListResponse.Lists {
 		_ = RemoveListFromTwitter(client, TwitterRemoveListRequest{
@@ -120,6 +121,7 @@ func RemoveAllListFromTwitter(client *http.Client, twitterID string) error {
 
 	return nil
 }
+
 func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) error {
 	response, err := client.PostForm(RemoveListURL,
 		url.Values{
@@ -131,9 +133,9 @@ func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) er
 		return err
 	}
 
-	bits, err := ioutil.ReadAll(response.Body)
+	body, err := ioutil.ReadAll(response.Body)
 	if response.StatusCode != 200 {
-		fmt.Printf("error on removing twitter list, %s", bits)
+		fmt.Printf("error on removing twitter list, %s, %s\n", req.Slug, body)
 	}
 	if err != nil {
 		return err
