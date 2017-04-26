@@ -69,6 +69,9 @@ func AddMembersToListTwitter(client *http.Client, req TwitterAddToListRequest) e
 	if response.StatusCode != 200 {
 		fmt.Printf("error on adding member to twitter list, %s, %s, %s\n", req.Slug, req.ScreenName, body)
 	}
+	if req.Slug == "dota-Team-NP" {
+		fmt.Printf("%s\n", body)
+	}
 	if err != nil {
 		return err
 	}
