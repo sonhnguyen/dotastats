@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/spf13/viper"
 )
@@ -98,28 +97,25 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 			errorList = append(errorList, err)
 		}
 
-		select {
-		case <-time.After(1 * time.Second):
-			memberScreenNames := ""
-			for _, player := range team.Players {
-				screenName := player.FindTwitterID()
-				if len(screenName) == 0 {
-					continue
-				}
-				memberScreenNames += screenName + ","
-			}
-			if memberScreenNames == "" {
+		memberScreenNames := ""
+		for _, player := range team.Players {
+			screenName := player.FindTwitterID()
+			if len(screenName) == 0 {
 				continue
 			}
-			err = dotastats.AddMembersToListTwitter(c, dotastats.TwitterAddToListRequest{
-				OwnerScreenName: twitterID,
-				Slug:            nameSlug,
-				ScreenName:      memberScreenNames,
-			})
+			memberScreenNames += screenName + ","
+		}
+		if memberScreenNames == "" {
+			continue
+		}
+		err = dotastats.AddMembersToListTwitter(c, dotastats.TwitterAddToListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug,
+			ScreenName:      memberScreenNames,
+		})
 
-			if err != nil {
-				errorList = append(errorList, err)
-			}
+		if err != nil {
+			errorList = append(errorList, err)
 		}
 	}
 
