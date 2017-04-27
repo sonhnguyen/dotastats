@@ -1,15 +1,15 @@
 {
 	"isDevelopment": "true",
 	"port": "3000",
-	"uri": "mongodb://heroku_hfrclnz8:nksn833rbi80dns0guvfbraji9@ds019976.mlab.com:19976/heroku_hfrclnz8",
-	"dbname": "heroku_hfrclnz8",
+	"uri": "mongodb://admin:admin@127.0.0.1:27017/dotastats",
+	"dbname": "dotastats",
 	"collection": "dev",
 	"twitter":{
-		"consumerKey":"2aECd8PRfbysjp6lHPO8nzG19",
-		"consumerSecret":"x0ix2EIlSj15K381vAJ7gGBat3WJZUwFQtjMgflyE8K8p4LR4u",
-		"token":"845974643328532480-KdccExzRuTTipURt3vjtNcZntEPjlq9",
-		"tokenSecret":"awnIOMaPZla4M7Owc1x7BkC4ftfyUB7wDVWiPupSmbhch",
-		"twitterID":"dotastats_"
+		"consumerkey":"8DQWtI6tTd3EY4ZF5ZXGNvxgH",
+		"consumersecret":"9Xip5zj4mFbKXWBVQjyiZuQJxKb0Z0rWPqhUQkzCnAOpCXuaaf",
+		"token":"857598388446969857-DReULooPxNdFXnife6Ty75OJIWJECtI",
+		"tokensecret":"cGOHT56MFlHVlpPsDAMhxmqsdwXuVq0lm3tL0VcWavhWU",
+		"twitterid":"dotastats_"
 	},
 	"collection-team": "dev-team"
 }

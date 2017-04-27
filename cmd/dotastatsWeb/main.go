@@ -104,6 +104,8 @@ func main() {
 	r.Get("/matches/:id", common.Then(a.Wrap(a.GetMatchByIDHandler())))
 	r.Get("/crawl", common.Then(a.Wrap(a.GetCustomCrawlHandler())))
 	r.Get("/crawlTeamInfo", common.Then(a.Wrap(a.GetCrawlTeamInfoHandler())))
+	r.Get("/create-twitter-list", common.Then(a.Wrap(a.CreateAllTwitterList())))
+	r.Get("/remove-twitter-list", common.Then(a.Wrap(a.RemoveAllTwitterList())))
 	handler := cors.Default().Handler(r)
 	c := cron.New()
 	_, err = c.AddFunc("@every 5m", func() {

@@ -27,15 +27,15 @@ func CreateOAuth() (*http.Client, error) {
 
 	if viper.GetBool("isDevelopment") {
 		twitterCred := viper.GetStringMapString("twitter")
-		consumerKey = twitterCred["consumerKey"]
-		consumerSecret = twitterCred["consumerSecret"]
+		consumerKey = twitterCred["consumerkey"]
+		consumerSecret = twitterCred["consumersecret"]
 		accessToken = twitterCred["token"]
-		accessTokenSecret = twitterCred["tokenSecret"]
+		accessTokenSecret = twitterCred["tokensecret"]
 	} else {
 		consumerKey = os.Getenv("consumerKey")
-		consumerSecret = os.Getenv("consumerSecret")
+		consumerSecret = os.Getenv("consumersecret")
 		accessToken = os.Getenv("token")
-		accessTokenSecret = os.Getenv("tokenSecret")
+		accessTokenSecret = os.Getenv("tokensecret")
 	}
 
 	c := oauth.NewConsumer(
@@ -116,7 +116,11 @@ func CreateListTwitter(client *http.Client, req TwitterCreateListRequest) error 
 	return nil
 }
 
-func RemoveAllListFromTwitter(client *http.Client, twitterID string) error {
+func RemoveAllListFromTwitter(twitterID string) error {
+	client, err := CreateOAuth()
+	if err != nil {
+		return err
+	}
 	response, err := client.Get("https://api.twitter.com/1.1/lists/ownerships.json?screen_name=dotastats_&count=800")
 
 	if err != nil {
@@ -125,7 +129,7 @@ func RemoveAllListFromTwitter(client *http.Client, twitterID string) error {
 
 	body, err := ioutil.ReadAll(response.Body)
 	if response.StatusCode != 200 {
-		fmt.Printf("error on getting all twitter list\n")
+		fmt.Printf("error on getting all twitter list, %s\n,", body)
 	}
 	twitterGetListResponse := TwitterGetListResponse{}
 
@@ -133,7 +137,7 @@ func RemoveAllListFromTwitter(client *http.Client, twitterID string) error {
 
 	for _, list := range twitterGetListResponse.Lists {
 		_ = RemoveListFromTwitter(client, TwitterRemoveListRequest{
-			OwnerScreenName: "dotastats_",
+			OwnerScreenName: twitterID,
 			Slug:            list.Slug,
 		})
 	}
@@ -160,4 +164,69 @@ func RemoveListFromTwitter(client *http.Client, req TwitterRemoveListRequest) er
 		return err
 	}
 	return nil
+}
+
+func CreateTwitterList(teams []TeamInfo) error {
+	var errorList []error
+	c, err := CreateOAuth()
+	if err != nil {
+		return err
+	}
+	var twitterID string
+	if viper.GetBool("isDevelopment") {
+		twitterID = viper.GetString("twitter.twitterID")
+	} else {
+		twitterID = os.Getenv("twitterid")
+	}
+
+	for _, team := range teams {
+		nameSlug := team.Game + "-" + team.NameSlug
+		if len(nameSlug) > 25 {
+			nameSlug = nameSlug[:25]
+		}
+
+		err = RemoveListFromTwitter(c, TwitterRemoveListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug,
+		})
+
+		if err != nil {
+			errorList = append(errorList, err)
+		}
+
+		err = CreateListTwitter(c, TwitterCreateListRequest{
+			Name:        nameSlug,
+			Mode:        "public",
+			Description: team.Game + " - " + team.Region + " - " + team.Name,
+		})
+
+		if err != nil {
+			errorList = append(errorList, err)
+			continue
+		}
+
+		memberScreenNames := ""
+		for _, player := range team.Players {
+			screenName := player.FindTwitterID()
+			if len(screenName) == 0 {
+				continue
+			}
+			memberScreenNames += screenName + ","
+		}
+		if memberScreenNames == "" {
+			continue
+		}
+		memberScreenNames = memberScreenNames[:len(memberScreenNames)-1]
+		err = AddMembersToListTwitter(c, TwitterAddToListRequest{
+			OwnerScreenName: twitterID,
+			Slug:            nameSlug,
+			ScreenName:      memberScreenNames,
+		})
+
+		if err != nil {
+			errorList = append(errorList, err)
+		}
+	}
+
+	return fmt.Errorf("error when save team list to twitter", errorList)
 }

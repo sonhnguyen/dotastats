@@ -110,6 +110,26 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	return nil
 }
 
+func (mongo *Mongodb) GetAllTeamInfo() ([]TeamInfo, error) {
+	var result []TeamInfo
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return []TeamInfo{}, err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionTeam)
+	err = collection.Find(bson.M{}).All(&result)
+
+	if err != nil {
+		return []TeamInfo{}, err
+	}
+
+	return result, nil
+}
+
 func (mongo *Mongodb) GetTeamInfo(teamSlug string, apiParams APIParams) (TeamInfo, error) {
 	var result TeamInfo
 	var findQuery bson.M
