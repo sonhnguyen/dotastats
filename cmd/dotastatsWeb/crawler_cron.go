@@ -95,6 +95,7 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 
 		if err != nil {
 			errorList = append(errorList, err)
+			continue
 		}
 
 		memberScreenNames := ""
@@ -108,7 +109,6 @@ func (a *App) SaveTeamListToTwitter(teams []dotastats.TeamInfo) error {
 		if memberScreenNames == "" {
 			continue
 		}
-		memberScreenNames = memberScreenNames[:len(memberScreenNames)-1]
 		err = dotastats.AddMembersToListTwitter(c, dotastats.TwitterAddToListRequest{
 			OwnerScreenName: twitterID,
 			Slug:            nameSlug,
