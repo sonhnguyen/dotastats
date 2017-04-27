@@ -55,7 +55,7 @@ func CreateOAuth() (*http.Client, error) {
 }
 
 func CheckTwitterRateLimit(client *http.Client) error {
-	response, err := client.PostForm(RateLimitURL,
+	response, err := client.Get(RateLimitURL,
 		url.Values{
 			"resources": []string{"lists"},
 		})
