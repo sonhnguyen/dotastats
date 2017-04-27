@@ -15,6 +15,7 @@ import (
 const (
 	CreateListURL     = "https://api.twitter.com/1.1/lists/create.json"
 	AddMembersURL     = "https://api.twitter.com/1.1/lists/members/create_all.json"
+	RateLimitURL      = "https://api.twitter.com/1.1/application/rate_limit_status.json"
 	RemoveListURL     = "https://api.twitter.com/1.1/lists/destroy.json"
 	RequestTokenUrl   = "https://api.twitter.com/oauth/request_token"
 	AuthorizeTokenUrl = "https://api.twitter.com/oauth/authorize"
@@ -51,6 +52,27 @@ func CreateOAuth() (*http.Client, error) {
 		Secret: accessTokenSecret,
 	}
 	return c.MakeHttpClient(&t)
+}
+
+func CheckTwitterRateLimit(client *http.Client) error {
+	response, err := client.PostForm(RateLimitURL,
+		url.Values{
+			"resources": []string{"lists"},
+		})
+
+	if err != nil {
+		fmt.Printf("error on post form, %s\n", err)
+	}
+
+	body, err := ioutil.ReadAll(response.Body)
+	if response.StatusCode != 200 {
+		fmt.Printf("error on checking twitter rate limit, %s\n", body)
+	}
+	fmt.Println(string(body))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func AddMembersToListTwitter(client *http.Client, req TwitterAddToListRequest) error {
