@@ -99,6 +99,7 @@ func main() {
 	common := alice.New(context.ClearHandler, a.loggingHandler, a.recoverHandler)
 	r.Get("/team-info/:slug", common.Then(a.Wrap(a.GetTeamInfoHandler())))
 	r.Get("/team/:name", common.Then(a.Wrap(a.GetTeamMatchesHandler())))
+	r.Get("/history", common.Then(a.Wrap(a.GetTeamHistoryHandler())))
 	r.Get("/team/:name/f10k", common.Then(a.Wrap(a.GetTeamF10kMatchesHandler())))
 	r.Get("/matches", common.Then(a.Wrap(a.GetMatchesListHandler())))
 	r.Get("/matches/:id", common.Then(a.Wrap(a.GetMatchByIDHandler())))

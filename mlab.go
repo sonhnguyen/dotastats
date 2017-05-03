@@ -154,6 +154,42 @@ func (mongo *Mongodb) GetTeamInfo(teamSlug string, apiParams APIParams) (TeamInf
 	return result, nil
 }
 
+func (mongo *Mongodb) GetTeamHistoryMatches(teamA, teamB string, apiParams APIParams) ([]Match, error) {
+	var result []Match
+	var findQuery bson.M
+	findQuery = buildFindQuery(apiParams)
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return []Match{}, err
+	}
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+
+	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
+	regexMode := bson.M{"$regex": bson.RegEx{Pattern: "(\\bMatch Winner\\b|\\b10kills\\b)", Options: "i"}}
+	findQuery["$and"] = []bson.M{
+		bson.M{"$or": []bson.M{
+			bson.M{"$and": []bson.M{
+				bson.M{"teama": teamA},
+				bson.M{"teamb": teamB},
+			}},
+			bson.M{"$and": []bson.M{
+				bson.M{"teama": teamB},
+				bson.M{"teamb": teamA},
+			}},
+		}},
+		bson.M{"status": "Settled"},
+		bson.M{"mode_name": regexMode},
+	}
+
+	err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
+
+	if err != nil {
+		return []Match{}, err
+	}
+	return result, nil
+}
+
 func (mongo *Mongodb) GetTeamMatches(teamName string, apiParams APIParams) ([]Match, error) {
 	var result []Match
 	var findQuery bson.M
@@ -166,14 +202,13 @@ func (mongo *Mongodb) GetTeamMatches(teamName string, apiParams APIParams) ([]Ma
 	sess.SetSafe(&mgo.Safe{})
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
-	regexName := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamName + "\\b", Options: "i"}}
 	regexMode := bson.M{"$regex": bson.RegEx{Pattern: "(\\bMatch Winner\\b|\\b10kills\\b)", Options: "i"}}
 	findQuery["$and"] = []bson.M{
 		bson.M{"$or": []bson.M{
-			bson.M{"teama": regexName},
-			bson.M{"teamb": regexName},
-			bson.M{"teama_short": regexName},
-			bson.M{"teamb_short": regexName},
+			bson.M{"teama": teamName},
+			bson.M{"teamb": teamName},
+			bson.M{"teama_short": teamName},
+			bson.M{"teamb_short": teamName},
 		}},
 		bson.M{"status": "Settled"},
 		bson.M{"mode_name": regexMode},
@@ -275,14 +310,13 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName string, apiParams APIParams) (
 	sess.SetSafe(&mgo.Safe{})
 
 	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
-	regexName := bson.M{"$regex": bson.RegEx{Pattern: "\\b" + teamName + "\\b", Options: "i"}}
 	regex10kills := bson.M{"$regex": bson.RegEx{Pattern: "10kills", Options: "i"}}
 	findQuery["$and"] = []bson.M{
 		bson.M{"$or": []bson.M{
-			bson.M{"teama": regexName},
-			bson.M{"teamb": regexName},
-			bson.M{"teama_short": regexName},
-			bson.M{"teamb_short": regexName},
+			bson.M{"teama": teamName},
+			bson.M{"teamb": teamName},
+			bson.M{"teama_short": teamName},
+			bson.M{"teamb_short": teamName},
 		}},
 		bson.M{"mode_name": regex10kills},
 		bson.M{"status": "Settled"},

@@ -2,10 +2,46 @@ package main
 
 import (
 	"dotastats"
+	"errors"
 
 	"encoding/json"
 	"net/http"
 )
+
+func (a *App) GetTeamHistoryHandler() HandlerWithError {
+	return func(w http.ResponseWriter, req *http.Request) error {
+		var teamA string
+		var teamB string
+		apiParams, err := BuildAPIParams(req)
+		queryValues := req.URL.Query()
+		if err != nil {
+			a.logr.Log("error when  building params %s", err)
+			return newAPIError(300, "error when building params %s", err)
+		}
+		if value := queryValues.Get("teama"); value != "" {
+			teamA = value
+		} else {
+			return newAPIError(300, "error missing required params %s", errors.New("missing teama param"))
+		}
+
+		if value := queryValues.Get("teamb"); value != "" {
+			teamB = value
+		} else {
+			return newAPIError(300, "error missing required params %s", errors.New("missing teamB param"))
+		}
+		result, err := dotastats.GetTeamHistory(teamA, teamB, apiParams, a.mongodb)
+		if err != nil {
+			a.logr.Log("error when return json %s", err)
+			return newAPIError(500, "error when return json %s", err)
+		}
+		err = json.NewEncoder(w).Encode(result)
+		if err != nil {
+			a.logr.Log("error when return json %s", err)
+			return newAPIError(500, "error when return json %s", err)
+		}
+		return nil
+	}
+}
 
 func (a *App) GetTeamInfoHandler() HandlerWithError {
 	return func(w http.ResponseWriter, req *http.Request) error {

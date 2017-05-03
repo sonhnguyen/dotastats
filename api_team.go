@@ -17,3 +17,9 @@ func GetTeamMatches(teamName string, apiParams APIParams, mongodb Mongodb) ([]Ma
 
 	return result, nil
 }
+func GetTeamHistory(teamA, teamB string, apiParams APIParams, mongodb Mongodb) ([]Match, error) {
+	result, err := mongodb.GetTeamHistoryMatches(teamA, teamB, apiParams)
+	if err != nil {
+	}
+	return result, nil
+}
