@@ -207,6 +207,7 @@ func (mongo *Mongodb) GetMatchesList(status string, apiParams APIParams) ([]Matc
 	var findQuery bson.M
 	findQuery = buildFindQuery(apiParams)
 	sess, err := mgo.Dial(mongo.URI)
+	fmt.Println(mongo.URI)
 	if err != nil {
 		return []Match{}, err
 	}
