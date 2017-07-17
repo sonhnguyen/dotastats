@@ -25,37 +25,14 @@ func selectFields(q ...string) (r bson.M) {
 func buildTeamInfoQuery(apiParams APIParams) bson.M {
 	r := make(bson.M, 1)
 
-	switch apiParams.Game {
-	case "dota":
-		r["game"] = "dota"
-	case "csgo":
-		r["game"] = "csgo"
-	case "snooker":
-		r["game"] = "snooker"
-	case "football":
-		r["game"] = "football"
-	case "basketball":
-		r["game"] = "basketball"
-	}
+	r["game"] = apiParams.Game
 
 	return r
 }
 func buildFindQuery(apiParams APIParams) bson.M {
 	r := make(bson.M, 2)
 
-	switch apiParams.Game {
-	case "dota":
-		r["game"] = "dota"
-	case "csgo":
-		r["game"] = "csgo"
-	case "snooker":
-		r["game"] = "snooker"
-	case "football":
-		r["game"] = "football"
-	case "basketball":
-		r["game"] = "basketball"
-	}
-
+	r["game"] = apiParams.Game
 	r["time"] = bson.M{"$gt": apiParams.TimeFrom,
 		"$lt": apiParams.TimeTo,
 	}

@@ -64,6 +64,10 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 		}
 	}
 
+	if viper.GetBool("isLocal") {
+		config.URI = viper.GetString("uriLocal")
+	}
+
 	mongo := dotastats.Mongodb{URI: config.URI, Dbname: config.Dbname, Collection: config.Collection, CollectionTeam: config.CollectionTeam}
 
 	gp := globalPresenter{
