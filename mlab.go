@@ -25,7 +25,7 @@ func selectFields(q ...string) (r bson.M) {
 func buildTeamInfoQuery(apiParams APIParams) bson.M {
 	r := make(bson.M, 1)
 
-	if apiParams.Game != "" {
+	if apiParams.Game != "" && apiParams.Game != "all" {
 		r["game"] = apiParams.Game
 	}
 
@@ -34,7 +34,7 @@ func buildTeamInfoQuery(apiParams APIParams) bson.M {
 func buildFindQuery(apiParams APIParams) bson.M {
 	r := make(bson.M, 2)
 
-	if apiParams.Game != "" {
+	if apiParams.Game != "" && apiParams.Game != "all" {
 		r["game"] = apiParams.Game
 	}
 	r["time"] = bson.M{"$gt": apiParams.TimeFrom,
