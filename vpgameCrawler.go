@@ -165,9 +165,9 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 			}
 			subMatch.RatioA = ratioProcess(match.Odd.Left.Item)
 			subMatch.RatioB = ratioProcess(match.Odd.Right.Item)
-			if match.Odd.Left.Victory == "win" && match.Odd.Right.Victory == "lose" {
+			if match.Odd.Left.Victory == "win" {
 				subMatch.Winner = match.LeftTeam
-			} else if match.Odd.Left.Victory == "lose" && match.Odd.Right.Victory == "win" {
+			} else if match.Odd.Right.Victory == "win" {
 				subMatch.Winner = match.RightTeam
 			}
 			subMatch.Status = processStatus(match.Status)
