@@ -17,12 +17,13 @@ import (
 )
 
 type dotastatsConfig struct {
-	Port           string
-	URI            string
-	Dbname         string
-	Collection     string
-	CollectionTeam string
-	IsDevelopment  string
+	Port               string
+	URI                string
+	Dbname             string
+	Collection         string
+	CollectionTeam     string
+	CollectionFeedback string
+	IsDevelopment      string
 }
 
 // App in main app
@@ -46,21 +47,23 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 	var config dotastatsConfig
 	if viper.GetBool("isDevelopment") {
 		config = dotastatsConfig{
-			IsDevelopment:  viper.GetString("isDevelopment"),
-			Port:           viper.GetString("port"),
-			URI:            viper.GetString("uri"),
-			Dbname:         viper.GetString("dbname"),
-			Collection:     viper.GetString("collection"),
-			CollectionTeam: viper.GetString("collection-team"),
+			IsDevelopment:      viper.GetString("isDevelopment"),
+			Port:               viper.GetString("port"),
+			URI:                viper.GetString("uri"),
+			Dbname:             viper.GetString("dbname"),
+			Collection:         viper.GetString("collection"),
+			CollectionTeam:     viper.GetString("collection-team"),
+			CollectionFeedback: viper.GetString("collection-feedback"),
 		}
 	} else {
 		config = dotastatsConfig{
-			IsDevelopment:  os.Getenv("isDevelopment"),
-			Port:           os.Getenv("PORT"),
-			URI:            os.Getenv("uri"),
-			Dbname:         os.Getenv("dbname"),
-			Collection:     os.Getenv("collection"),
-			CollectionTeam: os.Getenv("collection-team"),
+			IsDevelopment:      os.Getenv("isDevelopment"),
+			Port:               os.Getenv("PORT"),
+			URI:                os.Getenv("uri"),
+			Dbname:             os.Getenv("dbname"),
+			Collection:         os.Getenv("collection"),
+			CollectionTeam:     os.Getenv("collection-team"),
+			CollectionFeedback: os.Getenv("collection-feedback"),
 		}
 	}
 
@@ -68,7 +71,13 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 		config.URI = viper.GetString("uriLocal")
 	}
 
-	mongo := dotastats.Mongodb{URI: config.URI, Dbname: config.Dbname, Collection: config.Collection, CollectionTeam: config.CollectionTeam}
+	mongo := dotastats.Mongodb{
+		URI:                config.URI,
+		Dbname:             config.Dbname,
+		Collection:         config.Collection,
+		CollectionTeam:     config.CollectionTeam,
+		CollectionFeedback: config.CollectionFeedback,
+	}
 
 	gp := globalPresenter{
 		SiteName:    "dotastats",
@@ -111,6 +120,7 @@ func main() {
 	r.Get("/crawlTeamInfo", common.Then(a.Wrap(a.GetCrawlTeamInfoHandler())))
 	r.Get("/create-twitter-list", common.Then(a.Wrap(a.CreateAllTwitterList())))
 	r.Get("/remove-twitter-list", common.Then(a.Wrap(a.RemoveAllTwitterList())))
+	r.Post("/feedback", common.Then(a.Wrap(a.PostFeedback())))
 	handler := cors.Default().Handler(r)
 	c := cron.New()
 	_, err = c.AddFunc("@every 5m", func() {

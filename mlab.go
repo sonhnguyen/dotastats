@@ -8,10 +8,11 @@ import (
 )
 
 type Mongodb struct {
-	URI            string
-	Dbname         string
-	Collection     string
-	CollectionTeam string
+	URI                string
+	Dbname             string
+	Collection         string
+	CollectionTeam     string
+	CollectionFeedback string
 }
 
 func selectFields(q ...string) (r bson.M) {
@@ -88,6 +89,24 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 		}
 	}
 	fmt.Println("done saving %v matches", len(matchList))
+	return nil
+}
+
+func (mongo *Mongodb) SaveFeedback(feedBack *Feedback) error {
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionFeedback)
+	fmt.Println("saving feedback")
+
+	err = collection.Insert(feedBack)
+	if err != nil {
+		fmt.Errorf("error inserting %s", err)
+	}
 	return nil
 }
 

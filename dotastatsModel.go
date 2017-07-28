@@ -123,3 +123,9 @@ type TwitterGetListResponse struct {
 type TwitterList struct {
 	Slug string `json:"slug"`
 }
+
+type Feedback struct {
+	Name     string    `json:"name"`
+	Feedback string    `json:"feedback"`
+	Time     time.Time `json:"time"`
+}

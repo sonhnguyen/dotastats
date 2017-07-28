@@ -13,5 +13,6 @@
 		"tokensecret":"cGOHT56MFlHVlpPsDAMhxmqsdwXuVq0lm3tL0VcWavhWU",
 		"twitterid":"dotastats_"
 	},
-	"collection-team": "dev-team"
+	"collection-team": "dev-team",
+	"collection-feedback": "dev-feedback"
 }
