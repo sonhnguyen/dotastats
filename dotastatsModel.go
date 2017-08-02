@@ -91,7 +91,7 @@ type F10kResult struct {
 	Name         string  `json:"name"`
 	AverageKill  float64 `json:"avgkill"`
 	AverageDeath float64 `json:"avgdeath"`
-	RatioKill    float64 `json:"name"`
+	RatioKill    float64 `json:"ratiokill"`
 	TotalKill    float64 `json:"totalkill"`
 	TotalDeath   float64 `json:"totaldeath"`
 	Winrate      float64 `json:"winrate"`

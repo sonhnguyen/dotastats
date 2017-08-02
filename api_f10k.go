@@ -41,6 +41,12 @@ func GetTeamF10kMatches(teamName string, apiParams APIParams, mongodb Mongodb) (
 		}
 		avgOdds += ratio
 		ratioKill += kill / death
+		if match.TeamAShort == teamName {
+			teamName = match.TeamA
+		}
+		if match.TeamBShort == teamName {
+			teamName = match.TeamB
+		}
 	}
 	avgKill = totalKill / float64(len(data))
 	avgDeath = totalDeath / float64(len(data))
