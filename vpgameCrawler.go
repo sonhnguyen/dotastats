@@ -70,8 +70,8 @@ type VPgameMatch struct {
 	GameTime       string           `json:"game_time"`
 	LeftTeam       string           `json:"left_team"`
 	RightTeam      string           `json:"right_team"`
-	LeftTeamScore  int              `json:"left_team_score"`
-	RightTeamScore int              `json:"right_team_score"`
+	LeftTeamScore  string           `json:"left_team_score"`
+	RightTeamScore string           `json:"right_team_score"`
 	Status         string           `json:"status_name"`
 	Schedule       VPGameSchedule   `json:"schedule"`
 	Odd            VPGameOdd        `json:"odd"`
