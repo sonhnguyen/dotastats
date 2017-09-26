@@ -59,24 +59,24 @@ type VPGameSchedule struct {
 }
 
 type VPgameMatch struct {
-	Id             string           `json:"id"`
-	Round          string           `json:"round"`
-	Category       string           `json:"category"`
-	ModeName       string           `json:"mode_name"`
-	ModeDesc       string           `json:"name"`
-	HandicapAmount string           `json:"handicap"`
-	HandicapTeam   string           `json:"handicap_team"`
-	SeriesID       string           `json:"tournament_schedule_id"`
-	GameTime       string           `json:"game_time"`
-	LeftTeam       string           `json:"left_team"`
-	RightTeam      string           `json:"right_team"`
-	LeftTeamScore  string           `json:"left_team_score"`
-	RightTeamScore string           `json:"right_team_score"`
-	Status         string           `json:"status_name"`
-	Schedule       VPGameSchedule   `json:"schedule"`
-	Odd            VPGameOdd        `json:"odd"`
-	Team           VPGameTeam       `json:"team"`
-	Tournament     VPGameTournament `json:"tournament"`
+	Id             string `json:"id"`
+	Round          string `json:"round"`
+	Category       string `json:"category"`
+	ModeName       string `json:"mode_name"`
+	ModeDesc       string `json:"name"`
+	HandicapAmount string `json:"handicap"`
+	HandicapTeam   string `json:"handicap_team"`
+	SeriesID       string `json:"tournament_schedule_id"`
+	GameTime       string `json:"game_time"`
+	LeftTeam       string `json:"left_team"`
+	RightTeam      string `json:"right_team"`
+	// LeftTeamScore  string           `json:"left_team_score"`
+	// RightTeamScore string           `json:"right_team_score"`
+	Status     string           `json:"status_name"`
+	Schedule   VPGameSchedule   `json:"schedule"`
+	Odd        VPGameOdd        `json:"odd"`
+	Team       VPGameTeam       `json:"team"`
+	Tournament VPGameTournament `json:"tournament"`
 }
 
 type VPgameAPIResult struct {
