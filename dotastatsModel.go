@@ -131,7 +131,8 @@ type Feedback struct {
 }
 
 type User struct {
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Password string
+	Name        string `json:"name"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	RegisterKey string `json:"register_key"`
 }

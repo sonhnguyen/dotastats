@@ -10,15 +10,14 @@ import (
 
 func (a *App) PostFeedback() HandlerWithError {
 	return func(w http.ResponseWriter, req *http.Request) error {
-
 		var feedBack dotastats.Feedback
 		err := json.NewDecoder(req.Body).Decode(&feedBack)
 		if err != nil {
-			return nil
+			return newAPIError(500, "error when decoding request body", err)
 		}
 
 		if feedBack.Name == "" || feedBack.Feedback == "" {
-			return nil
+			return newAPIError(400, "name and feedback should not be empty", nil)
 		}
 
 		feedBack.Time = time.Now()
@@ -27,6 +26,23 @@ func (a *App) PostFeedback() HandlerWithError {
 		if err != nil {
 			a.logr.Log("error when saving feedback %s", err)
 			return newAPIError(500, "error when saving feedback %s", err)
+		}
+
+		return nil
+	}
+}
+
+func (a *App) GetFeedback() HandlerWithError {
+	return func(w http.ResponseWriter, req *http.Request) error {
+		feedBackArr, err := a.mongodb.GetFeedback()
+		if err != nil {
+			a.logr.Log("error when getting feedback %s", err)
+			return newAPIError(500, "error when getting feedback", nil)
+		}
+
+		err = json.NewEncoder(w).Encode(feedBackArr)
+		if err != nil {
+			return newAPIError(500, "error when return json", nil)
 		}
 
 		return nil

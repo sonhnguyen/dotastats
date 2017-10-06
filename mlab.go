@@ -93,6 +93,24 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	return nil
 }
 
+func (mongo *Mongodb) GetFeedback() ([]Feedback, error) {
+	var feedBackArr []Feedback
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return []Feedback{}, err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionFeedback)
+
+	err = collection.Find(nil).All(&feedBackArr)
+	if err != nil {
+		return []Feedback{}, fmt.Errorf("error getting feedback %s", err)
+	}
+	return feedBackArr, nil
+}
+
 func (mongo *Mongodb) SaveFeedback(feedBack *Feedback) error {
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
@@ -330,7 +348,7 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName string, apiParams APIParams) (
 	return result, nil
 }
 
-func (mongo *Mongodb) GetUser(email string, pass string) (User, error) {
+func (mongo *Mongodb) GetUserByEmail(email string) (User, error) {
 	var user User
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
@@ -341,7 +359,7 @@ func (mongo *Mongodb) GetUser(email string, pass string) (User, error) {
 	sess.SetSafe(&mgo.Safe{})
 
 	collection := sess.DB(mongo.Dbname).C(mongo.CollectionUser)
-	err = collection.Find(bson.M{"email": email, "password": pass}).One(&user)
+	err = collection.Find(bson.M{"email": email}).One(&user)
 
 	if err != nil {
 		return User{}, err

@@ -8,25 +8,28 @@ import (
 
 const workFactor = 10
 
-func GetUser(email string, pass string, mongodb Mongodb) (User, error) {
-	user, err := mongodb.GetUser(email, pass)
+func GetUserAndAuthenticate(email string, password string, mongodb Mongodb) (User, error) {
+	user, err := mongodb.GetUserByEmail(email)
 	if err != nil {
-		return User{}, err
+		return User{}, fmt.Errorf("user not found, %s", err)
 	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err != nil {
+		return User{}, fmt.Errorf("incorrect email or password, %s", err)
+	}
+
+	user.Password = ""
 
 	return user, nil
 }
 
-func CreateUser(name string, email string, pass string, mongodb Mongodb) (User, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), workFactor)
+func CreateUser(user User, mongodb Mongodb) (User, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), workFactor)
 	if err != nil {
 		return User{}, fmt.Errorf("error generating bcrypt hash: %s", err)
 	}
-	user := User{
-		Name:     name,
-		Email:    email,
-		Password: string(hashedPassword),
-	}
+	user.Password = string(hashedPassword)
 	err = mongodb.CreateUser(&user)
 	if err != nil {
 		return User{}, err

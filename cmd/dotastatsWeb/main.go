@@ -128,6 +128,7 @@ func main() {
 	r.Get("/create-twitter-list", common.Then(a.Wrap(a.CreateAllTwitterList())))
 	r.Get("/remove-twitter-list", common.Then(a.Wrap(a.RemoveAllTwitterList())))
 	r.Post("/feedback", common.Then(a.Wrap(a.PostFeedback())))
+	r.Get("/feedback", common.Then(a.Wrap(a.GetFeedback())))
 
 	r.Post("/login", common.Then(a.Wrap(a.LoginPostHandler())))
 	r.Post("/register", common.Then(a.Wrap(a.RegisterPostHandler())))
