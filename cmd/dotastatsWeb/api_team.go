@@ -16,18 +16,18 @@ func (a *App) GetTeamHistoryHandler() HandlerWithError {
 		queryValues := req.URL.Query()
 		if err != nil {
 			a.logr.Log("error when  building params %s", err)
-			return newAPIError(300, "error when building params %s", err)
+			return newAPIError(500, "error when building params %s", err)
 		}
 		if value := queryValues.Get("teama"); value != "" {
 			teamA = value
 		} else {
-			return newAPIError(300, "error missing required params %s", errors.New("missing teama param"))
+			return newAPIError(500, "error missing required params %s", errors.New("missing teama param"))
 		}
 
 		if value := queryValues.Get("teamb"); value != "" {
 			teamB = value
 		} else {
-			return newAPIError(300, "error missing required params %s", errors.New("missing teamB param"))
+			return newAPIError(500, "error missing required params %s", errors.New("missing teamB param"))
 		}
 		result, err := dotastats.GetTeamHistory(teamA, teamB, apiParams, a.mongodb)
 		if err != nil {
@@ -51,7 +51,7 @@ func (a *App) GetTeamInfoHandler() HandlerWithError {
 		apiParams, err := BuildAPIParams(req)
 		if err != nil {
 			a.logr.Log("error when  building params %s", err)
-			return newAPIError(300, "error when building params %s", err)
+			return newAPIError(500, "error when building params %s", err)
 		}
 		result, err := dotastats.GetTeamInfo(teamSlug, apiParams, a.mongodb)
 		if err != nil {
@@ -75,7 +75,7 @@ func (a *App) GetTeamMatchesHandler() HandlerWithError {
 		apiParams, err := BuildAPIParams(req)
 		if err != nil {
 			a.logr.Log("error when  building params %s", err)
-			return newAPIError(300, "error when building params %s", err)
+			return newAPIError(500, "error when building params %s", err)
 		}
 		result, err := dotastats.GetTeamMatches(teamName, apiParams, a.mongodb)
 		if err != nil {

@@ -15,7 +15,7 @@ func (a *App) GetTeamF10kMatchesHandler() HandlerWithError {
 		apiParams, err := BuildAPIParams(req)
 		if err != nil {
 			a.logr.Log("error when  building params %s", err)
-			return newAPIError(300, "error when building params %s", err)
+			return newAPIError(500, "error when building params %s", err)
 		}
 
 		result, err := dotastats.GetTeamF10kMatches(teamName, apiParams, a.mongodb)

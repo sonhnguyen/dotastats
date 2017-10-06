@@ -129,3 +129,9 @@ type Feedback struct {
 	Feedback string    `json:"feedback"`
 	Time     time.Time `json:"time"`
 }
+
+type User struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string
+}

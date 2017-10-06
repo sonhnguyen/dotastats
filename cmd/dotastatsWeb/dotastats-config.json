@@ -14,5 +14,7 @@
 		"twitterid":"dotastats_"
 	},
 	"collection-team": "dev-team",
+	"collection-user": "dev-user",
+	"register-key": "eGO8i972UZRp7alUuXcg",
 	"collection-feedback": "dev-feedback"
 }

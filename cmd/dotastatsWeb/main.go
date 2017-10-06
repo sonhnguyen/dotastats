@@ -23,7 +23,9 @@ type dotastatsConfig struct {
 	Collection         string
 	CollectionTeam     string
 	CollectionFeedback string
+	CollectionUser     string
 	IsDevelopment      string
+	RegisterKey        string
 }
 
 // App in main app
@@ -54,6 +56,8 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 			Collection:         viper.GetString("collection"),
 			CollectionTeam:     viper.GetString("collection-team"),
 			CollectionFeedback: viper.GetString("collection-feedback"),
+			CollectionUser:     viper.GetString("collection-user"),
+			RegisterKey:        viper.GetString("register-key"),
 		}
 	} else {
 		config = dotastatsConfig{
@@ -64,6 +68,8 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 			Collection:         os.Getenv("collection"),
 			CollectionTeam:     os.Getenv("collection-team"),
 			CollectionFeedback: os.Getenv("collection-feedback"),
+			CollectionUser:     os.Getenv("collection-user"),
+			RegisterKey:        os.Getenv("register-key"),
 		}
 	}
 
@@ -77,6 +83,7 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 		Collection:         config.Collection,
 		CollectionTeam:     config.CollectionTeam,
 		CollectionFeedback: config.CollectionFeedback,
+		CollectionUser:     config.CollectionUser,
 	}
 
 	gp := globalPresenter{
@@ -121,6 +128,10 @@ func main() {
 	r.Get("/create-twitter-list", common.Then(a.Wrap(a.CreateAllTwitterList())))
 	r.Get("/remove-twitter-list", common.Then(a.Wrap(a.RemoveAllTwitterList())))
 	r.Post("/feedback", common.Then(a.Wrap(a.PostFeedback())))
+
+	r.Post("/login", common.Then(a.Wrap(a.LoginPostHandler())))
+	r.Post("/register", common.Then(a.Wrap(a.RegisterPostHandler())))
+
 	handler := cors.Default().Handler(r)
 	c := cron.New()
 	_, err = c.AddFunc("@every 5m", func() {

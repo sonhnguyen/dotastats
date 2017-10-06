@@ -13,6 +13,7 @@ type Mongodb struct {
 	Collection         string
 	CollectionTeam     string
 	CollectionFeedback string
+	CollectionUser     string
 }
 
 func selectFields(q ...string) (r bson.M) {
@@ -101,7 +102,6 @@ func (mongo *Mongodb) SaveFeedback(feedBack *Feedback) error {
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 	collection := sess.DB(mongo.Dbname).C(mongo.CollectionFeedback)
-	fmt.Println("saving feedback")
 
 	err = collection.Insert(feedBack)
 	if err != nil {
@@ -328,4 +328,41 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName string, apiParams APIParams) (
 		return []Match{}, err
 	}
 	return result, nil
+}
+
+func (mongo *Mongodb) GetUser(email string, pass string) (User, error) {
+	var user User
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return User{}, err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionUser)
+	err = collection.Find(bson.M{"email": email, "password": pass}).One(&user)
+
+	if err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
+func (mongo *Mongodb) CreateUser(user *User) error {
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionUser)
+
+	err = collection.Insert(user)
+	if err != nil {
+		fmt.Errorf("error inserting %s", err)
+	}
+	return nil
 }
