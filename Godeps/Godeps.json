@@ -1,10 +1,7 @@
 {
 	"ImportPath": "dotastats",
 	"GoVersion": "go1.7",
-	"GodepVersion": "v75",
-	"Packages": [
-		"./cmd/..."
-	],
+	"GodepVersion": "v79",
 	"Deps": [
 		{
 			"ImportPath": "github.com/PuerkitoBio/goquery",
@@ -19,11 +16,6 @@
 			"ImportPath": "github.com/fsnotify/fsnotify",
 			"Comment": "v1.4.2-5-gff7bc41",
 			"Rev": "ff7bc41d4007f67e5456703c34342df4e0113f64"
-		},
-		{
-			"ImportPath": "github.com/gorilla/context",
-			"Comment": "v1.1-7-g08b5f42",
-			"Rev": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
 		},
 		{
 			"ImportPath": "github.com/hashicorp/hcl",
@@ -62,20 +54,6 @@
 			"Rev": "630949a3c5fa3c613328e1b8256052cbc2327c9b"
 		},
 		{
-			"ImportPath": "github.com/julienschmidt/httprouter",
-			"Comment": "v1.1-44-g6f3f391",
-			"Rev": "6f3f3919c8781ce5c0509c83fffc887a7830c938"
-		},
-		{
-			"ImportPath": "github.com/justinas/alice",
-			"Comment": "1.0.0-16-g1051eaf",
-			"Rev": "1051eaf52fcafdd87ead59d28b065f1fcb8274ec"
-		},
-		{
-			"ImportPath": "github.com/kardianos/osext",
-			"Rev": "9d302b58e975387d0b4d9be876622c86cefe64be"
-		},
-		{
 			"ImportPath": "github.com/magiconair/properties",
 			"Comment": "v1.7.2-7-g51463bf",
 			"Rev": "51463bfca2576e06c62a8504b5c0f06d61312647"
@@ -89,6 +67,10 @@
 			"Rev": "53818660ed4955e899c0bcafa97299a388bd7c8e"
 		},
 		{
+			"ImportPath": "github.com/mrjones/oauth",
+			"Rev": "3f67d9c274355678b2f9844b08d643e2f9213340"
+		},
+		{
 			"ImportPath": "github.com/pelletier/go-buffruneio",
 			"Comment": "v0.2.0",
 			"Rev": "c37440a7cf42ac63b919c752ca73a85067e05992"
@@ -97,16 +79,6 @@
 			"ImportPath": "github.com/pelletier/go-toml",
 			"Comment": "v0.5.0-5-gf6e7596",
 			"Rev": "f6e7596e8daafd44dc9e5c208dc73035020c8481"
-		},
-		{
-			"ImportPath": "github.com/rs/cors",
-			"Comment": "v1.0",
-			"Rev": "a62a804a8a009876ca59105f7899938a1349f4b3"
-		},
-		{
-			"ImportPath": "github.com/rs/xhandler",
-			"Comment": "v1.0-1-ged27b6f",
-			"Rev": "ed27b6fd65218132ee50cd95f38474a3d8a2cd12"
 		},
 		{
 			"ImportPath": "github.com/spf13/afero",
@@ -134,8 +106,12 @@
 			"Rev": "84f94806c67f59dd7ae87bc5351f7a9c94a4558d"
 		},
 		{
-			"ImportPath": "golang.org/x/net/context",
-			"Rev": "6c23252515492caf9b228a9d5cabcdbde29f7f82"
+			"ImportPath": "golang.org/x/crypto/bcrypt",
+			"Rev": "9419663f5a44be8b34ca85f08abc5fe1be11f8a3"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/blowfish",
+			"Rev": "9419663f5a44be8b34ca85f08abc5fe1be11f8a3"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
@@ -181,11 +157,6 @@
 			"ImportPath": "gopkg.in/mgo.v2/internal/scram",
 			"Comment": "r2016.08.01-5-g3f83fa5",
 			"Rev": "3f83fa5005286a7fe593b055f0d7771a7dce4655"
-		},
-		{
-			"ImportPath": "gopkg.in/robfig/cron.v2",
-			"Comment": "v1-11-gbe2e0b0",
-			"Rev": "be2e0b0deed5a68ffee390b4583a13aff8321535"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
