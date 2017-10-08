@@ -31,6 +31,16 @@
 			"Rev": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
 		},
 		{
+			"ImportPath": "github.com/gorilla/securecookie",
+			"Comment": "v1.1-6-ge59506c",
+			"Rev": "e59506cc896acb7f7bf732d4fdf5e25f7ccd8983"
+		},
+		{
+			"ImportPath": "github.com/gorilla/sessions",
+			"Comment": "v1.1-7-gb61c93c",
+			"Rev": "b61c93cb7f67533c8bfbb5ea450efc07e5833c5e"
+		},
+		{
 			"ImportPath": "github.com/hashicorp/hcl",
 			"Rev": "630949a3c5fa3c613328e1b8256052cbc2327c9b"
 		},
@@ -107,9 +117,19 @@
 			"Rev": "f6e7596e8daafd44dc9e5c208dc73035020c8481"
 		},
 		{
+			"ImportPath": "github.com/renstrom/shortuuid",
+			"Comment": "v2.0.0-4-gd728e00",
+			"Rev": "d728e00b727de969356736fabe7c6f405347a26c"
+		},
+		{
 			"ImportPath": "github.com/rs/cors",
 			"Comment": "v1.2-1-geabcc6a",
 			"Rev": "eabcc6af4bbe5ad3a949d36450326a2b0b9894b8"
+		},
+		{
+			"ImportPath": "github.com/satori/go.uuid",
+			"Comment": "v1.1.0-8-g5bf94b6",
+			"Rev": "5bf94b69c6b68ee1b541973bb8e1144db23a194b"
 		},
 		{
 			"ImportPath": "github.com/spf13/afero",
