@@ -126,7 +126,14 @@ func main() {
 	logr := newLogger()
 	a := SetupApp(r, logr, "")
 	// Add CORS support (Cross Origin Resource Sharing)
-	handler := cors.Default().Handler(r)
+	corsSetting := cors.New(cors.Options{
+		AllowedOrigins: []string{"https://f10k.herokuapp.com", "http://dotastats.me", "http://www.dotastats.me"},
+	})
+	handler := corsSetting.Handler(r)
+	if a.config.IsDevelopment == "true" {
+		handler = cors.Default().Handler(r)
+	}
+	
 	common := alice.New(context.ClearHandler, a.loggingHandler, a.recoverHandler)
 	authenticate := common.Append(a.UserMiddlewareGenerator, a.authMiddleware)
 	r.Get("/team-info/:slug", common.Then(a.Wrap(a.GetTeamInfoHandler())))
