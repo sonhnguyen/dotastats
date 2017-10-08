@@ -136,3 +136,8 @@ type User struct {
 	Password    string `json:"password"`
 	RegisterKey string `json:"register_key"`
 }
+
+type Session struct {
+	Email      string `json:"email"`
+	SessionKey string `json:"session_key"`
+}

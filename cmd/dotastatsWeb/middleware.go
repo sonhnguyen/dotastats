@@ -2,13 +2,19 @@ package main
 
 import (
 	"dotastats"
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/gorilla/context"
 )
 
-const ()
+const UserKeyName = "user-dotastats-4829123"
+const SessionKeyName = "session_key-9638182"
+const SessionName = "session-dotastats-8429623"
 
 // appLogger is an interface for logging.
 // Used to introduce a seam into the app, for testing
@@ -62,6 +68,61 @@ func (a *App) recoverHandler(next http.Handler) http.Handler {
 			}
 		}()
 		next.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(fn)
+}
+
+// Auth middleware
+func (a *App) authMiddleware(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		user := getUser(req)
+
+		if user == nil {
+			a.logr.Log("unauthorized access")
+			e := newAPIError(401, "you have to login to access this", nil)
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(e.Code)
+			err := json.NewEncoder(w).Encode(e)
+			if err != nil {
+				a.logr.Log("error when return json %s", e)
+			}
+			return
+		}
+		next.ServeHTTP(w, req)
+	}
+	return http.HandlerFunc(fn)
+}
+
+// userMiddleware is the middleware wrapper that detects and provides the user
+func (a *App) UserMiddlewareGenerator(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, req *http.Request) {
+		fmt.Println("inside user middleware")
+		session, err := a.store.Get(req, SessionName)
+		if err != nil {
+			a.logr.Log("error retrieving session from store", err)
+			next.ServeHTTP(w, req)
+			return
+		}
+
+		sessionKey, ok := session.Values[SessionKeyName]
+		if ok {
+			ssk := sessionKey.(string)
+			s, err := dotastats.GetSessionBySessionKey(ssk, a.mongodb)
+			if err != nil {
+				a.logr.Log("error getting session with session key %s: %s", ssk, err)
+				delete(session.Values, sessionKey)
+				session.Save(req, w)
+			} else {
+				user, err := dotastats.GetUserByEmail(s.Email, a.mongodb)
+				if err != nil {
+					a.logr.Log("error getting user with session key %s: %s", ssk, err)
+					delete(session.Values, sessionKey)
+					session.Save(req, w)
+				}
+				context.Set(req, UserKeyName, &user)
+			}
+		}
+		next.ServeHTTP(w, req)
 	}
 	return http.HandlerFunc(fn)
 }

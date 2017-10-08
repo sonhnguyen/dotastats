@@ -40,7 +40,12 @@ func (a *App) GetFeedback() HandlerWithError {
 			return newAPIError(500, "error when getting feedback", nil)
 		}
 
-		err = json.NewEncoder(w).Encode(feedBackArr)
+		response := struct {
+			Data []dotastats.Feedback `json:"data"`
+		}{
+			feedBackArr,
+		}
+		err = json.NewEncoder(w).Encode(response)
 		if err != nil {
 			return newAPIError(500, "error when return json", nil)
 		}

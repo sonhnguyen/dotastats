@@ -8,18 +8,11 @@ import (
 
 const workFactor = 10
 
-func GetUserAndAuthenticate(email string, password string, mongodb Mongodb) (User, error) {
+func GetUserByEmail(email string, mongodb Mongodb) (User, error) {
 	user, err := mongodb.GetUserByEmail(email)
 	if err != nil {
 		return User{}, fmt.Errorf("user not found, %s", err)
 	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	if err != nil {
-		return User{}, fmt.Errorf("incorrect email or password, %s", err)
-	}
-
-	user.Password = ""
 
 	return user, nil
 }

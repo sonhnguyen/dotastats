@@ -90,3 +90,13 @@ func GetParamsObj(req *http.Request) httprouter.Params {
 	ps := context.Get(req, Params).(httprouter.Params)
 	return ps
 }
+
+// getUser return the user in request
+func getUser(req *http.Request) *dotastats.User {
+	if rv := context.Get(req, UserKeyName); rv != nil {
+		res := rv.(*dotastats.User)
+		return res
+	}
+
+	return nil
+}

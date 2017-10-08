@@ -9,6 +9,7 @@ import (
 	"runtime"
 
 	"github.com/gorilla/context"
+	"github.com/gorilla/sessions"
 	"github.com/justinas/alice"
 	"github.com/kardianos/osext"
 	"github.com/rs/cors"
@@ -24,6 +25,8 @@ type dotastatsConfig struct {
 	CollectionTeam     string
 	CollectionFeedback string
 	CollectionUser     string
+	CollectionSession  string
+	CookieSecretKey    string
 	IsDevelopment      string
 	RegisterKey        string
 }
@@ -35,6 +38,7 @@ type App struct {
 	logr    appLogger
 	mongodb dotastats.Mongodb
 	config  dotastatsConfig
+	store   *sessions.CookieStore
 }
 
 // globalPresenter contains the fields neccessary for presenting in all templates
@@ -57,6 +61,8 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 			CollectionTeam:     viper.GetString("collection-team"),
 			CollectionFeedback: viper.GetString("collection-feedback"),
 			CollectionUser:     viper.GetString("collection-user"),
+			CollectionSession:  viper.GetString("collection-session"),
+			CookieSecretKey:    viper.GetString("cookie-secret-key"),
 			RegisterKey:        viper.GetString("register-key"),
 		}
 	} else {
@@ -69,6 +75,8 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 			CollectionTeam:     os.Getenv("collection-team"),
 			CollectionFeedback: os.Getenv("collection-feedback"),
 			CollectionUser:     os.Getenv("collection-user"),
+			CollectionSession:  os.Getenv("collection-session"),
+			CookieSecretKey:    os.Getenv("cookie-secret-key"),
 			RegisterKey:        os.Getenv("register-key"),
 		}
 	}
@@ -84,6 +92,7 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 		CollectionTeam:     config.CollectionTeam,
 		CollectionFeedback: config.CollectionFeedback,
 		CollectionUser:     config.CollectionUser,
+		CollectionSession:  config.CollectionSession,
 	}
 
 	gp := globalPresenter{
@@ -95,6 +104,7 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 	return &App{
 		router:  r,
 		gp:      gp,
+		store:   sessions.NewCookieStore([]byte(config.CookieSecretKey)),
 		logr:    logger,
 		config:  config,
 		mongodb: mongo,
@@ -116,7 +126,9 @@ func main() {
 	logr := newLogger()
 	a := SetupApp(r, logr, "")
 	// Add CORS support (Cross Origin Resource Sharing)
+	handler := cors.Default().Handler(r)
 	common := alice.New(context.ClearHandler, a.loggingHandler, a.recoverHandler)
+	authenticate := common.Append(a.UserMiddlewareGenerator, a.authMiddleware)
 	r.Get("/team-info/:slug", common.Then(a.Wrap(a.GetTeamInfoHandler())))
 	r.Get("/team/:name", common.Then(a.Wrap(a.GetTeamMatchesHandler())))
 	r.Get("/history", common.Then(a.Wrap(a.GetTeamHistoryHandler())))
@@ -127,13 +139,12 @@ func main() {
 	r.Get("/crawlTeamInfo", common.Then(a.Wrap(a.GetCrawlTeamInfoHandler())))
 	r.Get("/create-twitter-list", common.Then(a.Wrap(a.CreateAllTwitterList())))
 	r.Get("/remove-twitter-list", common.Then(a.Wrap(a.RemoveAllTwitterList())))
+	r.Get("/feedback", authenticate.Then(a.Wrap(a.GetFeedback())))
 	r.Post("/feedback", common.Then(a.Wrap(a.PostFeedback())))
-	r.Get("/feedback", common.Then(a.Wrap(a.GetFeedback())))
 
 	r.Post("/login", common.Then(a.Wrap(a.LoginPostHandler())))
 	r.Post("/register", common.Then(a.Wrap(a.RegisterPostHandler())))
 
-	handler := cors.Default().Handler(r)
 	c := cron.New()
 	_, err = c.AddFunc("@every 5m", func() {
 		err = a.RunCrawlerAndSave()

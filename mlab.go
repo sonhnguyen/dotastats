@@ -14,6 +14,7 @@ type Mongodb struct {
 	CollectionTeam     string
 	CollectionFeedback string
 	CollectionUser     string
+	CollectionSession  string
 }
 
 func selectFields(q ...string) (r bson.M) {
@@ -380,7 +381,56 @@ func (mongo *Mongodb) CreateUser(user *User) error {
 
 	err = collection.Insert(user)
 	if err != nil {
-		fmt.Errorf("error inserting %s", err)
+		return err
 	}
+	return nil
+}
+
+func (mongo *Mongodb) GetSessionBySessionKey(ssk string) (Session, error) {
+	var dotastatsSession Session
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return Session{}, err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionSession)
+	err = collection.Find(bson.M{"session_key": ssk}).One(&dotastatsSession)
+
+	if err != nil {
+		return Session{}, err
+	}
+
+	return dotastatsSession, nil
+}
+
+func (mongo *Mongodb) CreateOrUpdateSession(s Session) error {
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionSession)
+	count, err := collection.Find(bson.M{"email": s.Email}).Count()
+	if err != nil {
+		return err
+	}
+
+	if count > 0 {
+		err = collection.Update(bson.M{"email": s.Email}, bson.M{"$set": bson.M{"session_key": s.SessionKey}})
+		return err
+	}
+
+	err = collection.Insert(s)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

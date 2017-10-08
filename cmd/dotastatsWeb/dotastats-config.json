@@ -15,6 +15,8 @@
 	},
 	"collection-team": "dev-team",
 	"collection-user": "dev-user",
-	"register-key": "eGO8i972UZRp7alUuXcg",
-	"collection-feedback": "dev-feedback"
+	"collection-feedback": "dev-feedback",
+	"collection-session": "dev-session",
+	"cookie-secret-key": "9529572917273",
+	"register-key": "eGO8i972UZRp7alUuXcg"
 }
