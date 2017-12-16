@@ -127,20 +127,21 @@ func main() {
 	a := SetupApp(r, logr, "")
 	// Add CORS support (Cross Origin Resource Sharing)
 	corsSetting := cors.New(cors.Options{
-		AllowedOrigins: []string{"https://f10k.herokuapp.com", "http://dotastats.me", "http://www.dotastats.me"},
+		AllowedOrigins:   []string{"https://f10k.herokuapp.com", "http://dotastats.me", "http://www.dotastats.me"},
 		AllowCredentials: true,
 	})
 	handler := corsSetting.Handler(r)
 	if a.config.IsDevelopment == "true" {
 		handler = cors.Default().Handler(r)
 	}
-	
+
 	common := alice.New(context.ClearHandler, a.loggingHandler, a.recoverHandler)
 	authenticate := common.Append(a.UserMiddlewareGenerator, a.authMiddleware)
 	r.Get("/team-info/:slug", common.Then(a.Wrap(a.GetTeamInfoHandler())))
 	r.Get("/team/:name", common.Then(a.Wrap(a.GetTeamMatchesHandler())))
 	r.Get("/history", common.Then(a.Wrap(a.GetTeamHistoryHandler())))
 	r.Get("/team/:name/f10k", common.Then(a.Wrap(a.GetTeamF10kMatchesHandler())))
+	r.Get("/team/:name/fb", common.Then(a.Wrap(a.GetTeamFBMatchesHandler())))
 	r.Get("/matches", common.Then(a.Wrap(a.GetMatchesListHandler())))
 	r.Get("/matches/:id", common.Then(a.Wrap(a.GetMatchByIDHandler())))
 	r.Get("/crawl", common.Then(a.Wrap(a.GetCustomCrawlHandler())))
