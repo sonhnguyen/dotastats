@@ -349,6 +349,36 @@ func (mongo *Mongodb) GetTeamF10kMatches(teamName string, apiParams APIParams) (
 	return result, nil
 }
 
+func (mongo *Mongodb) GetTeamFBMatches(teamName string, apiParams APIParams) ([]Match, error) {
+	var result []Match
+	findQuery := buildFindQuery(apiParams)
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return []Match{}, err
+	}
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+
+	collection := sess.DB(mongo.Dbname).C(mongo.Collection)
+	regexfb := bson.M{"$regex": bson.RegEx{Pattern: "1st Blood", Options: "i"}}
+	findQuery["$and"] = []bson.M{
+		bson.M{"$or": []bson.M{
+			bson.M{"teama": teamName},
+			bson.M{"teamb": teamName},
+			bson.M{"teama_short": teamName},
+			bson.M{"teamb_short": teamName},
+		}},
+		bson.M{"mode_name": regexfb},
+		bson.M{"status": "Settled"},
+	}
+	err = collection.Find(findQuery).Select(selectFields(apiParams.Fields...)).Skip(apiParams.Skip).Limit(apiParams.Limit).Sort("-time").All(&result)
+
+	if err != nil {
+		return []Match{}, err
+	}
+	return result, nil
+}
+
 func (mongo *Mongodb) GetUserByEmail(email string) (User, error) {
 	var user User
 	sess, err := mgo.Dial(mongo.URI)

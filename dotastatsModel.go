@@ -99,6 +99,12 @@ type F10kResult struct {
 	Matches      []Match `json:"matches"`
 }
 
+type FBResult struct {
+	Name    string  `json:"name"`
+	Winrate float64 `json:"winrate"`
+	Matches []Match `json:"matches"`
+}
+
 type TwitterCreateListRequest struct {
 	Name        string `json:"name"`
 	Mode        string `json:"mode"`
