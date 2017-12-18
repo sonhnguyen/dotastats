@@ -6,10 +6,6 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-// DefaultEncoder is the default encoder uses when generating new UUIDs, and is
-// based on Base57.
-var DefaultEncoder = &base57{newAlphabet(DefaultAlphabet)}
-
 // Encoder is an interface for encoding/decoding UUIDs to strings.
 type Encoder interface {
 	Encode(uuid.UUID) string
@@ -18,7 +14,7 @@ type Encoder interface {
 
 // New returns a new UUIDv4, encoded with base57.
 func New() string {
-	return DefaultEncoder.Encode(uuid.NewV4())
+	return base57Encoder.Encode(uuid.NewV4())
 }
 
 // NewWithEncoder returns a new UUIDv4, encoded with enc.
@@ -39,7 +35,7 @@ func NewWithNamespace(name string) string {
 		u = uuid.NewV5(uuid.NamespaceDNS, name)
 	}
 
-	return DefaultEncoder.Encode(u)
+	return base57Encoder.Encode(u)
 }
 
 // NewWithAlphabet returns a new UUIDv4, encoded with base57 using the
