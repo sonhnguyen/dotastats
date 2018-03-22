@@ -9,6 +9,8 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+var base57Encoder Encoder = base57{newAlphabet(DefaultAlphabet)}
+
 type base57 struct {
 	// alphabet is the character set to construct the UUID from.
 	alphabet alphabet
@@ -38,7 +40,6 @@ func (b base57) Decode(u string) (uuid.UUID, error) {
 	return uuid.FromString(str)
 }
 
-// numToString converts a number a string using the given alpabet.
 func (b *base57) numToString(number *big.Int, padToLen int) string {
 	var (
 		out   string
