@@ -159,7 +159,7 @@ func main() {
 	r.Post("/register", common.Then(a.Wrap(a.RegisterPostHandler())))
 
 	c := cron.New()
-	_, err = c.AddFunc("@every 1s", func() {
+	_, err = c.AddFunc("@every 5m", func() {
 		err = a.RunCrawlerAndSave()
 		if err != nil {
 			log.Println("error running crawler %s", err)
