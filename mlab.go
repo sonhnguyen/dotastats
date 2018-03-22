@@ -108,7 +108,7 @@ func (mongo *Mongodb) SaveOpenDotaProMatches(matchList []OpenDotaMatch) error {
 
 	for _, match := range matchList {
 		upsertdata := bson.M{"$set": match}
-		condition := bson.M{"url": match.MatchID}
+		condition := bson.M{"match_id": match.MatchID}
 		info, err := collection.Upsert(condition, upsertdata)
 		if err != nil {
 			fmt.Errorf("error upserting %s", info, err)
