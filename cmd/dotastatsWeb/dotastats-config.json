@@ -14,6 +14,7 @@
 		"twitterid":"dotastats_"
 	},
 	"collection-team": "dev-team",
+	"collection-pro-match": "dev-pro-match",
 	"collection-user": "dev-user",
 	"collection-feedback": "dev-feedback",
 	"collection-session": "dev-session",

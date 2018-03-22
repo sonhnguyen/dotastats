@@ -12,6 +12,7 @@ type Mongodb struct {
 	Dbname             string
 	Collection         string
 	CollectionTeam     string
+	CollectionProMatch string
 	CollectionFeedback string
 	CollectionUser     string
 	CollectionSession  string
@@ -85,6 +86,29 @@ func (mongo *Mongodb) SaveMatches(matchList []Match) error {
 	for _, match := range matchList {
 		upsertdata := bson.M{"$set": match}
 		condition := bson.M{"url": match.URL}
+		info, err := collection.Upsert(condition, upsertdata)
+		if err != nil {
+			fmt.Errorf("error upserting %s", info, err)
+		}
+	}
+	fmt.Println("done saving %v matches", len(matchList))
+	return nil
+}
+
+func (mongo *Mongodb) SaveOpenDotaProMatches(matchList []OpenDotaMatch) error {
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionProMatch)
+	fmt.Println("saving matches")
+
+	for _, match := range matchList {
+		upsertdata := bson.M{"$set": match}
+		condition := bson.M{"url": match.MatchID}
 		info, err := collection.Upsert(condition, upsertdata)
 		if err != nil {
 			fmt.Errorf("error upserting %s", info, err)

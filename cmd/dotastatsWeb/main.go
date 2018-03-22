@@ -23,6 +23,7 @@ type dotastatsConfig struct {
 	Dbname             string
 	Collection         string
 	CollectionTeam     string
+	CollectionProMatch string
 	CollectionFeedback string
 	CollectionUser     string
 	CollectionSession  string
@@ -59,6 +60,7 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 			Dbname:             viper.GetString("dbname"),
 			Collection:         viper.GetString("collection"),
 			CollectionTeam:     viper.GetString("collection-team"),
+			CollectionProMatch: viper.GetString("collection-pro-match"),
 			CollectionFeedback: viper.GetString("collection-feedback"),
 			CollectionUser:     viper.GetString("collection-user"),
 			CollectionSession:  viper.GetString("collection-session"),
@@ -73,6 +75,7 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 			Dbname:             os.Getenv("dbname"),
 			Collection:         os.Getenv("collection"),
 			CollectionTeam:     os.Getenv("collection-team"),
+			CollectionProMatch: os.Getenv("collection-pro-match"),
 			CollectionFeedback: os.Getenv("collection-feedback"),
 			CollectionUser:     os.Getenv("collection-user"),
 			CollectionSession:  os.Getenv("collection-session"),
@@ -90,6 +93,7 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 		Dbname:             config.Dbname,
 		Collection:         config.Collection,
 		CollectionTeam:     config.CollectionTeam,
+		CollectionProMatch: config.CollectionProMatch,
 		CollectionFeedback: config.CollectionFeedback,
 		CollectionUser:     config.CollectionUser,
 		CollectionSession:  config.CollectionSession,
@@ -155,8 +159,12 @@ func main() {
 	r.Post("/register", common.Then(a.Wrap(a.RegisterPostHandler())))
 
 	c := cron.New()
-	_, err = c.AddFunc("@every 5m", func() {
+	_, err = c.AddFunc("@every 1s", func() {
 		err = a.RunCrawlerAndSave()
+		if err != nil {
+			log.Println("error running crawler %s", err)
+		}
+		err = a.RunCrawlerOpenDotaProMatchesAndSave()
 		if err != nil {
 			log.Println("error running crawler %s", err)
 		}

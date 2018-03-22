@@ -74,6 +74,21 @@ func (a *App) RunCrawlerTeamInfoAndSave() error {
 	return nil
 }
 
+func (a *App) RunCrawlerOpenDotaProMatchesAndSave() error {
+	var openDotaAPIParams = dotastats.OpenDotaAPIParams{}
+	result, err := dotastats.RunCrawlerOpenDota(openDotaAPIParams)
+	if err != nil {
+		return err
+	}
+
+	err = a.mongodb.SaveOpenDotaProMatches(result)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (a *App) RunCrawlerAndSave() error {
 	err := a.RunPingHeroku()
 	if err != nil {

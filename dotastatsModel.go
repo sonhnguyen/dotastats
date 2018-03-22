@@ -87,6 +87,24 @@ type Match struct {
 	SeriesID       string     `json:"series_id,omitempty" bson:"series_id,omitempty"`
 }
 
+type OpenDotaMatch struct {
+	Id            bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	MatchID       int           `json:"match_id" bson:"match_id"`
+	Duration      int           `json:"duration" bson:"duration"`
+	StartTime     *time.Time    `json:"start_time" bson:"start_time"`
+	RadiantTeamID int           `json:"radiant_team_id" bson:"radiant_team_id"`
+	RadiantName   string        `json:"radiant_name" bson:"radiant_name"`
+	DireTeamID    int           `json:"dire_team_id" bson:"dire_team_id"`
+	DireName      string        `json:"dire_name" bson:"dire_name"`
+	LeagueID      int           `json:"leagueid" bson:"leagueid"`
+	LeagueName    string        `json:"league_name" bson:"league_name"`
+	SeriesID      int           `json:"series_id" bson:"series_id"`
+	SeriesType    int           `json:"series_type" bson:"series_type"`
+	RadiantScore  int           `json:"radiant_score" bson:"radiant_score"`
+	DireScore     int           `json:"dire_score" bson:"dire_score"`
+	RadiantWin    bool          `json:"radiant_win" bson:"radiant_win"`
+}
+
 type F10kResult struct {
 	Name         string  `json:"name"`
 	AverageKill  float64 `json:"avgkill"`
