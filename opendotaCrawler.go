@@ -59,6 +59,7 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 		openDotaMatch.RadiantTeamID = match.RadiantTeamID
 		openDotaMatch.RadiantName = match.RadiantName
 		openDotaMatch.DireTeamID = match.DireTeamID
+		openDotaMatch.DireName = match.DireName
 		openDotaMatch.LeagueID = match.LeagueID
 		openDotaMatch.LeagueName = match.LeagueName
 		openDotaMatch.SeriesID = match.SeriesID
