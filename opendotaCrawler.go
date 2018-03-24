@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	PRO_MATCHES_API   = "https://api.opendota.com/api/proMatches"
-	MATCH_DETAILS_API = "https://api.opendota.com/api/matches"
+	PRO_MATCHES_API   = "https://api.opendota.com/api/proMatches/"
+	MATCH_DETAILS_API = "https://api.opendota.com/api/matches/"
 )
 
 type OpenDotaAPIParams struct {
