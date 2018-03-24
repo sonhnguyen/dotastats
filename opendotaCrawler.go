@@ -3,11 +3,13 @@ package dotastats
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"time"
 )
 
 const (
-	PRO_MATCHES_API = "https://api.opendota.com/api/proMatches"
+	PRO_MATCHES_API   = "https://api.opendota.com/api/proMatches"
+	MATCH_DETAILS_API = "https://api.opendota.com/api/matches"
 )
 
 type OpenDotaAPIParams struct {
@@ -29,6 +31,19 @@ type ProMatchesOD struct {
 	RadiantScore  int    `json:"radiant_score"`
 	DireScore     int    `json:"dire_score"`
 	RadiantWin    bool   `json:"radiant_win"`
+}
+
+type TeamInfoOpenDota struct {
+	TeamID  int    `json:"team_id"`
+	Name    string `json:"name"`
+	Tag     string `json:"tag"`
+	LogoURL string `json:"logo_url"`
+}
+
+type MatchDetailsOD struct {
+	PicksBans   []PicksBans      `json:"picks_bans"`
+	RadiantTeam TeamInfoOpenDota `json:"radiant_team"`
+	DireTeam    TeamInfoOpenDota `json:"dire_team"`
 }
 
 type ProMatchesAPIResult struct {
@@ -72,6 +87,25 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 		if err != nil {
 			fmt.Errorf("error in parsing time from opendota: %s", err)
 		}
+		var matchDetails MatchDetailsOD
+
+		matchID := strconv.Itoa(openDotaMatch.MatchID)
+
+		respMatchDetails, err := OpenDotaGet(MATCH_DETAILS_API+matchID, OpenDotaAPIParams{})
+		if err != nil {
+			return []OpenDotaMatch{}, fmt.Errorf("error in getting vpgame api respMatchDetails: %s", err)
+		}
+		defer respMatchDetails.Body.Close()
+		err = json.NewDecoder(respMatchDetails.Body).Decode(&matchDetails)
+		if err != nil {
+			return []OpenDotaMatch{}, fmt.Errorf("error in parsing result from vpgame respMatchDetails: %s", err)
+		}
+		openDotaMatch.RadiantTag = matchDetails.RadiantTeam.Tag
+		openDotaMatch.RadiantLogoURL = matchDetails.RadiantTeam.LogoURL
+		openDotaMatch.DireTag = matchDetails.DireTeam.Tag
+		openDotaMatch.DireLogoURL = matchDetails.DireTeam.LogoURL
+		openDotaMatch.PicksBans = matchDetails.PicksBans
+
 		result = append(result, openDotaMatch)
 
 	}

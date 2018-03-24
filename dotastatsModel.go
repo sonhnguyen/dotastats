@@ -87,22 +87,35 @@ type Match struct {
 	SeriesID       string     `json:"series_id,omitempty" bson:"series_id,omitempty"`
 }
 
+type PicksBans struct {
+	IsPick  bool `json:"is_pick,omitempty" bson:"is_pick,omitempty"`
+	HeroID  int  `json:"hero_id,omitempty" bson:"hero_id,omitempty"`
+	Team    int  `json:"team,omitempty" bson:"team,omitempty"`
+	Order   int  `json:"ord,omitempty" bson:"ord,omitempty"`
+	MatchID int  `json:"match_id,omitempty" bson:"match_id,omitempty"`
+}
+
 type OpenDotaMatch struct {
-	Id            bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
-	MatchID       int           `json:"match_id" bson:"match_id"`
-	Duration      int           `json:"duration" bson:"duration"`
-	StartTime     *time.Time    `json:"start_time" bson:"start_time"`
-	RadiantTeamID int           `json:"radiant_team_id" bson:"radiant_team_id"`
-	RadiantName   string        `json:"radiant_name" bson:"radiant_name"`
-	DireTeamID    int           `json:"dire_team_id" bson:"dire_team_id"`
-	DireName      string        `json:"dire_name" bson:"dire_name"`
-	LeagueID      int           `json:"leagueid" bson:"leagueid"`
-	LeagueName    string        `json:"league_name" bson:"league_name"`
-	SeriesID      int           `json:"series_id" bson:"series_id"`
-	SeriesType    int           `json:"series_type" bson:"series_type"`
-	RadiantScore  int           `json:"radiant_score" bson:"radiant_score"`
-	DireScore     int           `json:"dire_score" bson:"dire_score"`
-	RadiantWin    bool          `json:"radiant_win" bson:"radiant_win"`
+	Id             bson.ObjectId `json:"id,omitempty" bson:"_id,omitempty"`
+	MatchID        int           `json:"match_id" bson:"match_id"`
+	Duration       int           `json:"duration" bson:"duration"`
+	StartTime      *time.Time    `json:"start_time" bson:"start_time"`
+	RadiantTeamID  int           `json:"radiant_team_id" bson:"radiant_team_id"`
+	RadiantName    string        `json:"radiant_name" bson:"radiant_name"`
+	RadiantTag     string        `json:"radiant_tag" bson:"radiant_tag"`
+	RadiantLogoURL string        `json:"radiant_logo_url" bson:"radiant_logo_url"`
+	DireTeamID     int           `json:"dire_team_id" bson:"dire_team_id"`
+	DireName       string        `json:"dire_name" bson:"dire_name"`
+	DireTag        string        `json:"dire_tag" bson:"dire_tag"`
+	DireLogoURL    string        `json:"dire_logo_url" bson:"logo_url"`
+	LeagueID       int           `json:"leagueid" bson:"leagueid"`
+	LeagueName     string        `json:"league_name" bson:"league_name"`
+	SeriesID       int           `json:"series_id" bson:"series_id"`
+	SeriesType     int           `json:"series_type" bson:"series_type"`
+	RadiantScore   int           `json:"radiant_score" bson:"radiant_score"`
+	DireScore      int           `json:"dire_score" bson:"dire_score"`
+	RadiantWin     bool          `json:"radiant_win" bson:"radiant_win"`
+	PicksBans      []PicksBans   `json:"picks_bans" bson:"picks_bans"`
 }
 
 type F10kResult struct {
