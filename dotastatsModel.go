@@ -68,6 +68,7 @@ type Match struct {
 	Game           string        `json:"game,omitempty" bson:"game,omitempty"`
 	BestOf         string        `json:"bestof,omitempty" bson:"bestof,omitempty"`
 	// sub match specific
+	DotaMatchID    int        `json:"dota_match_id,omitempty" bson:"dota_match_id,omitempty"`
 	MatchID        string     `json:"matchid,omitempty" bson:"matchid,omitempty"`
 	URL            string     `json:"url,omitempty" bson:"url,omitempty"`
 	Time           *time.Time `json:"time,omitempty" bson:"time,omitempty"`
@@ -89,9 +90,9 @@ type Match struct {
 
 type PicksBans struct {
 	IsPick  bool `json:"is_pick,omitempty" bson:"is_pick,omitempty"`
-	HeroID  int  `json:"hero_id,omitempty" bson:"hero_id,omitempty"`
-	Team    int  `json:"team,omitempty" bson:"team,omitempty"`
-	Order   int  `json:"ord,omitempty" bson:"ord,omitempty"`
+	HeroID  int  `json:"hero_id" bson:"hero_id"`
+	Team    int  `json:"team" bson:"team"`
+	Order   int  `json:"ord" bson:"ord"`
 	MatchID int  `json:"match_id,omitempty" bson:"match_id,omitempty"`
 }
 

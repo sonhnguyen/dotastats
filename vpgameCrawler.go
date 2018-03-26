@@ -128,7 +128,7 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 		matchFinal.Tournament = strings.TrimSpace(match.Tournament.Name)
 		matchFinal.Game = match.Category
 		if match.Category != "dota" && match.Category != "csgo" {
-			fmt.Println("continue on match.", match.Category)
+			fmt.Println("skipping match of category: ", match.Category)
 			continue
 		}
 		matchFinal.BestOf = match.Round
@@ -204,10 +204,15 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 			}
 			subMatch.TeamAShort = match.Team.Left.NameShort
 			subMatch.TeamBShort = match.Team.Right.NameShort
+			subMatch.DotaMatchID = getDotaMatchID(subMatch)
 			result = append(result, subMatch)
 
 		}
 	}
 	fmt.Println("%v", len(result))
 	return result, nil
+}
+
+func getDotaMatchID(vpMatch Match) int {
+
 }

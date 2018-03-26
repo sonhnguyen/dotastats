@@ -58,6 +58,7 @@ func parseUnixTimeInt(unixInt int64) (*time.Time, error) {
 func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, error) {
 	var result []OpenDotaMatch
 	var proMatchesResult ProMatchesAPIResult
+
 	resp, err := OpenDotaGet(PRO_MATCHES_API, openDotaAPIParams)
 	if err != nil {
 		return []OpenDotaMatch{}, fmt.Errorf("error in getting opendota api: %s", err)
@@ -67,49 +68,62 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 	if err != nil {
 		return []OpenDotaMatch{}, fmt.Errorf("error in parsing result from opendota: %s", err)
 	}
-	for _, match := range proMatchesResult.Body {
-		var openDotaMatch OpenDotaMatch
-		openDotaMatch.MatchID = match.MatchID
-		openDotaMatch.Duration = match.Duration
-		openDotaMatch.RadiantTeamID = match.RadiantTeamID
-		openDotaMatch.RadiantName = match.RadiantName
-		openDotaMatch.DireTeamID = match.DireTeamID
-		openDotaMatch.DireName = match.DireName
-		openDotaMatch.LeagueID = match.LeagueID
-		openDotaMatch.LeagueName = match.LeagueName
-		openDotaMatch.SeriesID = match.SeriesID
-		openDotaMatch.SeriesType = match.SeriesType
-		openDotaMatch.RadiantScore = match.RadiantScore
-		openDotaMatch.DireScore = match.DireScore
-		openDotaMatch.RadiantWin = match.RadiantWin
 
-		openDotaMatch.StartTime, err = parseUnixTimeInt(int64(match.StartTime))
-		if err != nil {
-			fmt.Errorf("error in parsing time from opendota: %s", err)
-		}
+	for _, match := range proMatchesResult.Body {
 		var matchDetails MatchDetailsOD
 
-		matchID := strconv.Itoa(openDotaMatch.MatchID)
+		matchID := strconv.Itoa(match.MatchID)
 
 		respMatchDetails, err := OpenDotaGet(MATCH_DETAILS_API+matchID, OpenDotaAPIParams{})
 		if err != nil {
-			return []OpenDotaMatch{}, fmt.Errorf("error in getting vpgame api respMatchDetails: %s", err)
+			return []OpenDotaMatch{}, fmt.Errorf("error in getting opendota api respMatchDetails: %s", err)
 		}
 		defer respMatchDetails.Body.Close()
 		err = json.NewDecoder(respMatchDetails.Body).Decode(&matchDetails)
 		if err != nil {
-			return []OpenDotaMatch{}, fmt.Errorf("error in parsing result from vpgame respMatchDetails: %s", err)
+			return []OpenDotaMatch{}, fmt.Errorf("error in parsing result from opendota respMatchDetails: %s", err)
 		}
-		openDotaMatch.RadiantTag = matchDetails.RadiantTeam.Tag
-		openDotaMatch.RadiantLogoURL = matchDetails.RadiantTeam.LogoURL
-		openDotaMatch.DireTag = matchDetails.DireTeam.Tag
-		openDotaMatch.DireLogoURL = matchDetails.DireTeam.LogoURL
-		openDotaMatch.PicksBans = matchDetails.PicksBans
 
+		openDotaMatch, err := createOpenDotaMatch(match, matchDetails)
+		if err != nil {
+			return []OpenDotaMatch{}, fmt.Errorf("error in getting opendota api respMatchDetails: %s", err)
+		}
 		result = append(result, openDotaMatch)
 
 	}
 
 	fmt.Println("%v", len(result))
 	return result, nil
+}
+
+func createOpenDotaMatch(match ProMatchesOD, matchDetails MatchDetailsOD) (OpenDotaMatch, error) {
+
+	var openDotaMatch OpenDotaMatch
+	var err error
+
+	openDotaMatch.MatchID = match.MatchID
+	openDotaMatch.Duration = match.Duration
+	openDotaMatch.RadiantTeamID = match.RadiantTeamID
+	openDotaMatch.RadiantName = match.RadiantName
+	openDotaMatch.DireTeamID = match.DireTeamID
+	openDotaMatch.DireName = match.DireName
+	openDotaMatch.LeagueID = match.LeagueID
+	openDotaMatch.LeagueName = match.LeagueName
+	openDotaMatch.SeriesID = match.SeriesID
+	openDotaMatch.SeriesType = match.SeriesType
+	openDotaMatch.RadiantScore = match.RadiantScore
+	openDotaMatch.DireScore = match.DireScore
+	openDotaMatch.RadiantWin = match.RadiantWin
+
+	openDotaMatch.StartTime, err = parseUnixTimeInt(int64(match.StartTime))
+	if err != nil {
+		fmt.Errorf("error in parsing time from opendota: %s", err)
+	}
+
+	openDotaMatch.RadiantTag = matchDetails.RadiantTeam.Tag
+	openDotaMatch.RadiantLogoURL = matchDetails.RadiantTeam.LogoURL
+	openDotaMatch.DireTag = matchDetails.DireTeam.Tag
+	openDotaMatch.DireLogoURL = matchDetails.DireTeam.LogoURL
+	openDotaMatch.PicksBans = matchDetails.PicksBans
+	return openDotaMatch, nil
 }
