@@ -233,34 +233,40 @@ func (mongo *Mongodb) GetTeamHistoryMatches(teamA, teamB string, apiParams APIPa
 	return result, nil
 }
 
-func (mongo *Mongodb) GetDotaMatchID(match Match) int {
-	var result []Match
-	var findQuery bson.M
+func (mongo *Mongodb) GetOpenDotaMatch(match Match) (OpenDotaMatch, error) {
+	var result OpenDotaMatch
+	findQuery := make(bson.M, 2)
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
-		return []Match{}, err
+		return OpenDotaMatch{}, err
 	}
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
 
 	collection := sess.DB(mongo.Dbname).C(mongo.CollectionProMatch)
-	findQuery["$and"] = []bson.M{
-		bson.M{"$or": []bson.M{
-			bson.M{"$and": []bson.M{
-				bson.M{"teama": teamA},
-				bson.M{"teamb": teamB},
-			}},
-			bson.M{"$and": []bson.M{
-				bson.M{"teama": teamB},
-				bson.M{"teamb": teamA},
-			}},
+	findQuery["$or"] = []bson.M{
+		bson.M{"$and": []bson.M{
+			bson.M{"radiant_name": match.TeamA},
+			bson.M{"dire_name": match.TeamB},
+		}},
+		bson.M{"$and": []bson.M{
+			bson.M{"radiant_name": match.TeamB},
+			bson.M{"dire_name": match.TeamA},
+		}},
+		bson.M{"$and": []bson.M{
+			bson.M{"radiant_tag": match.TeamAShort},
+			bson.M{"dire_tag": match.TeamBShort},
+		}},
+		bson.M{"$and": []bson.M{
+			bson.M{"radiant_tag": match.TeamBShort},
+			bson.M{"dire_tag": match.TeamAShort},
 		}},
 	}
-
-	err = collection.Find(findQuery).All(&result)
+	findQuery["start_time"] = bson.M{"$lte": match.Time}
+	err = collection.Find(findQuery).Sort("-start_time").Limit(1).One(&result)
 
 	if err != nil {
-		return []Match{}, err
+		return OpenDotaMatch{}, err
 	}
 	return result, nil
 }

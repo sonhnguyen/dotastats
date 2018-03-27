@@ -2,7 +2,9 @@ package main
 
 import (
 	"dotastats"
+	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func (a *App) RunCrawler() ([]dotastats.Match, error) {
@@ -10,6 +12,20 @@ func (a *App) RunCrawler() ([]dotastats.Match, error) {
 	closedMatches, err := dotastats.RunCrawlerVpgame(vpParams)
 	if err != nil {
 		return []dotastats.Match{}, err
+	}
+
+	for i, closedMatch := range closedMatches {
+		if closedMatch.Game != "dota" {
+			fmt.Println("skipping match of category from crawling opendota: ", closedMatch.Game)
+			continue
+		}
+		openDotaMatch, err := a.mongodb.GetOpenDotaMatch(closedMatch)
+		if err != nil {
+			fmt.Errorf("error getting matchid from vpgame crawler: %s", err)
+			continue
+		}
+		closedMatches[i].DotaMatchID = openDotaMatch.MatchID
+		closedMatches[i].OpenDotaURL = "https://www.opendota.com/matches/" + strconv.Itoa(openDotaMatch.MatchID)
 	}
 
 	vpParams.Status = "open"

@@ -69,6 +69,7 @@ type Match struct {
 	BestOf         string        `json:"bestof,omitempty" bson:"bestof,omitempty"`
 	// sub match specific
 	DotaMatchID    int        `json:"dota_match_id,omitempty" bson:"dota_match_id,omitempty"`
+	OpenDotaURL    string     `json:"open_dota_url,omitempty" bson:"open_dota_url,omitempty"`
 	MatchID        string     `json:"matchid,omitempty" bson:"matchid,omitempty"`
 	URL            string     `json:"url,omitempty" bson:"url,omitempty"`
 	Time           *time.Time `json:"time,omitempty" bson:"time,omitempty"`

@@ -4,7 +4,7 @@
 	"uri": "mongodb://heroku_hfrclnz8:nksn833rbi80dns0guvfbraji9@ds019976.mlab.com:19976/heroku_hfrclnz8",
 	"dbname": "heroku_hfrclnz8",
 	"isLocal":"true",
-	"uriLocal":"mongodb://admin:admin@127.0.0.1:27017",
+	"uriLocal":"mongodb://localhost:27017",
 	"collection": "dev",
 	"twitter":{
 		"consumerkey":"8DQWtI6tTd3EY4ZF5ZXGNvxgH",
