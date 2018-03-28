@@ -8,7 +8,7 @@ import (
 )
 
 func (a *App) RunCrawler() ([]dotastats.Match, error) {
-	var vpParams = dotastats.VPGameAPIParams{Page: "1", Status: "close", Limit: "200"}
+	var vpParams = dotastats.VPGameAPIParams{Page: "1", Status: "close", Limit: "400"}
 	closedMatches, err := dotastats.RunCrawlerVpgame(vpParams)
 	if err != nil {
 		return []dotastats.Match{}, err
@@ -31,6 +31,8 @@ func (a *App) RunCrawler() ([]dotastats.Match, error) {
 		closedMatches[i].DotaMatchID = openDotaMatch.MatchID
 		if openDotaMatch.MatchID != 0 {
 			closedMatches[i].OpenDotaURL = "https://www.opendota.com/matches/" + strconv.Itoa(openDotaMatch.MatchID)
+			closedMatches[i].PicksBans = openDotaMatch.PicksBans
+			closedMatches[i].Duration = openDotaMatch.Duration
 		}
 	}
 

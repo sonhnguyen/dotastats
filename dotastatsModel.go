@@ -68,8 +68,6 @@ type Match struct {
 	Game           string        `json:"game,omitempty" bson:"game,omitempty"`
 	BestOf         string        `json:"bestof,omitempty" bson:"bestof,omitempty"`
 	// sub match specific
-	DotaMatchID    int        `json:"dota_match_id,omitempty" bson:"dota_match_id,omitempty"`
-	OpenDotaURL    string     `json:"open_dota_url,omitempty" bson:"open_dota_url,omitempty"`
 	MatchID        string     `json:"matchid,omitempty" bson:"matchid,omitempty"`
 	URL            string     `json:"url,omitempty" bson:"url,omitempty"`
 	Time           *time.Time `json:"time,omitempty" bson:"time,omitempty"`
@@ -87,6 +85,11 @@ type Match struct {
 	ScoreB         float64    `json:"scoreb" bson:"scoreb"`
 	Note           string     `json:"note,omitempty" bson:"note,omitempty"`
 	SeriesID       string     `json:"series_id,omitempty" bson:"series_id,omitempty"`
+	// opendota fields
+	DotaMatchID int         `json:"dota_match_id,omitempty" bson:"dota_match_id,omitempty"`
+	OpenDotaURL string      `json:"open_dota_url,omitempty" bson:"open_dota_url,omitempty"`
+	PicksBans   []PicksBans `json:"picks_bans,omitempty" bson:"picks_bans,omitempty"`
+	Duration    int         `json:"duration,omitempty" bson:"duration,omitempty"`
 }
 
 type PicksBans struct {
