@@ -131,7 +131,7 @@ func main() {
 	a := SetupApp(r, logr, "")
 	// Add CORS support (Cross Origin Resource Sharing)
 	corsSetting := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://f10k.herokuapp.com", "http://dotastats.me", "http://www.dotastats.me", "http://localhost:3000"},
+		AllowedOrigins:   []string{"https://f10k.herokuapp.com", "http://dotastats.me", "http://www.dotastats.me", "http://localhost:3000", "https://dotastats-client.herokuapp.com/"},
 		AllowCredentials: true,
 	})
 	handler := corsSetting.Handler(r)
@@ -160,11 +160,11 @@ func main() {
 
 	c := cron.New()
 	_, err = c.AddFunc("@every 5m", func() {
-		err = a.RunCrawlerAndSave()
+		err = a.RunCrawlerOpenDotaProMatchesAndSave()
 		if err != nil {
 			log.Println("error running crawler %s", err)
 		}
-		err = a.RunCrawlerOpenDotaProMatchesAndSave()
+		err = a.RunCrawlerAndSave()
 		if err != nil {
 			log.Println("error running crawler %s", err)
 		}

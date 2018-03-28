@@ -233,6 +233,12 @@ func (mongo *Mongodb) GetTeamHistoryMatches(teamA, teamB string, apiParams APIPa
 	return result, nil
 }
 
+func regexIncludeWord(s string) bson.M {
+	pattern := fmt.Sprintf("(\\b%s\\b)", s)
+	result := bson.M{"$regex": bson.RegEx{Pattern: pattern, Options: "i"}}
+	return result
+}
+
 func (mongo *Mongodb) GetOpenDotaMatch(match Match) (OpenDotaMatch, error) {
 	var result OpenDotaMatch
 	findQuery := make(bson.M, 2)
@@ -246,20 +252,20 @@ func (mongo *Mongodb) GetOpenDotaMatch(match Match) (OpenDotaMatch, error) {
 	collection := sess.DB(mongo.Dbname).C(mongo.CollectionProMatch)
 	findQuery["$or"] = []bson.M{
 		bson.M{"$and": []bson.M{
-			bson.M{"radiant_name": match.TeamA},
-			bson.M{"dire_name": match.TeamB},
+			bson.M{"radiant_name": regexIncludeWord(match.TeamA)},
+			bson.M{"dire_name": regexIncludeWord(match.TeamB)},
 		}},
 		bson.M{"$and": []bson.M{
-			bson.M{"radiant_name": match.TeamB},
-			bson.M{"dire_name": match.TeamA},
+			bson.M{"radiant_name": regexIncludeWord(match.TeamB)},
+			bson.M{"dire_name": regexIncludeWord(match.TeamA)},
 		}},
 		bson.M{"$and": []bson.M{
-			bson.M{"radiant_tag": match.TeamAShort},
-			bson.M{"dire_tag": match.TeamBShort},
+			bson.M{"radiant_tag": regexIncludeWord(match.TeamAShort)},
+			bson.M{"dire_tag": regexIncludeWord(match.TeamBShort)},
 		}},
 		bson.M{"$and": []bson.M{
-			bson.M{"radiant_tag": match.TeamBShort},
-			bson.M{"dire_tag": match.TeamAShort},
+			bson.M{"radiant_tag": regexIncludeWord(match.TeamBShort)},
+			bson.M{"dire_tag": regexIncludeWord(match.TeamAShort)},
 		}},
 	}
 	findQuery["start_time"] = bson.M{"$lte": match.Time}
