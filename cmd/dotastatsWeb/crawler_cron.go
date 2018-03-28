@@ -19,13 +19,19 @@ func (a *App) RunCrawler() ([]dotastats.Match, error) {
 			fmt.Println("skipping match of category from crawling opendota: ", closedMatch.Game)
 			continue
 		}
+		if closedMatch.Status == "Canceled" {
+			fmt.Println("skipping canceled matches from crawling opendota: ", closedMatch.MatchName)
+			continue
+		}
 		openDotaMatch, err := a.mongodb.GetOpenDotaMatch(closedMatch)
 		if err != nil {
 			fmt.Errorf("error getting matchid from vpgame crawler: %s", err)
 			continue
 		}
 		closedMatches[i].DotaMatchID = openDotaMatch.MatchID
-		closedMatches[i].OpenDotaURL = "https://www.opendota.com/matches/" + strconv.Itoa(openDotaMatch.MatchID)
+		if openDotaMatch.MatchID != 0 {
+			closedMatches[i].OpenDotaURL = "https://www.opendota.com/matches/" + strconv.Itoa(openDotaMatch.MatchID)
+		}
 	}
 
 	vpParams.Status = "open"
