@@ -131,7 +131,7 @@ func main() {
 	a := SetupApp(r, logr, "")
 	// Add CORS support (Cross Origin Resource Sharing)
 	corsSetting := cors.New(cors.Options{
-		AllowedOrigins:   []string{"https://f10k.herokuapp.com", "http://dotastats.me", "http://www.dotastats.me", "http://localhost:3000", "https://dotastats-client.herokuapp.com/"},
+		AllowedOrigins:   []string{"https://f10k.herokuapp.com", "http://dotastats.me", "http://www.dotastats.me", "http://localhost:3000", "https://dotastats-client.herokuapp.com"},
 		AllowCredentials: true,
 	})
 	handler := corsSetting.Handler(r)
