@@ -31,6 +31,7 @@ func (a *App) RunCrawler() ([]dotastats.Match, error) {
 		closedMatches[i].DotaMatchID = openDotaMatch.MatchID
 		if openDotaMatch.MatchID != 0 {
 			closedMatches[i].OpenDotaURL = "https://www.opendota.com/matches/" + strconv.Itoa(openDotaMatch.MatchID)
+			closedMatches[i].DotaBuffURL = "https://www.dotabuff.com/matches/" + strconv.Itoa(openDotaMatch.MatchID)
 			closedMatches[i].PicksBans = openDotaMatch.PicksBans
 			closedMatches[i].Duration = openDotaMatch.Duration
 		}

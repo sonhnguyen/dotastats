@@ -86,10 +86,12 @@ type Match struct {
 	Note           string     `json:"note,omitempty" bson:"note,omitempty"`
 	SeriesID       string     `json:"series_id,omitempty" bson:"series_id,omitempty"`
 	// opendota fields
-	DotaMatchID int         `json:"dota_match_id,omitempty" bson:"dota_match_id,omitempty"`
-	OpenDotaURL string      `json:"open_dota_url,omitempty" bson:"open_dota_url,omitempty"`
-	PicksBans   []PicksBans `json:"picks_bans,omitempty" bson:"picks_bans,omitempty"`
-	Duration    int         `json:"duration,omitempty" bson:"duration,omitempty"`
+	DotaMatchID    int         `json:"dota_match_id,omitempty" bson:"dota_match_id,omitempty"`
+	OpenDotaURL    string      `json:"open_dota_url,omitempty" bson:"open_dota_url,omitempty"`
+	DotaBuffURL    string      `json:"dotabuff_url,omitempty" bson:"dotabuff_url,omitempty"`
+	TeamAIsRadiant bool        `json:"team_a_is_radiant,omitempty" bson:"team_a_is_radiant,omitempty"`
+	PicksBans      []PicksBans `json:"picks_bans,omitempty" bson:"picks_bans,omitempty"`
+	Duration       int         `json:"duration,omitempty" bson:"duration,omitempty"`
 }
 
 type PicksBans struct {
