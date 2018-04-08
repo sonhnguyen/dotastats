@@ -81,6 +81,5 @@ func OpenDotaGet(url string, params OpenDotaAPIParams) (*http.Response, error) {
 	if err != nil {
 		return resp, err
 	}
-	time.Sleep(time.Second / 3)
 	return resp, nil
 }

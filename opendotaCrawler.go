@@ -43,6 +43,7 @@ type TeamInfoOpenDota struct {
 }
 
 type MatchDetailsOD struct {
+	MatchID     int              `json:"match_id"`
 	PicksBans   []PicksBans      `json:"picks_bans"`
 	RadiantTeam TeamInfoOpenDota `json:"radiant_team"`
 	DireTeam    TeamInfoOpenDota `json:"dire_team"`
@@ -99,13 +100,13 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 
 		matchID := strconv.Itoa(match.MatchID)
 
-		err = retryDuring(60*time.Second, 5*time.Second, func() error {
+		err = retryDuring(100*time.Second, 10*time.Second, func() error {
 			respMatchDetails, err = OpenDotaGet(MATCH_DETAILS_API+matchID, OpenDotaAPIParams{})
 			if err != nil {
 				return fmt.Errorf("error in parsing result from opendota respMatchDetails: %s", err)
 			}
 			err = json.NewDecoder(respMatchDetails.Body).Decode(&matchDetails)
-			if err != nil || len(matchDetails.PicksBans) == 0 {
+			if err != nil || matchDetails.MatchID == 0 {
 				return fmt.Errorf("error in parsing matchDetails result from opendota respMatchDetails: %s", err)
 			}
 			return nil
