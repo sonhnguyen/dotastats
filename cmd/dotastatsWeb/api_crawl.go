@@ -67,3 +67,51 @@ func (a *App) GetCustomCrawlHandler() HandlerWithError {
 		return nil
 	}
 }
+
+//GetCustomCrawlOpenDotaHandler crawls all OpenDota pro matches with params from_match_id to to_match_id
+func (a *App) GetCustomCrawlOpenDotaHandler() HandlerWithError {
+	return func(w http.ResponseWriter, req *http.Request) error {
+		queryValues := req.URL.Query()
+		bigMatchID, err := strconv.Atoi(queryValues.Get("big_match_id"))
+		if err != nil {
+			a.logr.Log("error when converting params %s", err)
+			return newAPIError(500, "error when converting params %s", err)
+		}
+		smallMatchID, err := strconv.Atoi(queryValues.Get("small_match_id"))
+		if err != nil {
+			a.logr.Log("error when converting params %s", err)
+			return newAPIError(500, "error when converting params %s", err)
+		}
+		if bigMatchID == 0 || smallMatchID == 0 {
+			a.logr.Log("error when converting params %s", err)
+			return newAPIError(500, "error when converting params %s", err)
+		}
+
+		var matchesResults []dotastats.OpenDotaMatch
+		smallestMatchID := bigMatchID
+		for smallestMatchID > smallMatchID {
+			var openDotaParams = dotastats.OpenDotaAPIParams{LessThanMatchID: strconv.Itoa(smallestMatchID)}
+			openDotaMatches, err := dotastats.RunCrawlerOpenDota(openDotaParams)
+			if err != nil {
+				a.logr.Log("error when crawling manually %s", err)
+				continue
+			}
+			matchesResults = append(matchesResults, openDotaMatches...)
+			smallestMatchID = openDotaMatches[len(openDotaMatches)-1].MatchID
+		}
+
+		err = a.mongodb.SaveOpenDotaProMatches(matchesResults)
+		if err != nil {
+			a.logr.Log("error when saving json crawled manually %s", err)
+			return newAPIError(500, "error when saving json crawled manually %s", err)
+		}
+
+		err = json.NewEncoder(w).Encode(matchesResults)
+		if err != nil {
+			a.logr.Log("error when return json %s", err)
+			return newAPIError(500, "error when return json %s", err)
+		}
+
+		return nil
+	}
+}

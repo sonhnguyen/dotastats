@@ -149,6 +149,7 @@ func main() {
 	r.Get("/matches", common.Then(a.Wrap(a.GetMatchesListHandler())))
 	r.Get("/matches/:id", common.Then(a.Wrap(a.GetMatchByIDHandler())))
 	r.Get("/crawl", common.Then(a.Wrap(a.GetCustomCrawlHandler())))
+	r.Get("/crawlOpenDota", common.Then(a.Wrap(a.GetCustomCrawlOpenDotaHandler())))
 	r.Get("/crawlTeamInfo", common.Then(a.Wrap(a.GetCrawlTeamInfoHandler())))
 	r.Get("/create-twitter-list", common.Then(a.Wrap(a.CreateAllTwitterList())))
 	r.Get("/remove-twitter-list", common.Then(a.Wrap(a.RemoveAllTwitterList())))
@@ -159,7 +160,7 @@ func main() {
 	r.Post("/register", common.Then(a.Wrap(a.RegisterPostHandler())))
 
 	c := cron.New()
-	_, err = c.AddFunc("@every 5m", func() {
+	_, err = c.AddFunc("@every 50m", func() {
 		err = a.RunCrawlerOpenDotaProMatchesAndSave()
 		if err != nil {
 			log.Println("error running crawler %s", err)

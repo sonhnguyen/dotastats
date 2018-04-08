@@ -71,7 +71,7 @@ func OpenDotaGet(url string, params OpenDotaAPIParams) (*http.Response, error) {
 
 		f := s.Field(i)
 		if f.String() != "" {
-			q.Add(strings.ToLower(typeOfT.Field(i).Name), f.String())
+			q.Add(strings.ToLower(typeOfT.Field(i).Tag.Get("json")), f.String())
 		}
 	}
 
@@ -81,5 +81,6 @@ func OpenDotaGet(url string, params OpenDotaAPIParams) (*http.Response, error) {
 	if err != nil {
 		return resp, err
 	}
+	time.Sleep(time.Second / 3)
 	return resp, nil
 }

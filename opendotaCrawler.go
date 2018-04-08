@@ -13,7 +13,7 @@ const (
 )
 
 type OpenDotaAPIParams struct {
-	LessThanMatchID string
+	LessThanMatchID string `json:"less_than_match_id"`
 }
 
 type ProMatchesOD struct {
@@ -76,7 +76,8 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 
 		respMatchDetails, err := OpenDotaGet(MATCH_DETAILS_API+matchID, OpenDotaAPIParams{})
 		if err != nil {
-			return []OpenDotaMatch{}, fmt.Errorf("error in getting opendota api respMatchDetails: %s", err)
+			fmt.Errorf("error in getting opendota api respMatchDetails: %s", err)
+			continue
 		}
 		defer respMatchDetails.Body.Close()
 		err = json.NewDecoder(respMatchDetails.Body).Decode(&matchDetails)
@@ -92,7 +93,7 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 
 	}
 
-	fmt.Println("%v", len(result))
+	fmt.Println("crawling %d matches from opendota, from ID %d to %d", len(result), result[len(result)-1].MatchID, result[0].MatchID)
 	return result, nil
 }
 
