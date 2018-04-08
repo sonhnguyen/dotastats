@@ -99,7 +99,7 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 
 		matchID := strconv.Itoa(match.MatchID)
 
-		err = retryDuring(20*time.Second, 2*time.Second, func() error {
+		err = retryDuring(60*time.Second, 5*time.Second, func() error {
 			respMatchDetails, err = OpenDotaGet(MATCH_DETAILS_API+matchID, OpenDotaAPIParams{})
 			if err != nil {
 				return fmt.Errorf("error in parsing result from opendota respMatchDetails: %s", err)
