@@ -95,13 +95,18 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 
 	for _, match := range proMatchesResult.Body {
 		var matchDetails MatchDetailsOD
+		var respMatchDetails *http.Response
 
 		matchID := strconv.Itoa(match.MatchID)
-		var respMatchDetails *http.Response
+
 		err := retryDuring(10*time.Second, 1*time.Second, func() (err error) {
 			respMatchDetails, err = OpenDotaGet(MATCH_DETAILS_API+matchID, OpenDotaAPIParams{})
 			if err != nil {
 				fmt.Errorf("error in getting opendota api respMatchDetails, retrying: %s", err)
+			}
+			err = json.NewDecoder(respMatchDetails.Body).Decode(&matchDetails)
+			if err != nil {
+				fmt.Errorf("error in parsing result from opendota respMatchDetails: %s", err)
 			}
 			return
 		})
@@ -111,10 +116,6 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 		}
 
 		defer respMatchDetails.Body.Close()
-		err = json.NewDecoder(respMatchDetails.Body).Decode(&matchDetails)
-		if err != nil {
-			return []OpenDotaMatch{}, fmt.Errorf("error in parsing result from opendota respMatchDetails: %s", err)
-		}
 
 		openDotaMatch, err := createOpenDotaMatch(match, matchDetails)
 		if err != nil {
