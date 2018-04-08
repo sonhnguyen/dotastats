@@ -3,7 +3,6 @@ package dotastats
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -57,28 +56,6 @@ func parseUnixTimeInt(unixInt int64) (*time.Time, error) {
 	return &timeParsed, nil
 }
 
-func retryDuring(duration time.Duration, sleep time.Duration, callback func() error) (err error) {
-	t0 := time.Now()
-	i := 0
-	for {
-		i++
-
-		err = callback()
-		if err == nil {
-			return
-		}
-
-		delta := time.Now().Sub(t0)
-		if delta > duration {
-			return fmt.Errorf("after %d attempts (during %s), last error: %s", i, delta, err)
-		}
-
-		time.Sleep(sleep)
-
-		log.Println("retrying after error:", err)
-	}
-}
-
 func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, error) {
 	var result []OpenDotaMatch
 	var proMatchesResult ProMatchesAPIResult
@@ -104,7 +81,7 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 			return []OpenDotaMatch{}, fmt.Errorf("error in parsing result from opendota respMatchDetails: %s", err)
 		}
 		err = json.NewDecoder(respMatchDetails.Body).Decode(&matchDetails)
-		if err != nil {
+		if err != nil || len(matchDetails.PicksBans) == 0 {
 			return []OpenDotaMatch{}, fmt.Errorf("error in parsing matchDetails result from opendota respMatchDetails: %s", err)
 		}
 
