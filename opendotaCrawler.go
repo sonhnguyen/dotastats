@@ -3,6 +3,8 @@ package dotastats
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -55,6 +57,28 @@ func parseUnixTimeInt(unixInt int64) (*time.Time, error) {
 	return &timeParsed, nil
 }
 
+func retryDuring(duration time.Duration, sleep time.Duration, callback func() error) (err error) {
+	t0 := time.Now()
+	i := 0
+	for {
+		i++
+
+		err = callback()
+		if err == nil {
+			return
+		}
+
+		delta := time.Now().Sub(t0)
+		if delta > duration {
+			return fmt.Errorf("after %d attempts (during %s), last error: %s", i, delta, err)
+		}
+
+		time.Sleep(sleep)
+
+		log.Println("retrying after error:", err)
+	}
+}
+
 func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, error) {
 	var result []OpenDotaMatch
 	var proMatchesResult ProMatchesAPIResult
@@ -73,12 +97,19 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 		var matchDetails MatchDetailsOD
 
 		matchID := strconv.Itoa(match.MatchID)
-
-		respMatchDetails, err := OpenDotaGet(MATCH_DETAILS_API+matchID, OpenDotaAPIParams{})
+		var respMatchDetails *http.Response
+		err := retryDuring(10*time.Second, 1*time.Second, func() (err error) {
+			respMatchDetails, err = OpenDotaGet(MATCH_DETAILS_API+matchID, OpenDotaAPIParams{})
+			if err != nil {
+				fmt.Errorf("error in getting opendota api respMatchDetails, retrying: %s", err)
+			}
+			return
+		})
 		if err != nil {
 			fmt.Errorf("error in getting opendota api respMatchDetails: %s", err)
 			continue
 		}
+
 		defer respMatchDetails.Body.Close()
 		err = json.NewDecoder(respMatchDetails.Body).Decode(&matchDetails)
 		if err != nil {
