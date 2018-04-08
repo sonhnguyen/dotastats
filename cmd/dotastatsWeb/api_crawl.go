@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"dotastats"
 )
@@ -94,16 +95,16 @@ func (a *App) GetCustomCrawlOpenDotaHandler() HandlerWithError {
 			openDotaMatches, err := dotastats.RunCrawlerOpenDota(openDotaParams)
 			if err != nil {
 				a.logr.Log("error when crawling manually %s", err)
+				time.Sleep(3 * time.Second)
 				continue
 			}
 			matchesResults = append(matchesResults, openDotaMatches...)
 			smallestMatchID = openDotaMatches[len(openDotaMatches)-1].MatchID
-		}
-
-		err = a.mongodb.SaveOpenDotaProMatches(matchesResults)
-		if err != nil {
-			a.logr.Log("error when saving json crawled manually %s", err)
-			return newAPIError(500, "error when saving json crawled manually %s", err)
+			err = a.mongodb.SaveOpenDotaProMatches(openDotaMatches)
+			if err != nil {
+				a.logr.Log("error when saving json crawled manually %s", err)
+				continue
+			}
 		}
 
 		err = json.NewEncoder(w).Encode(matchesResults)
