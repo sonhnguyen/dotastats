@@ -110,6 +110,7 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 				fmt.Errorf("error in parsing result from opendota respMatchDetails: %s", err)
 				return err
 			}
+			return nil
 		})
 		if err != nil {
 			fmt.Errorf("error in getting opendota api respMatchDetails: %s", err)
