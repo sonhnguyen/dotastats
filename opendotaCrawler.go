@@ -103,12 +103,13 @@ func RunCrawlerOpenDota(openDotaAPIParams OpenDotaAPIParams) ([]OpenDotaMatch, e
 			respMatchDetails, err = OpenDotaGet(MATCH_DETAILS_API+matchID, OpenDotaAPIParams{})
 			if err != nil {
 				fmt.Errorf("error in getting opendota api respMatchDetails, retrying: %s", err)
+				return err
 			}
 			err = json.NewDecoder(respMatchDetails.Body).Decode(&matchDetails)
 			if err != nil {
 				fmt.Errorf("error in parsing result from opendota respMatchDetails: %s", err)
+				return err
 			}
-			return
 		})
 		if err != nil {
 			fmt.Errorf("error in getting opendota api respMatchDetails: %s", err)
