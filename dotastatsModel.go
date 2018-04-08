@@ -114,7 +114,7 @@ type OpenDotaMatch struct {
 	DireTeamID     int           `json:"dire_team_id" bson:"dire_team_id"`
 	DireName       string        `json:"dire_name" bson:"dire_name"`
 	DireTag        string        `json:"dire_tag" bson:"dire_tag"`
-	DireLogoURL    string        `json:"dire_logo_url" bson:"logo_url"`
+	DireLogoURL    string        `json:"dire_logo_url" bson:"dire_logo_url"`
 	LeagueID       int           `json:"leagueid" bson:"leagueid"`
 	LeagueName     string        `json:"league_name" bson:"league_name"`
 	SeriesID       int           `json:"series_id" bson:"series_id"`

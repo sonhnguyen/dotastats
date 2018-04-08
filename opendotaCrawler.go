@@ -34,10 +34,10 @@ type ProMatchesOD struct {
 }
 
 type TeamInfoOpenDota struct {
-	TeamID  int    `json:"team_id"`
-	Name    string `json:"name"`
-	Tag     string `json:"tag"`
-	LogoURL string `json:"logo_url"`
+	TeamID  int    `json:"team_id,omitempty"`
+	Name    string `json:"name,omitempty"`
+	Tag     string `json:"tag,omitempty"`
+	LogoURL string `json:"logo_url,omitempty"`
 }
 
 type MatchDetailsOD struct {
