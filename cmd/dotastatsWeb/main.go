@@ -160,7 +160,7 @@ func main() {
 	r.Post("/register", common.Then(a.Wrap(a.RegisterPostHandler())))
 
 	c := cron.New()
-	_, err = c.AddFunc("@every 50m", func() {
+	_, err = c.AddFunc("@every 5m", func() {
 		err = a.RunCrawlerOpenDotaProMatchesAndSave()
 		if err != nil {
 			log.Println("error running crawler %s", err)
