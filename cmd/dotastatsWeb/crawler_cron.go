@@ -81,6 +81,10 @@ func (a *App) RunPingHeroku() error {
 	if err != nil {
 		return err
 	}
+	_, err = http.Get("http://dotastats.me")
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
