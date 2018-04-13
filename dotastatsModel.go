@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jasonodonnell/go-opendota"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -51,6 +52,21 @@ type TeamInfo struct {
 	History  string        `json:"history,omitempty" bson:"history,omitempty"`
 	Logo     string        `json:"logo,omitempty" bson:"logo,omitempty"`
 	URL      string        `json:"url,omitempty" bson:"url,omitempty"`
+}
+
+type OpenDotaTeam struct {
+	Id             bson.ObjectId          `json:"id,omitempty" bson:"_id,omitempty"`
+	TeamID         int                    `json:"team_id,omitempty" bson:"team_id,omitempty"`
+	Rating         float64                `json:"rating,omitempty" bson:"rating,omitempty"`
+	Wins           int                    `json:"wins,omitempty" bson:"wins,omitempty"`
+	Losses         int                    `json:"losses,omitempty" bson:"losses,omitempty"`
+	LastMatchTime  int                    `json:"last_match_time,omitempty" bson:"last_match_time,omitempty"`
+	Name           string                 `json:"name,omitempty" bson:"name,omitempty"`
+	Tag            string                 `json:"tag,omitempty" bson:"tag,omitempty"`
+	LogoURL        string                 `json:"logo_url,omitempty" bson:"team_heroes,omitempty"`
+	NameCollection []string               `json:"name_collection,omitempty" bson:"name_collection,omitempty"`
+	TeamHeroes     []opendota.TeamHeroes  `json:"team_heroes,omitempty" bson:"team_heroes,omitempty"`
+	TeamPlayers    []opendota.TeamPlayers `json:"team_players,omitempty" bson:"team_players,omitempty"`
 }
 
 type Match struct {

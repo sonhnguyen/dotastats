@@ -23,6 +23,7 @@ type dotastatsConfig struct {
 	Dbname             string
 	Collection         string
 	CollectionTeam     string
+	CollectionDotaTeam string
 	CollectionProMatch string
 	CollectionFeedback string
 	CollectionUser     string
@@ -60,6 +61,7 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 			Dbname:             viper.GetString("dbname"),
 			Collection:         viper.GetString("collection"),
 			CollectionTeam:     viper.GetString("collection-team"),
+			CollectionDotaTeam: viper.GetString("collection-dota-team"),
 			CollectionProMatch: viper.GetString("collection-pro-match"),
 			CollectionFeedback: viper.GetString("collection-feedback"),
 			CollectionUser:     viper.GetString("collection-user"),
@@ -75,6 +77,7 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 			Dbname:             os.Getenv("dbname"),
 			Collection:         os.Getenv("collection"),
 			CollectionTeam:     os.Getenv("collection-team"),
+			CollectionDotaTeam: os.Getenv("collection-dota-team"),
 			CollectionProMatch: os.Getenv("collection-pro-match"),
 			CollectionFeedback: os.Getenv("collection-feedback"),
 			CollectionUser:     os.Getenv("collection-user"),
@@ -93,6 +96,7 @@ func SetupApp(r *Router, logger appLogger, templateDirectoryPath string) *App {
 		Dbname:             config.Dbname,
 		Collection:         config.Collection,
 		CollectionTeam:     config.CollectionTeam,
+		CollectionDotaTeam: config.CollectionDotaTeam,
 		CollectionProMatch: config.CollectionProMatch,
 		CollectionFeedback: config.CollectionFeedback,
 		CollectionUser:     config.CollectionUser,
@@ -150,6 +154,7 @@ func main() {
 	r.Get("/matches/:id", common.Then(a.Wrap(a.GetMatchByIDHandler())))
 	r.Get("/crawl", common.Then(a.Wrap(a.GetCustomCrawlHandler())))
 	r.Get("/crawlOpenDota", common.Then(a.Wrap(a.GetCustomCrawlOpenDotaHandler())))
+	r.Get("/crawlOpenDotaTeam", common.Then(a.Wrap(a.GetCustomCrawlOpenDotaTeamHandler())))
 	r.Get("/crawlTeamInfo", common.Then(a.Wrap(a.GetCrawlTeamInfoHandler())))
 	r.Get("/create-twitter-list", common.Then(a.Wrap(a.CreateAllTwitterList())))
 	r.Get("/remove-twitter-list", common.Then(a.Wrap(a.RemoveAllTwitterList())))
@@ -160,6 +165,7 @@ func main() {
 	r.Post("/register", common.Then(a.Wrap(a.RegisterPostHandler())))
 
 	c := cron.New()
+
 	_, err = c.AddFunc("@every 5m", func() {
 		err = a.RunCrawlerOpenDotaProMatchesAndSave()
 		if err != nil {
@@ -173,15 +179,27 @@ func main() {
 	if err != nil {
 		log.Println("error on cron job %s", err)
 	}
+
 	_, err = c.AddFunc("@weekly", func() {
 		a.RunCrawlerTeamInfoAndSave()
 		if err != nil {
-			log.Println("error running crawler %s", err)
+			log.Println("error running RunCrawlerTeamInfoAndSave %s", err)
 		}
 	})
 	if err != nil {
 		log.Println("error on cron job %s", err)
 	}
+
+	_, err = c.AddFunc("@daily", func() {
+		err = a.RunCrawlerOpenDotaTeamAndSave()
+		if err != nil {
+			log.Println("error running RunCrawlerOpenDotaTeamAndSave %s", err)
+		}
+	})
+	if err != nil {
+		log.Println("error on cron job %s", err)
+	}
+
 	c.Start()
 	err = http.ListenAndServe(":"+a.config.Port, handler)
 	if err != nil {

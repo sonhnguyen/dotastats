@@ -1,0 +1,28 @@
+---
+language: go
+
+os:
+  - linux
+
+install:
+  - wget -O go.tar.gz https://storage.googleapis.com/golang/go1.9.linux-amd64.tar.gz
+  - tar -C /tmp -xvf go.tar.gz go/bin/gofmt
+  - rm go.tar.gz
+  - go get -v -t ./
+
+before_script:
+  - /tmp/go/bin/gofmt -w .
+  - git diff
+  - git add .
+  - git diff-index --cached --exit-code HEAD
+
+go:
+  - 1.6
+  - 1.7
+  - 1.8
+  - 1.9
+  - tip
+ 
+script:
+  - echo $TRAVIS_GO_VERSION
+  - if [ "$TRAVIS_GO_VERSION" == "1.6" ] || [ "$TRAVIS_GO_VERSION" == "1.7" ] || [ "$TRAVIS_GO_VERSION" == "1.8" ]; then go list ./... | xargs go test -cover -v; else go test -cover -v ./...; fi

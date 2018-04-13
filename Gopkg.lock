@@ -20,10 +20,22 @@
   version = "v9"
 
 [[projects]]
+  name = "github.com/dghubble/sling"
+  packages = ["."]
+  revision = "eb56e89ac5088bebb12eef3cb4b293300f43608b"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
   revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
   version = "v1.4.7"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/google/go-querystring"
+  packages = ["query"]
+  revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
 
 [[projects]]
   name = "github.com/google/uuid"
@@ -65,6 +77,12 @@
     "json/token"
   ]
   revision = "f40e974e75af4e271d97ce0fc917af5898ae7bda"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/jasonodonnell/go-opendota"
+  packages = ["."]
+  revision = "4b0f15f2c1c434aa52378de65db2ee63131231c8"
 
 [[projects]]
   name = "github.com/julienschmidt/httprouter"
@@ -223,6 +241,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c65740e380b63097b68980fd96ee113a67d643d6afa55e39296dff430b8cc632"
+  inputs-digest = "281b7b6179d2b617815e5082c8656944d7fdd7252b164a7c7ca9d289e113efda"
   solver-name = "gps-cdcl"
   solver-version = 1

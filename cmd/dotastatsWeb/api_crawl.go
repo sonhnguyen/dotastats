@@ -21,6 +21,17 @@ func (a *App) GetCrawlTeamInfoHandler() HandlerWithError {
 	}
 }
 
+func (a *App) GetCustomCrawlOpenDotaTeamHandler() HandlerWithError {
+	return func(w http.ResponseWriter, req *http.Request) error {
+		err := a.RunCrawlerOpenDotaTeamAndSave()
+		if err != nil {
+			log.Println("error running crawler %s", err)
+		}
+
+		return nil
+	}
+}
+
 // params is open/ close/ start
 func (a *App) GetCustomCrawlHandler() HandlerWithError {
 	return func(w http.ResponseWriter, req *http.Request) error {

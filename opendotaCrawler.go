@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/jasonodonnell/go-opendota"
 )
 
 const (
@@ -159,4 +161,51 @@ func createOpenDotaMatch(match ProMatchesOD, matchDetails MatchDetailsOD) (OpenD
 	openDotaMatch.DireLogoURL = matchDetails.DireTeam.LogoURL
 	openDotaMatch.PicksBans = matchDetails.PicksBans
 	return openDotaMatch, nil
+}
+
+func RunCrawlerOpenDotaTeam() ([]OpenDotaTeam, error) {
+	var result []OpenDotaTeam
+	httpClient := &http.Client{
+		Timeout: time.Second * 10,
+	}
+	client := opendota.NewClient(httpClient)
+	teams, _, err := client.TeamService.Teams()
+	if err != nil {
+		return []OpenDotaTeam{}, fmt.Errorf("error in getting opendota team api: %s", err)
+	}
+	for _, team := range teams {
+		var openDotaTeam OpenDotaTeam
+		openDotaTeam.LastMatchTime = team.LastMatchTime
+		openDotaTeam.TeamID = team.TeamID
+		openDotaTeam.Rating = team.Rating
+		openDotaTeam.Wins = team.Wins
+		openDotaTeam.Losses = team.Losses
+		openDotaTeam.LastMatchTime = team.LastMatchTime
+		openDotaTeam.Name = team.Name
+		openDotaTeam.Tag = team.Tag
+		openDotaTeam.LogoURL = team.LogoURL
+
+		err = retryDuring(200*time.Second, 10*time.Second, func() error {
+			teamHeroes, _, err := client.TeamService.Heroes(int64(team.TeamID))
+			if err != nil || len(teamHeroes) == 0 {
+				return fmt.Errorf("error in parsing team heroes from opendota: %s, team: %s", err, team.TeamID)
+			}
+			openDotaTeam.TeamHeroes = teamHeroes
+			return nil
+		})
+
+		err = retryDuring(200*time.Second, 10*time.Second, func() error {
+			teamPlayers, _, err := client.TeamService.Players(int64(team.TeamID))
+			if err != nil || len(teamPlayers) == 0 {
+				return fmt.Errorf("error in parsing team heroes from opendota: %s team: %s", err, team.TeamID)
+			}
+			openDotaTeam.TeamPlayers = teamPlayers
+			return nil
+		})
+		fmt.Println("crawling %d team from opendota", team.TeamID)
+
+		result = append(result, openDotaTeam)
+	}
+	fmt.Println("crawling %d teams from opendota", len(result))
+	return result, nil
 }

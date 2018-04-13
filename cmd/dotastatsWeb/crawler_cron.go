@@ -63,9 +63,21 @@ func (a *App) RunCrawlerTeamInfo() ([]dotastats.TeamInfo, error) {
 	if err != nil {
 		return []dotastats.TeamInfo{}, err
 	}
-
 	result := append(csgoTeams, dotaTeams...)
 	return result, nil
+}
+
+func (a *App) RunCrawlerOpenDotaTeamAndSave() error {
+	opendotaTeams, err := dotastats.RunCrawlerOpenDotaTeam()
+	if err != nil {
+		return err
+	}
+	err = a.mongodb.SaveOpenDotaTeam(opendotaTeams)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (a *App) RunPingHeroku() error {

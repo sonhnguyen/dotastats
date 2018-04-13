@@ -12,6 +12,7 @@ type Mongodb struct {
 	Dbname             string
 	Collection         string
 	CollectionTeam     string
+	CollectionDotaTeam string
 	CollectionProMatch string
 	CollectionFeedback string
 	CollectionUser     string
@@ -63,6 +64,29 @@ func (mongo *Mongodb) SaveTeamInfo(teamList []TeamInfo) error {
 
 		upsertdata := bson.M{"$set": team}
 		condition := bson.M{"url": team.URL}
+		info, err := collection.Upsert(condition, upsertdata)
+		if err != nil {
+			fmt.Errorf("error upserting %s", info, err)
+		}
+	}
+	fmt.Println("done saving %v teams", len(teamList))
+	return nil
+}
+
+func (mongo *Mongodb) SaveOpenDotaTeam(teamList []OpenDotaTeam) error {
+	sess, err := mgo.Dial(mongo.URI)
+	if err != nil {
+		return err
+	}
+
+	defer sess.Close()
+	sess.SetSafe(&mgo.Safe{})
+	collection := sess.DB(mongo.Dbname).C(mongo.CollectionDotaTeam)
+	fmt.Println("saving CollectionDotaTeam")
+
+	for _, team := range teamList {
+		upsertdata := bson.M{"$set": team}
+		condition := bson.M{"team_id": team.TeamID}
 		info, err := collection.Upsert(condition, upsertdata)
 		if err != nil {
 			fmt.Errorf("error upserting %s", info, err)
