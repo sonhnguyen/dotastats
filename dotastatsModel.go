@@ -63,7 +63,7 @@ type OpenDotaTeam struct {
 	LastMatchTime  int                    `json:"last_match_time,omitempty" bson:"last_match_time,omitempty"`
 	Name           string                 `json:"name,omitempty" bson:"name,omitempty"`
 	Tag            string                 `json:"tag,omitempty" bson:"tag,omitempty"`
-	LogoURL        string                 `json:"logo_url,omitempty" bson:"team_heroes,omitempty"`
+	LogoURL        string                 `json:"logo_url,omitempty" bson:"logo_url,omitempty"`
 	NameCollection []string               `json:"name_collection,omitempty" bson:"name_collection,omitempty"`
 	TeamHeroes     []opendota.TeamHeroes  `json:"team_heroes,omitempty" bson:"team_heroes,omitempty"`
 	TeamPlayers    []opendota.TeamPlayers `json:"team_players,omitempty" bson:"team_players,omitempty"`
