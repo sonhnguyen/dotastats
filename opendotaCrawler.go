@@ -204,6 +204,9 @@ func RunCrawlerOpenDotaTeam() ([]OpenDotaTeam, error) {
 		})
 		fmt.Println("crawling %d team from opendota", team.TeamID)
 
+		nameCollection := []string{team.Name, team.Tag, "Team " + team.Name, "Team " + team.Tag}
+		openDotaTeam.NameCollection = nameCollection
+
 		result = append(result, openDotaTeam)
 	}
 	fmt.Println("crawling %d teams from opendota", len(result))
