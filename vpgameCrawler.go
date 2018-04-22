@@ -192,7 +192,7 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 					fmt.Errorf("error in crawling from vpgame: %s", err)
 					continue
 				}
-				score := doc.Find("div.pic-mid p:nth-child(1)").Text()
+				score := doc.Find("[score]").Text()
 				scoreArray := scoreProcess(score)
 				if len(scoreArray) > 0 {
 					subMatch.ScoreA = scoreArray[0]
