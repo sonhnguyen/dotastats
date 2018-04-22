@@ -3,12 +3,9 @@ package dotastats
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 const (
@@ -59,24 +56,24 @@ type VPGameSchedule struct {
 }
 
 type VPgameMatch struct {
-	Id             string `json:"id"`
-	Round          string `json:"round"`
-	Category       string `json:"category"`
-	ModeName       string `json:"mode_name"`
-	ModeDesc       string `json:"name"`
-	HandicapAmount string `json:"handicap"`
-	HandicapTeam   string `json:"handicap_team"`
-	SeriesID       string `json:"tournament_schedule_id"`
-	GameTime       string `json:"game_time"`
-	LeftTeam       string `json:"left_team"`
-	RightTeam      string `json:"right_team"`
-	// LeftTeamScore  string           `json:"left_team_score"`
-	// RightTeamScore string           `json:"right_team_score"`
-	Status     string           `json:"status_name"`
-	Schedule   VPGameSchedule   `json:"schedule"`
-	Odd        VPGameOdd        `json:"odd"`
-	Team       VPGameTeam       `json:"team"`
-	Tournament VPGameTournament `json:"tournament"`
+	Id             string           `json:"id"`
+	Round          string           `json:"round"`
+	Category       string           `json:"category"`
+	ModeName       string           `json:"mode_name"`
+	ModeDesc       string           `json:"name"`
+	HandicapAmount string           `json:"handicap"`
+	HandicapTeam   string           `json:"handicap_team"`
+	SeriesID       string           `json:"tournament_schedule_id"`
+	GameTime       string           `json:"game_time"`
+	LeftTeam       string           `json:"left_team"`
+	RightTeam      string           `json:"right_team"`
+	LeftTeamScore  interface{}      `json:"left_team_score"`
+	RightTeamScore interface{}      `json:"right_team_score"`
+	Status         string           `json:"status_name"`
+	Schedule       VPGameSchedule   `json:"schedule"`
+	Odd            VPGameOdd        `json:"odd"`
+	Team           VPGameTeam       `json:"team"`
+	Tournament     VPGameTournament `json:"tournament"`
 }
 
 type VPgameAPIResult struct {
@@ -171,33 +168,9 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 				subMatch.Winner = match.RightTeam
 			}
 			subMatch.Status = processStatus(match.Status)
-			clientVPGame := &http.Client{
-				Timeout: time.Second * 5,
-			}
 			if subMatch.Status == "Settled" {
-				reqVPGame, err := http.NewRequest("GET", subMatch.URL, nil)
-				if err != nil {
-					fmt.Errorf("error createrq crawl match vpgame: %s", err)
-					continue
-				}
-				respVPGame, err := clientVPGame.Do(reqVPGame)
-				if err != nil {
-					fmt.Errorf("error crawl match vpgame: %s", err)
-					continue
-				}
-				defer respVPGame.Body.Close()
-
-				doc, err := goquery.NewDocumentFromResponse(respVPGame)
-				if err != nil {
-					fmt.Errorf("error in crawling from vpgame: %s", err)
-					continue
-				}
-				score := doc.Find("[score]").Text()
-				scoreArray := scoreProcess(score)
-				if len(scoreArray) > 0 {
-					subMatch.ScoreA = scoreArray[0]
-					subMatch.ScoreB = scoreArray[1]
-				}
+				subMatch.ScoreA = match.LeftTeamScore.(float64)
+				subMatch.ScoreB = match.RightTeamScore.(float64)
 			}
 			if match.Round == "" {
 				subMatch.BestOf = "BO1"
