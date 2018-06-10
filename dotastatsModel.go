@@ -105,13 +105,13 @@ type Match struct {
 	DotaMatchID    int         `json:"dota_match_id,omitempty" bson:"dota_match_id,omitempty"`
 	OpenDotaURL    string      `json:"open_dota_url,omitempty" bson:"open_dota_url,omitempty"`
 	DotaBuffURL    string      `json:"dotabuff_url,omitempty" bson:"dotabuff_url,omitempty"`
-	TeamAIsRadiant bool        `json:"team_a_is_radiant,omitempty" bson:"team_a_is_radiant,omitempty"`
+	TeamAIsRadiant bool        `json:"team_a_is_radiant" bson:"team_a_is_radiant"`
 	PicksBans      []PicksBans `json:"picks_bans,omitempty" bson:"picks_bans,omitempty"`
 	Duration       int         `json:"duration,omitempty" bson:"duration,omitempty"`
 }
 
 type PicksBans struct {
-	IsPick  bool `json:"is_pick,omitempty" bson:"is_pick,omitempty"`
+	IsPick  bool `json:"is_pick" bson:"is_pick"`
 	HeroID  int  `json:"hero_id" bson:"hero_id"`
 	Team    int  `json:"team" bson:"team"`
 	Order   int  `json:"ord" bson:"ord"`

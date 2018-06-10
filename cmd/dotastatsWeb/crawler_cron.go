@@ -23,7 +23,7 @@ func (a *App) RunCrawler() ([]dotastats.Match, error) {
 			fmt.Println("skipping canceled matches from crawling opendota: ", closedMatch.MatchName)
 			continue
 		}
-		openDotaMatch, err := a.mongodb.GetOpenDotaMatch(closedMatch)
+		openDotaMatch, teamAIsRadiant, err := a.mongodb.GetOpenDotaMatch(closedMatch)
 		if err != nil {
 			fmt.Errorf("error getting matchid from vpgame crawler: %s", err)
 			continue
@@ -34,6 +34,7 @@ func (a *App) RunCrawler() ([]dotastats.Match, error) {
 			closedMatches[i].DotaBuffURL = "https://www.dotabuff.com/matches/" + strconv.Itoa(openDotaMatch.MatchID)
 			closedMatches[i].PicksBans = openDotaMatch.PicksBans
 			closedMatches[i].Duration = openDotaMatch.Duration
+			closedMatches[i].TeamAIsRadiant = teamAIsRadiant
 		}
 	}
 

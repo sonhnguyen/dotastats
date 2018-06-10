@@ -2,6 +2,7 @@ package dotastats
 
 import (
 	"fmt"
+	"strings"
 
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -263,12 +264,13 @@ func regexIncludeWord(s string) bson.M {
 	return result
 }
 
-func (mongo *Mongodb) GetOpenDotaMatch(match Match) (OpenDotaMatch, error) {
+func (mongo *Mongodb) GetOpenDotaMatch(match Match) (OpenDotaMatch, bool, error) {
 	var result OpenDotaMatch
+	teamAIsRadiant := false
 	findQuery := make(bson.M, 2)
 	sess, err := mgo.Dial(mongo.URI)
 	if err != nil {
-		return OpenDotaMatch{}, err
+		return OpenDotaMatch{}, false, err
 	}
 	defer sess.Close()
 	sess.SetSafe(&mgo.Safe{})
@@ -292,13 +294,23 @@ func (mongo *Mongodb) GetOpenDotaMatch(match Match) (OpenDotaMatch, error) {
 			bson.M{"dire_tag": regexIncludeWord(match.TeamAShort)},
 		}},
 	}
+
 	findQuery["start_time"] = bson.M{"$lte": match.Time}
 	err = collection.Find(findQuery).Sort("-start_time").Limit(1).One(&result)
-
 	if err != nil {
-		return OpenDotaMatch{}, err
+		return OpenDotaMatch{}, false, err
 	}
-	return result, nil
+
+	if strings.Contains(result.RadiantName, match.TeamA) ||
+		strings.Contains(result.RadiantName, match.TeamAShort) ||
+		strings.Contains(result.RadiantTag, match.TeamA) ||
+		strings.Contains(result.RadiantTag, match.TeamAShort) {
+		teamAIsRadiant = true
+	} else {
+		teamAIsRadiant = false
+	}
+
+	return result, teamAIsRadiant, nil
 }
 
 func (mongo *Mongodb) GetTeamMatches(teamName string, apiParams APIParams) ([]Match, error) {
