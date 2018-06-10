@@ -107,12 +107,12 @@ func (a *App) RunCrawlerTeamInfoAndSave() error {
 		return err
 	}
 
-	err = dotastats.CreateTwitterList(result)
+	err = a.mongodb.SaveTeamInfo(result)
 	if err != nil {
 		return err
 	}
 
-	err = a.mongodb.SaveTeamInfo(result)
+	err = dotastats.CreateTwitterList(result)
 	if err != nil {
 		return err
 	}

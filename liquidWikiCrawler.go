@@ -20,23 +20,19 @@ func runCrawlerLiquidDota() ([]TeamInfo, error) {
 		return []TeamInfo{}, err
 	}
 
-	teamList.Find("#mw-content-text > div:nth-child(5) > div.template-box").Each(func(i int, s *goquery.Selection) {
-		s.Find("h3").Each(func(i int, regionSelect *goquery.Selection) {
-			region := regionSelect.Find("span.mw-headline").Text()
-			regionTeam := TeamInfo{Region: region}
-
-			regionSelect.Next().Find("li").Each(func(i int, teamSelect *goquery.Selection) {
-				team := regionTeam
-				// For each item found, get the band and title
-				url, exists := teamSelect.Find("span.team-template-text a").Attr("href")
-				if exists {
-					team.URL = LiquidBaseURL + url
-					team.Name = teamSelect.Find("span.team-template-text a").Text()
-					team.NameSlug = slugify.Marshal(team.Name)
-					team.Game = "dota"
-					result = append(result, team)
-				}
-			})
+	teamList.Find("#mw-content-text > div:nth-child(5) div.panel-default").Each(func(i int, s *goquery.Selection) {
+		region := s.Find("h3 span.mw-headline").Text()
+		regionTeam := TeamInfo{Region: region}
+		s.Find("span.team-template-text a").Each(func(i int, teamSelect *goquery.Selection) {
+			team := regionTeam
+			url, exists := teamSelect.Attr("href")
+			if exists {
+				team.URL = LiquidBaseURL + url
+				team.Name = teamSelect.Text()
+				team.NameSlug = slugify.Marshal(team.Name)
+				team.Game = "dota"
+				result = append(result, team)
+			}
 		})
 	})
 	for index, _ := range result {
@@ -48,14 +44,14 @@ func runCrawlerLiquidDota() ([]TeamInfo, error) {
 		}
 		logo, ok := teamDetail.Find(".infobox-image img").Attr("src")
 		if ok {
-			value.Logo = logo
+			value.Logo = LiquidBaseURL + logo
 		}
-		teamDetail.Find(".activesquad .table.table-striped").First().Find("tbody > tr").Each(func(i int, playerSelect *goquery.Selection) {
+		teamDetail.Find("table.table-striped.roster-card").First().Find("tbody > tr.Player").Each(func(i int, playerSelect *goquery.Selection) {
 			var player PlayerInfo
-			player.GameName = playerSelect.Find("td:nth-child(2) a").Text()
-			player.FullName = playerSelect.Find("td:nth-child(3)").Text()
-			playerURL, ok := playerSelect.Find("td:nth-child(2) a").Attr("href")
-			if ok && !playerSelect.Find("td:nth-child(2) a").HasClass("new") {
+			player.GameName = playerSelect.Find("td.ID span a").Text()
+			player.FullName = playerSelect.Find("td.Name").Text()
+			playerURL, ok := playerSelect.Find("td.ID span a").Attr("href")
+			if ok && !playerSelect.Find("td.ID a").HasClass("new") {
 				player.URL = LiquidBaseURL + playerURL
 				playerDoc, err := goquery.NewDocument(player.URL)
 				if err != nil {
@@ -65,7 +61,6 @@ func runCrawlerLiquidDota() ([]TeamInfo, error) {
 					link, ok := playerLinks.Attr("href")
 					if ok {
 						player.Links = append(player.Links, link)
-
 					}
 				})
 			}
@@ -81,7 +76,7 @@ func runCrawlerLiquidCSGO() ([]TeamInfo, error) {
 		return []TeamInfo{}, err
 	}
 
-	teamList.Find("#mw-content-text > div > div > div > table:nth-child(5) > tbody > tr > td").Each(func(i int, s *goquery.Selection) {
+	teamList.Find("#mw-content-text table:nth-child(5) > tbody > tr > td").Each(func(i int, s *goquery.Selection) {
 		s.Find("h3").Each(func(i int, regionSelect *goquery.Selection) {
 			region := regionSelect.Find("span.mw-headline").Text()
 			regionTeam := TeamInfo{Region: region}
