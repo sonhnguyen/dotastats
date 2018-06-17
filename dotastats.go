@@ -76,7 +76,6 @@ func OpenDotaGet(url string, params OpenDotaAPIParams) (*http.Response, error) {
 	}
 
 	req.URL.RawQuery = q.Encode()
-	fmt.Println(req.URL.String())
 	resp, err := client.Do(req)
 	if err != nil {
 		return resp, err

@@ -16,11 +16,9 @@ func (a *App) RunCrawler() ([]dotastats.Match, error) {
 
 	for i, closedMatch := range closedMatches {
 		if closedMatch.Game != "dota" {
-			fmt.Println("skipping match of category from crawling opendota: ", closedMatch.Game)
 			continue
 		}
 		if closedMatch.Status == "Canceled" {
-			fmt.Println("skipping canceled matches from crawling opendota: ", closedMatch.MatchName)
 			continue
 		}
 		openDotaMatch, teamAIsRadiant, err := a.mongodb.GetOpenDotaMatch(closedMatch)

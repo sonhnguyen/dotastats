@@ -102,6 +102,15 @@ func processStatus(status string) string {
 	}
 	return "Upcoming"
 }
+
+func processLogo(logo string) string {
+	if strings.Contains(logo, "resource-sec.vpgame.com") {
+		return logo
+	} else {
+		return LogoURL + logo
+	}
+}
+
 func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 	var result []Match
 	var vpgameResult VPgameAPIResult
@@ -129,9 +138,9 @@ func RunCrawlerVpgame(vpParams VPGameAPIParams) ([]Match, error) {
 			continue
 		}
 		matchFinal.BestOf = match.Round
-		matchFinal.TournamentLogo = LogoURL + match.Tournament.Logo
-		matchFinal.LogoA = LogoURL + match.Team.Left.Logo
-		matchFinal.LogoB = LogoURL + match.Team.Right.Logo
+		matchFinal.TournamentLogo = processLogo(match.Tournament.Logo)
+		matchFinal.LogoA = processLogo(match.Team.Left.Logo)
+		matchFinal.LogoB = processLogo(match.Team.Right.Logo)
 		matchFinal.SeriesID = match.SeriesID
 		seriesParam := VPGameAPIParams{TID: match.SeriesID}
 		respSeries, err := VPGameGet(SeriesAPI, seriesParam)
