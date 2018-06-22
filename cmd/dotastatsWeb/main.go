@@ -181,9 +181,9 @@ func main() {
 	}
 
 	_, err = c.AddFunc("@every 72h", func() {
-		_, err := http.Get("http://dotabetstats.herokuapp.com/crawl?page_from=1&page_to=100&status=close")
+		_, err = http.Get("http://dotabetstats.herokuapp.com/crawl?page_from=1&page_to=100&status=close")
 		if err != nil {
-			return err
+			log.Println("error running cron every 72h %s", err)
 		}
 	})
 	if err != nil {
