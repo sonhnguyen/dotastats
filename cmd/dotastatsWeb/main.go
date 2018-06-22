@@ -180,6 +180,17 @@ func main() {
 		log.Println("error on cron job %s", err)
 	}
 
+	_, err = c.AddFunc("@every 72h", func() {
+		_, err := http.Get("http://dotabetstats.herokuapp.com/crawl?page_from=1&page_to=100&status=close")
+		if err != nil {
+			return err
+		}
+	})
+	if err != nil {
+		log.Println("error on cron job %s", err)
+	}
+
+
 	_, err = c.AddFunc("@weekly", func() {
 		a.RunCrawlerTeamInfoAndSave()
 		if err != nil {
